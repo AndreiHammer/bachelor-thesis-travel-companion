@@ -30,14 +30,20 @@ Preferences Management
 Stores user preferences using Preferences DataStore for a seamless experience.
 
 Technologies Used
+
 Frontend: Kotlin with Jetpack Compose
+
 Backend: Ktor framework 
+
 Database: ObjectBox with vector search capabilities
+
 APIs:
-Amadeus API
-Google Maps API
+Amadeus API;
+Google Maps API;
 Google Places API
+
 AI Integration: OpenAI embeddings with Python via Chaquopy
+
 Authentication: OAuth2 / JSON Web Tokens (JWT)
 
 
