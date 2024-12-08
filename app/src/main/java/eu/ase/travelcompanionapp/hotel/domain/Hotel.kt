@@ -1,0 +1,16 @@
+package eu.ase.travelcompanionapp.hotel.domain
+
+data class Hotel(
+    val hotelId: String,
+    val chainCode: String?,
+    val iataCode: String,
+    val dupeId: Int?,
+    val name: String,
+    val latitude: Double,
+    val longitude: Double,
+    val contryCode : String,
+    val amenities: ArrayList<String> = arrayListOf(),
+    val rating: Int?,
+    val giataId: Int?,
+    val phone: String?
+)
