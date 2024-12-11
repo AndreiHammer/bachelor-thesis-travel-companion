@@ -5,13 +5,20 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("io.objectbox")
+    id ("com.chaquo.python")
 }
 
 android {
     namespace = "eu.ase.travelcompanionapp"
     compileSdk = 35
-
+    flavorDimensions += "pyVersion"
+    productFlavors {
+        create("py310") { dimension = "pyVersion" }
+        create("py311") { dimension = "pyVersion" }
+    }
     defaultConfig {
         applicationId = "eu.ase.travelcompanionapp"
         minSdk = 28
@@ -24,9 +31,25 @@ android {
             useSupportLibrary = true
         }
 
+        ndk {
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
+
         val properties = gradleLocalProperties(rootDir, providers)
-        buildConfigField("String", "GOOGLE_MAPS_API_KEY",
-            properties.getProperty("GOOGLE_MAPS_API_KEY")
+        buildConfigField("String", "GOOGLE_API_KEY",
+            properties.getProperty("GOOGLE_API_KEY")
+        )
+        buildConfigField("String", "AMADEUS_API_KEY",
+            properties.getProperty("AMADEUS_API_KEY")
+        )
+        buildConfigField("String", "AMADEUS_API_SECRET",
+            properties.getProperty("AMADEUS_API_SECRET")
+        )
+        buildConfigField("String", "GROQ_KEY",
+            properties.getProperty("GROQ_KEY")
+        )
+        buildConfigField("String", "OPEN_AI_API_KEY",
+            properties.getProperty("OPEN_AI_API_KEY")
         )
     }
 
@@ -51,7 +74,17 @@ android {
         compose = true
     }
 }
-
+chaquopy {
+    productFlavors {
+        getByName("py310") { version = "3.10" }
+        getByName("py311") { version = "3.11" }
+    }
+    defaultConfig {
+        pip{
+            install("numpy")
+        }
+    }
+}
 
 
 dependencies {
@@ -80,4 +113,12 @@ dependencies {
 
     implementation(libs.play.services.maps)
     implementation(libs.maps.compose)
+
+    implementation(libs.bundles.coil)
+
+    implementation(libs.objectbox.kotlin)
+
+    implementation(libs.androidx.runtime.livedata)
+
+    implementation(libs.places)
 }

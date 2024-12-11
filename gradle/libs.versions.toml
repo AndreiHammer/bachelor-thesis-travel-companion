@@ -14,9 +14,15 @@ koin = "3.5.6"
 mapsCompose = "2.12.0"
 material3-adaptive = "1.0.0"
 compose-material-icons-extended = "1.7.2"
+places = "4.1.0"
 playServicesFitness = "21.2.0"
 playServicesMaps = "19.0.0"
 secretsGradlePlugin = "2.0.1"
+coil3 = "3.0.0-rc02"
+ksp = "2.0.20-1.0.24"
+objectboxKotlin = "4.0.2"
+objectboxVersion = "4.0.2"
+runtimeLivedata = "1.7.3"
 
 
 [libraries]
@@ -48,15 +54,25 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-compose-material3-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "material3-adaptive" }
 compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "compose-material-icons-extended" }
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 play-services-fitness = { group = "com.google.android.gms", name = "play-services-fitness", version.ref = "playServicesFitness" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }
+coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil3" }
+coil-network-ktor2 = { module = "io.coil-kt.coil3:coil-network-ktor2", version.ref = "coil3" }
+coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil3" }
+coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
+objectbox-gradle-plugin = { module = "io.objectbox:objectbox-gradle-plugin", version.ref = "objectboxVersion" }
+objectbox-kotlin = { module = "io.objectbox:objectbox-kotlin", version.ref = "objectboxKotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 [bundles]
 compose = [
@@ -85,5 +101,12 @@ ktor = [
     "ktor-client-core",
     "ktor-client-logging",
     "ktor-serialization-kotlinx-json"
+]
+coil = [
+    "coil-compose",
+    "coil-compose-core",
+    "coil-network-ktor2",
+    "coil-network-ktor3",
+    "coil-mp"
 ]
 

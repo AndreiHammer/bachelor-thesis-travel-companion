@@ -8,7 +8,7 @@ data class Hotel(
     val name: String,
     val latitude: Double,
     val longitude: Double,
-    val contryCode : String,
+    val countryCode : String,
     val amenities: ArrayList<String> = arrayListOf(),
     val rating: Int?,
     val giataId: Int?,

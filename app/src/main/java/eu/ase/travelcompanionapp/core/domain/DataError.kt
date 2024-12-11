@@ -3,10 +3,10 @@ package eu.ase.travelcompanionapp.core.domain
 sealed interface DataError: Error {
     enum class Remote: DataError {
         REQUEST_TIMEOUT,
-        NO_INTERNET,
         TOO_MANY_REQUESTS,
-        SERIALIZATION,
+        NO_INTERNET,
         SERVER,
+        SERIALIZATION,
         UNKNOWN
     }
 
@@ -14,5 +14,4 @@ sealed interface DataError: Error {
         DISK_FULL,
         UNKNOWN
     }
-
 }
