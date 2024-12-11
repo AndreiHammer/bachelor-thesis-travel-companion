@@ -5,7 +5,7 @@ import eu.ase.travelcompanionapp.core.domain.DataError
 import eu.ase.travelcompanionapp.core.domain.Result
 
 interface HotelRepositoryPlacesApi {
-    fun getHotelDetails(
+    suspend fun getHotelDetails(
         hotelName: String,
         country: String,
         onResult: (Result<Pair<Hotel, List<Bitmap>>, DataError>) -> Unit

@@ -7,7 +7,7 @@ import eu.ase.travelcompanionapp.hotel.domain.Hotel
 import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryPlacesApi
 
 class HotelRepositoryImpl(private val placesApiService: PlacesApiService): HotelRepositoryPlacesApi {
-    override fun getHotelDetails(
+    override suspend fun getHotelDetails(
         hotelName: String,
         country: String,
         onResult: (Result<Pair<Hotel, List<Bitmap>>, DataError>) -> Unit

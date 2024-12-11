@@ -48,7 +48,9 @@ fun HotelLocationScreen(
         }
     ) { paddingValues ->
         HotelMap(
-            modifier = modifier.fillMaxSize().padding(paddingValues),
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValues),
             country = country,
             latitude = latitude,
             longitude = longitude,
@@ -73,51 +75,42 @@ fun HotelMap(
     }
 
     Column(modifier = modifier.fillMaxSize()) {
-
-        Column(modifier = Modifier.weight(1f)) {
-            GoogleMap(
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState
-            ) {
-                Marker(
-                    state = MarkerState(position = location),
-                    title = hotelName,
-                    snippet = "Hotel in $country"
-                )
-            }
+        GoogleMap(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            cameraPositionState = cameraPositionState
+        ) {
+            Marker(
+                state = MarkerState(position = location),
+                title = hotelName,
+                snippet = "Hotel in $country"
+            )
         }
 
-        Column(modifier = Modifier.weight(1f).padding(8.dp)) {
-            if (hotelState.photos.isNotEmpty()) {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(hotelState.photos) { photoUri ->
-                        Image(
-                            bitmap = photoUri.asImageBitmap(),
-                            contentDescription = "$hotelName Photo",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp)
-                                .padding(8.dp)
-                        )
-                    }
+        if (hotelState.photos.isNotEmpty()) {
+            LazyColumn(modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)) {
+                items(hotelState.photos) { photoUri ->
+                    Image(
+                        bitmap = photoUri.asImageBitmap(),
+                        contentDescription = "$hotelName Photo",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .padding(8.dp)
+                    )
                 }
-            } else if (hotelState.errorMessage != null) {
-                Text(
-                    text = hotelState.errorMessage,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
-            } else {
-                Text(
-                    text = "Loading photos...",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
             }
+        } else {
+            Text(
+                text = hotelState.errorMessage ?: "Loading photos...",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

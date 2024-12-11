@@ -14,6 +14,7 @@ import eu.ase.travelcompanionapp.core.domain.Result.Error
 import eu.ase.travelcompanionapp.core.domain.Result.Success
 import eu.ase.travelcompanionapp.hotel.domain.Hotel
 
+
 class PlacesApiService(context: Context) {
     private val placesClient: PlacesClient = Places.createClient(context)
 

@@ -3,14 +3,14 @@ package eu.ase.travelcompanionapp.hotel.presentation.location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.Bitmap
-import eu.ase.travelcompanionapp.hotel.data.placesApi.HotelRepositoryImpl
 import eu.ase.travelcompanionapp.hotel.domain.Hotel
+import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryPlacesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HotelLocationViewModel(
-    private val hotelRepository: HotelRepositoryImpl
+    private val hotelRepository: HotelRepositoryPlacesApi
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HotelState())
