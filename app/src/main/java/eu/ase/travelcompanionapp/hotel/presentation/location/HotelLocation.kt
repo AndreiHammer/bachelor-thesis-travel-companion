@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -21,6 +22,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import eu.ase.travelcompanionapp.core.presentation.PulseAnimation
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,13 +106,18 @@ fun HotelMap(
                 }
             }
         } else {
-            Text(
-                text = hotelState.errorMessage ?: "Loading photos...",
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                textAlign = TextAlign.Center
-            )
+                    .weight(0.5f),
+                contentAlignment = androidx.compose.ui.Alignment.Center
+            ) {
+                PulseAnimation(
+                    modifier = Modifier
+                        .padding(bottom = 50.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }
