@@ -8,23 +8,23 @@ import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryPlacesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import eu.ase.travelcompanionapp.core.domain.Result
 
 class HotelLocationViewModel(
     private val hotelRepository: HotelRepositoryPlacesApi
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HotelState())
-
     val hotelState: StateFlow<HotelState> get() = _state
 
     fun getHotelDetails(hotelName: String, country: String) {
         viewModelScope.launch {
             hotelRepository.getHotelDetails(hotelName, country) { result ->
                 when (result) {
-                    is eu.ase.travelcompanionapp.core.domain.Result.Error -> {
+                    is Result.Error -> {
                         _state.value = _state.value.copy(errorMessage = "Error fetching hotel details.")
                     }
-                    is eu.ase.travelcompanionapp.core.domain.Result.Success -> {
+                    is Result.Success -> {
                         val (hotel, photos) = result.data
                         _state.value = _state.value.copy(hotel = hotel, photos = photos)
                     }

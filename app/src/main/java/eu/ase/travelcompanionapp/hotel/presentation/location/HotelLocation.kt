@@ -12,6 +12,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +23,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.core.presentation.PulseAnimation
 import org.koin.androidx.compose.koinViewModel
 
@@ -108,10 +110,13 @@ fun HotelMap(
         } else {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .weight(0.5f),
-                contentAlignment = androidx.compose.ui.Alignment.Center
+                contentAlignment = Alignment.Center
             ) {
+                /*BlurredAnimatedText(
+                    text  = "Loading photos..."
+                )*/
                 PulseAnimation(
                     modifier = Modifier
                         .padding(bottom = 50.dp),
