@@ -121,4 +121,6 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
 
     implementation(libs.places)
+
+    implementation (libs.accompanist.pager)
 }

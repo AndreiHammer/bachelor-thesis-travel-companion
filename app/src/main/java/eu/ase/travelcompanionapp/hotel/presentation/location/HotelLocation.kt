@@ -1,9 +1,7 @@
 package eu.ase.travelcompanionapp.hotel.presentation.location
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -12,19 +10,18 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
-import eu.ase.travelcompanionapp.core.presentation.PulseAnimation
+import eu.ase.travelcompanionapp.hotel.presentation.location.components.GoogleMapComponent
+import eu.ase.travelcompanionapp.hotel.presentation.location.components.ImageDialog
+import eu.ase.travelcompanionapp.hotel.presentation.location.components.ImageList
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,51 +75,42 @@ fun HotelMap(
         position = CameraPosition.fromLatLngZoom(location, 15f)
     }
 
-    Column(modifier = modifier.fillMaxSize()) {
-        GoogleMap(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            cameraPositionState = cameraPositionState
-        ) {
-            Marker(
-                state = MarkerState(position = location),
-                title = hotelName,
-                snippet = "Hotel in $country"
-            )
-        }
+    var isDialogOpen by remember { mutableStateOf(false) }
+    var currentImageIndex by remember { mutableStateOf(0) }
 
-        if (hotelState.photos.isNotEmpty()) {
-            LazyColumn(modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)) {
-                items(hotelState.photos) { photoUri ->
-                    Image(
-                        bitmap = photoUri.asImageBitmap(),
-                        contentDescription = "$hotelName Photo",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .padding(8.dp)
-                    )
-                }
-            }
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(0.5f),
-                contentAlignment = Alignment.Center
-            ) {
-                /*BlurredAnimatedText(
-                    text  = "Loading photos..."
-                )*/
-                PulseAnimation(
-                    modifier = Modifier
-                        .padding(bottom = 50.dp),
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        ImageList(
+            hotelState = hotelState,
+            currentImageIndex = currentImageIndex,
+            onImageClick = { index ->
+                currentImageIndex = index
+                isDialogOpen = true
+            },
+            modifier = Modifier.weight(1f)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        GoogleMapComponent(
+            location = location,
+            cameraPositionState = cameraPositionState,
+            hotelName = hotelName,
+            country = country,
+            modifier = Modifier.weight(1f)
+        )
+    }
+
+    if (isDialogOpen) {
+        ImageDialog(
+            hotelState = hotelState,
+            currentImageIndex = currentImageIndex,
+            onDismiss = { isDialogOpen = false },
+            onImageChange = { index -> currentImageIndex = index }
+        )
     }
 }
+

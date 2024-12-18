@@ -34,6 +34,7 @@ class HotelLocationViewModel(
     }
 
     data class HotelState(
+        val isLoading: Boolean = false,
         val hotel: Hotel? = null,
         val photos: List<Bitmap> = emptyList(),
         val errorMessage: String? = null
