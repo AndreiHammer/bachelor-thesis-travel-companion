@@ -11,25 +11,29 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationViewModel
 
 @Composable
 fun GoogleMapComponent(
-    location: LatLng,
     cameraPositionState: CameraPositionState,
-    hotelName: String,
-    country: String,
+    hotelState: HotelLocationViewModel.HotelState,
     modifier: Modifier = Modifier
 ) {
+    val coordinates = hotelState.coordinates
+
     GoogleMap(
         modifier = modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(16.dp)),
         cameraPositionState = cameraPositionState
     ) {
-        Marker(
-            state = MarkerState(position = location),
-            title = hotelName,
-            snippet = "Hotel in $country"
-        )
+        if (coordinates != null) {
+            Marker(
+                state = MarkerState(position = LatLng(coordinates.first, coordinates.second)),
+                title = hotelState.hotel?.name,
+                snippet = "Hotel in ${hotelState.hotel?.countryCode}"
+            )
+        }
     }
 }
+

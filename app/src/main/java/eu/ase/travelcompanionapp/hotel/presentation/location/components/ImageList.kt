@@ -20,63 +20,49 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationViewModel
 
 @Composable
 fun ImageList(
     hotelState: HotelLocationViewModel.HotelState,
-    currentImageIndex: Int,
     onImageClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (hotelState.photos.isNotEmpty()) {
-        LazyColumn(
-            modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            itemsIndexed(hotelState.photos) { index, photoUri ->
-                Box(
+    LazyColumn(
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        itemsIndexed(hotelState.photos) { index, photoUri ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Card(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    contentAlignment = Alignment.Center
+                        .fillMaxWidth(0.8f)
+                        .padding(vertical = 8.dp)
+                        .clickable { onImageClick(index) },
+                    shape = MaterialTheme.shapes.medium,
+                    elevation = CardDefaults.cardElevation(8.dp)
                 ) {
-                    Card(
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .padding(vertical = 8.dp)
-                            .clickable { onImageClick(index) },
-                        shape = MaterialTheme.shapes.medium,
-                        elevation = CardDefaults.cardElevation(8.dp)
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surface)
                     ) {
-                        Box(
+                        Image(
+                            bitmap = photoUri.asImageBitmap(),
+                            contentDescription = "Hotel Image",
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.surface)
-                        ) {
-                            Image(
-                                bitmap = photoUri.asImageBitmap(),
-                                contentDescription = "Hotel Image",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .height(300.dp)
-                                    .clip(MaterialTheme.shapes.medium),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
+                                .fillMaxSize()
+                                .height(300.dp)
+                                .clip(MaterialTheme.shapes.medium),
+                            contentScale = ContentScale.Crop
+                        )
                     }
                 }
             }
-        }
-    } else {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            BlurredAnimatedText(text = "Loading photos...")
         }
     }
 }

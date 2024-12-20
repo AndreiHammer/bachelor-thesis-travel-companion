@@ -14,11 +14,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.hotel.presentation.location.components.GoogleMapComponent
 import eu.ase.travelcompanionapp.hotel.presentation.location.components.ImageDialog
 import eu.ase.travelcompanionapp.hotel.presentation.location.components.ImageList
@@ -28,8 +30,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HotelLocationScreen(
     country: String,
-    latitude: Double,
-    longitude: Double,
     hotelName: String,
     modifier: Modifier = Modifier
 ) {
@@ -41,6 +41,8 @@ fun HotelLocationScreen(
         viewModel.getHotelDetails(hotelName, country)
     }
 
+    val isLoading = hotelState.value.coordinates == null || hotelState.value.photos.isEmpty()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,31 +50,44 @@ fun HotelLocationScreen(
             )
         }
     ) { paddingValues ->
-        HotelMap(
+        Box(
             modifier = modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            country = country,
-            latitude = latitude,
-            longitude = longitude,
-            hotelName = hotelName,
-            hotelState = hotelState.value
-        )
+                .padding(paddingValues)
+        ) {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    BlurredAnimatedText(text = "Loading details...")
+                }
+            } else {
+                HotelMap(
+                    modifier = Modifier.fillMaxSize(),
+                    hotelState = hotelState.value
+                )
+            }
+        }
     }
 }
 
 @Composable
 fun HotelMap(
     modifier: Modifier = Modifier,
-    country: String,
-    latitude: Double,
-    longitude: Double,
-    hotelName: String,
     hotelState: HotelLocationViewModel.HotelState
 ) {
-    val location = LatLng(latitude, longitude)
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(location, 15f)
+    val cameraPositionState = rememberCameraPositionState()
+
+    LaunchedEffect(hotelState.coordinates) {
+        hotelState.coordinates?.let {
+            cameraPositionState.position = CameraPosition.fromLatLngZoom(
+                LatLng(it.first, it.second),
+                15f
+            )
+        }
     }
 
     var isDialogOpen by remember { mutableStateOf(false) }
@@ -85,7 +100,6 @@ fun HotelMap(
     ) {
         ImageList(
             hotelState = hotelState,
-            currentImageIndex = currentImageIndex,
             onImageClick = { index ->
                 currentImageIndex = index
                 isDialogOpen = true
@@ -95,11 +109,10 @@ fun HotelMap(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+
         GoogleMapComponent(
-            location = location,
             cameraPositionState = cameraPositionState,
-            hotelName = hotelName,
-            country = country,
+            hotelState = hotelState,
             modifier = Modifier.weight(1f)
         )
     }
@@ -113,4 +126,3 @@ fun HotelMap(
         )
     }
 }
-

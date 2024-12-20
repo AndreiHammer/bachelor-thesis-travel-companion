@@ -43,14 +43,17 @@ class PlacesApiService(context: Context) {
 
         placesClient.fetchPlace(fetchPlaceRequest).addOnSuccessListener { response ->
             val place = response.place
+
+            val latitude = place.latLng?.latitude ?: 0.0
+            val longitude = place.latLng?.longitude ?: 0.0
             val hotel = Hotel(
                 hotelId = place.id ?: "",
                 chainCode = null,
                 iataCode = "",
                 dupeId = null,
                 name = place.name ?: hotelName,
-                latitude = place.latLng?.latitude ?: 0.0,
-                longitude = place.latLng?.longitude ?: 0.0,
+                latitude = latitude,
+                longitude = longitude,
                 countryCode = country,
                 amenities = arrayListOf(),
                 rating = place.rating?.toInt(),

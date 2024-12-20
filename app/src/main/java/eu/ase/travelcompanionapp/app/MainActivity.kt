@@ -22,9 +22,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     HotelLocationScreen(
                         country = "RO",
-                        latitude = 44.425776797103545,
-                        longitude = 26.07689369947594,
-                        hotelName = "Sheraton Bucharest",
+                        hotelName = "Kayus Boutique Hotel Busteni",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

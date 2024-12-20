@@ -17,16 +17,21 @@ class HotelLocationViewModel(
     private val _state = MutableStateFlow(HotelState())
     val hotelState: StateFlow<HotelState> get() = _state
 
-    fun getHotelDetails(hotelName: String, country: String) {
+    fun getHotelDetails(locationName: String, country: String) {
         viewModelScope.launch {
-            hotelRepository.getHotelDetails(hotelName, country) { result ->
+            hotelRepository.getHotelDetails(locationName, country) { result ->
                 when (result) {
                     is Result.Error -> {
                         _state.value = _state.value.copy(errorMessage = "Error fetching hotel details.")
                     }
                     is Result.Success -> {
                         val (hotel, photos) = result.data
-                        _state.value = _state.value.copy(hotel = hotel, photos = photos)
+                        val coordinates = Pair(hotel.latitude, hotel.longitude)
+                        _state.value = _state.value.copy(
+                            hotel = hotel,
+                            photos = photos,
+                            coordinates = coordinates
+                        )
                     }
                 }
             }
@@ -37,6 +42,7 @@ class HotelLocationViewModel(
         val isLoading: Boolean = false,
         val hotel: Hotel? = null,
         val photos: List<Bitmap> = emptyList(),
+        val coordinates: Pair<Double, Double>? = null,
         val errorMessage: String? = null
     )
 }
