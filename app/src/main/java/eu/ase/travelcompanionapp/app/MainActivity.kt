@@ -4,6 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Modifier
 import eu.ase.travelcompanionapp.core.data.HttpClientFactory
 
 import eu.ase.travelcompanionapp.ui.theme.TravelCompanionAppTheme
@@ -13,6 +17,7 @@ import eu.ase.travelcompanionapp.core.domain.Result
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.AmadeusApiService
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.repository.AmadeusHotelRepository
 import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryAmadeusApi
+import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -23,21 +28,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TravelCompanionAppTheme {
-                /*Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    /*HotelLocationScreen(
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    HotelLocationScreen(
                         country = "RO",
                         hotelName = "Sheraton Hotel Bucharest",
                         modifier = Modifier.padding(innerPadding)
-                    )*/
+                    )
 
                     /*HotelListScreen(
                         modifier = Modifier.padding(innerPadding)
                     )*/
 
 
-                }*/
+                }
 
-                val amadeusApi = AmadeusApiService(HttpClientFactory.create(CIO.create()))
+               /* val amadeusApi = AmadeusApiService(HttpClientFactory.create(CIO.create()))
 
                 runBlocking {
                     val hotelRepository: HotelRepositoryAmadeusApi = AmadeusHotelRepository(amadeusApi)
@@ -57,7 +62,7 @@ class MainActivity : ComponentActivity() {
 
                     }
 
-                }
+                }*/
             }
         }
     }
