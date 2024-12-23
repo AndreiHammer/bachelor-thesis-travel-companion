@@ -41,7 +41,8 @@ fun HotelLocationScreen(
         viewModel.getHotelDetails(hotelName, country)
     }
 
-    val isLoading = hotelState.value.coordinates == null || hotelState.value.photos.isEmpty()
+
+    val isLoading = hotelState.value.photos.isEmpty()
 
     Scaffold(
         topBar = {
@@ -81,12 +82,16 @@ fun HotelMap(
 ) {
     val cameraPositionState = rememberCameraPositionState()
 
-    LaunchedEffect(hotelState.coordinates) {
-        hotelState.coordinates?.let {
-            cameraPositionState.position = CameraPosition.fromLatLngZoom(
-                LatLng(it.first, it.second),
-                15f
-            )
+    val coordinates = hotelState.hotel?.let { Pair(it.latitude, it.longitude) }
+    LaunchedEffect(coordinates) {
+        coordinates?.let {
+            cameraPositionState.position =
+                it.first.let { it1 -> it.second.let { it2 -> LatLng(it1, it2) } }.let { it2 ->
+                    CameraPosition.fromLatLngZoom(
+                        it2,
+                        15f
+                    )
+                }
         }
     }
 

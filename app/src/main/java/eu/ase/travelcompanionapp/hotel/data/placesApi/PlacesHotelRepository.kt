@@ -6,7 +6,7 @@ import eu.ase.travelcompanionapp.core.domain.Result
 import eu.ase.travelcompanionapp.hotel.domain.Hotel
 import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryPlacesApi
 
-class HotelRepositoryImpl(private val placesApiService: PlacesApiService): HotelRepositoryPlacesApi {
+class PlacesHotelRepository(private val placesApiService: PlacesApiService): HotelRepositoryPlacesApi {
     override suspend fun getHotelDetails(
         hotelName: String,
         country: String,

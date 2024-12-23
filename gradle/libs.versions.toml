@@ -10,7 +10,7 @@ lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.11.00"
 desugar-jdk-libs = "2.1.2"
-ktor = "2.3.12"
+ktor = "3.0.0"
 koin = "3.5.6"
 mapsCompose = "2.12.0"
 material3-adaptive = "1.0.0"
@@ -24,6 +24,8 @@ ksp = "2.0.20-1.0.24"
 objectboxKotlin = "4.0.2"
 objectboxVersion = "4.0.2"
 runtimeLivedata = "1.7.3"
+navigationRuntimeKtx = "2.8.5"
+navigationCompose = "2.8.5"
 
 
 [libraries]
@@ -68,6 +70,8 @@ coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 objectbox-gradle-plugin = { module = "io.objectbox:objectbox-gradle-plugin", version.ref = "objectboxVersion" }
 objectbox-kotlin = { module = "io.objectbox:objectbox-kotlin", version.ref = "objectboxKotlin" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

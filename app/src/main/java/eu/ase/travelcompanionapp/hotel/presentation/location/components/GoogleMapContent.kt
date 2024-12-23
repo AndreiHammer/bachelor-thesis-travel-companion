@@ -19,7 +19,7 @@ fun GoogleMapComponent(
     hotelState: HotelLocationViewModel.HotelState,
     modifier: Modifier = Modifier
 ) {
-    val coordinates = hotelState.coordinates
+    val coordinates = hotelState.hotel?.let { Pair(it.latitude, it.longitude) }
 
     GoogleMap(
         modifier = modifier
@@ -30,8 +30,8 @@ fun GoogleMapComponent(
         if (coordinates != null) {
             Marker(
                 state = MarkerState(position = LatLng(coordinates.first, coordinates.second)),
-                title = hotelState.hotel?.name,
-                snippet = "Hotel in ${hotelState.hotel?.countryCode}"
+                title = hotelState.hotel.name,
+                snippet = "Hotel in ${hotelState.hotel.countryCode}"
             )
         }
     }

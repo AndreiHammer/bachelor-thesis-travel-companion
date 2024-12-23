@@ -26,11 +26,9 @@ class HotelLocationViewModel(
                     }
                     is Result.Success -> {
                         val (hotel, photos) = result.data
-                        val coordinates = Pair(hotel.latitude, hotel.longitude)
                         _state.value = _state.value.copy(
                             hotel = hotel,
-                            photos = photos,
-                            coordinates = coordinates
+                            photos = photos
                         )
                     }
                 }
@@ -42,7 +40,6 @@ class HotelLocationViewModel(
         val isLoading: Boolean = false,
         val hotel: Hotel? = null,
         val photos: List<Bitmap> = emptyList(),
-        val coordinates: Pair<Double, Double>? = null,
         val errorMessage: String? = null
     )
 }
