@@ -2,11 +2,13 @@ package eu.ase.travelcompanionapp.di
 
 import eu.ase.travelcompanionapp.core.data.HttpClientFactory
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.AmadeusApiService
+import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.RemoteHotelDataSource
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.repository.AmadeusHotelRepository
 import eu.ase.travelcompanionapp.hotel.data.placesApi.PlacesHotelRepository
 import eu.ase.travelcompanionapp.hotel.data.placesApi.PlacesApiService
 import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryAmadeusApi
 import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryPlacesApi
+import eu.ase.travelcompanionapp.hotel.presentation.SelectedHotelViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationViewModel
 import io.ktor.client.engine.cio.CIO
@@ -22,7 +24,8 @@ val appModule = module {
 
     viewModelOf(::HotelListViewModel)
     single<HotelRepositoryAmadeusApi> { AmadeusHotelRepository(get()) }
-    single { AmadeusApiService(get()) }
+    single<RemoteHotelDataSource> { AmadeusApiService(get()) }
 
+    viewModelOf(::SelectedHotelViewModel)
 
 }

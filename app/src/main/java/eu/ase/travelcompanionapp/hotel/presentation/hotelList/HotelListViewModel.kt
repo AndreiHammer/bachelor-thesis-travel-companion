@@ -38,6 +38,14 @@ class HotelListViewModel(
         }
     }
 
+    fun onAction(action: HotelListAction) {
+        when (action) {
+            is HotelListAction.OnHotelClick -> {
+                // Navigate to hotel details screen
+            }
+        }
+    }
+
 
     data class HotelListState(
         val isLoading: Boolean = true,

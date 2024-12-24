@@ -8,17 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import eu.ase.travelcompanionapp.core.data.HttpClientFactory
-
 import eu.ase.travelcompanionapp.ui.theme.TravelCompanionAppTheme
-import io.ktor.client.engine.cio.CIO
-import kotlinx.coroutines.runBlocking
-import eu.ase.travelcompanionapp.core.domain.Result
-import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.AmadeusApiService
-import eu.ase.travelcompanionapp.hotel.data.amadeusApi.repository.AmadeusHotelRepository
-import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryAmadeusApi
-import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationScreen
-
 
 class MainActivity : ComponentActivity() {
 
@@ -29,40 +19,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             TravelCompanionAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HotelLocationScreen(
-                        country = "RO",
-                        hotelName = "Sheraton Hotel Bucharest",
+                    AppNavHost(
                         modifier = Modifier.padding(innerPadding)
                     )
 
-                    /*HotelListScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )*/
-
-
                 }
-
-               /* val amadeusApi = AmadeusApiService(HttpClientFactory.create(CIO.create()))
-
-                runBlocking {
-                    val hotelRepository: HotelRepositoryAmadeusApi = AmadeusHotelRepository(amadeusApi)
-                    hotelRepository.searchHotelsByCity("BUH", "", "5") { result ->
-                        when (result) {
-
-                            is Result.Error -> {
-                                println("Error: ${result.error}")
-                            }
-
-                            is Result.Success -> {
-                                result.data.forEach { hotel ->
-                                    println("Hotel: $hotel")
-                                }
-                            }
-                        }
-
-                    }
-
-                }*/
             }
         }
     }

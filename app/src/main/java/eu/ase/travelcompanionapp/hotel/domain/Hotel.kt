@@ -1,5 +1,6 @@
 package eu.ase.travelcompanionapp.hotel.domain
 
+
 data class Hotel(
     val hotelId: String,
     val chainCode: String?,

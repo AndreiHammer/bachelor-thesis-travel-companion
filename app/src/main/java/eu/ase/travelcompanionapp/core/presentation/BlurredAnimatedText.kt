@@ -11,7 +11,9 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableFloatStateOf
@@ -29,6 +31,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
 
 private const val ANIMATION_DURATION = 1000
@@ -38,6 +41,9 @@ fun BlurredAnimatedText(
     text: String,
     modifier: Modifier = Modifier
 ) {
+    val darkTheme = isSystemInDarkTheme()
+    val textColor = if(darkTheme) Color.White else Color.Black
+
     val blurList = text.mapIndexed { index, character ->
         if(character == ' ') {
             remember {
@@ -70,7 +76,9 @@ fun BlurredAnimatedText(
         text.forEachIndexed { index, character ->
             Text(
                 text = character.toString(),
-                color = Color.White,
+                color = textColor,
+                style = MaterialTheme.typography.bodyMedium,
+                fontSize = 20.sp,
                 modifier = Modifier
                     .graphicsLayer {
                         if(character != ' ') {

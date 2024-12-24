@@ -36,6 +36,14 @@ class HotelLocationViewModel(
         }
     }
 
+    fun onAction(action: HotelLocationAction){
+        when(action){
+            HotelLocationAction.OnBackClick -> {
+
+            }
+        }
+    }
+
     data class HotelState(
         val isLoading: Boolean = false,
         val hotel: Hotel? = null,
