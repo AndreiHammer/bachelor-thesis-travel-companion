@@ -25,7 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.domain.Hotel
 
 
@@ -68,7 +70,7 @@ fun HotelItem(
                         repeat(rating) {
                             Icon(
                                 imageVector = Icons.Filled.Star,
-                                contentDescription = "Star",
+                                contentDescription = stringResource(R.string.star),
                                 tint = Color.Yellow,
                                 modifier = Modifier.size(16.dp)
                             )
@@ -83,7 +85,7 @@ fun HotelItem(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Home,
-                            contentDescription = "Amenities Icon",
+                            contentDescription = stringResource(R.string.amenities_icon),
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(20.dp)
                         )
@@ -96,7 +98,7 @@ fun HotelItem(
                     }
                 }
 
-                hotel.phone?.let { phone ->
+                /*hotel.phone?.let { phone ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Filled.Phone,
@@ -111,7 +113,7 @@ fun HotelItem(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                }
+                }*/
             }
         }
     }

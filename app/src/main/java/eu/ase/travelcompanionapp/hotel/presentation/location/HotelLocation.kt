@@ -11,11 +11,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.hotel.domain.Hotel
 import eu.ase.travelcompanionapp.hotel.presentation.location.components.HotelMap
@@ -66,10 +70,16 @@ fun HotelLocationScreen(
                     IconButton(onClick = { onAction(HotelLocationAction.OnBackClick) }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.statusBars)
             )
         }
     ) { paddingValues ->
@@ -85,7 +95,7 @@ fun HotelLocationScreen(
                         .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    BlurredAnimatedText(text = "Loading details...")
+                    BlurredAnimatedText(text = stringResource(R.string.loading_details))
                 }
             } else {
                 HotelMap(

@@ -7,4 +7,14 @@
     <string name="error_no_internet">Couldn\'t reach server, please check your internet connection.</string>
     <string name="error_too_many_requests">Your quota seems to be exceeded.</string>
     <string name="error_serialization">Couldn\'t parse data.</string>
+    <string name="back">Back</string>
+    <string name="loading_details">Loading details...</string>
+    <string name="hotel_in">Hotel in %1$s</string>
+    <string name="close">Close</string>
+    <string name="hotel_photo">Hotel Photo %1$s</string>
+    <string name="previous_image">Previous Image</string>
+    <string name="next_image">Next Image</string>
+    <string name="star">Star</string>
+    <string name="amenities_icon">Amenities Icon</string>
+    <string name="loading_hotels">Loading hotels...</string>
 </resources>

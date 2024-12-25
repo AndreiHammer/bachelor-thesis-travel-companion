@@ -22,7 +22,6 @@ class MainActivity : ComponentActivity() {
                     AppNavHost(
                         modifier = Modifier.padding(innerPadding)
                     )
-
                 }
             }
         }

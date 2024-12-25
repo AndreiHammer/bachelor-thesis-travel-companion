@@ -5,12 +5,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationViewModel
 
 @Composable
@@ -31,7 +33,7 @@ fun GoogleMapComponent(
             Marker(
                 state = MarkerState(position = LatLng(coordinates.first, coordinates.second)),
                 title = hotelState.hotel.name,
-                snippet = "Hotel in ${hotelState.hotel.countryCode}"
+                snippet = stringResource(R.string.hotel_in, hotelState.hotel.countryCode)
             )
         }
     }

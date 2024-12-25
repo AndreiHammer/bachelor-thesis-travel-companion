@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -19,9 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import eu.ase.travelcompanionapp.hotel.presentation.SelectedHotelViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListScreenRoot
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationScreen
 import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationScreenRoot
-import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

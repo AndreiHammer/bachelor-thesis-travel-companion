@@ -1,6 +1,5 @@
 package eu.ase.travelcompanionapp.app
 
-import eu.ase.travelcompanionapp.hotel.domain.Hotel
 import kotlinx.serialization.Serializable
 
 sealed interface Route {

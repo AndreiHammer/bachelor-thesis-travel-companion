@@ -25,12 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationViewModel
 
 @Composable
@@ -62,7 +64,7 @@ fun ImageDialog(
                     IconButton(onClick = onDismiss) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Close",
+                            contentDescription = stringResource(R.string.close),
                             tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
@@ -87,7 +89,7 @@ fun ImageDialog(
                         ) {
                             Image(
                                 bitmap = photoUri.asImageBitmap(),
-                                contentDescription = "Hotel Photo $page",
+                                contentDescription = stringResource(R.string.hotel_photo, page),
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .clip(MaterialTheme.shapes.medium),
@@ -121,7 +123,7 @@ fun ImageDialog(
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Previous Image",
+                            contentDescription = stringResource(R.string.previous_image),
                             tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
@@ -138,7 +140,7 @@ fun ImageDialog(
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowForward,
-                            contentDescription = "Next Image",
+                            contentDescription = stringResource(R.string.next_image),
                             tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
