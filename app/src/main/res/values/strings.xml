@@ -17,4 +17,5 @@
     <string name="star">Star</string>
     <string name="amenities_icon">Amenities Icon</string>
     <string name="loading_hotels">Loading hotels...</string>
+    <string name="invalid_city_error">The city you have selected is not available for search. Try using the feature of selecting the desired location on the map.</string>
 </resources>

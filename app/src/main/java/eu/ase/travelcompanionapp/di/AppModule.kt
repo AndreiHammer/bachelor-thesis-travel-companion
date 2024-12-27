@@ -8,9 +8,10 @@ import eu.ase.travelcompanionapp.hotel.data.placesApi.PlacesHotelRepository
 import eu.ase.travelcompanionapp.hotel.data.placesApi.PlacesApiService
 import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryAmadeusApi
 import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryPlacesApi
-import eu.ase.travelcompanionapp.hotel.presentation.SelectedHotelViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.LocationSearchViewModel
 import io.ktor.client.engine.cio.CIO
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
@@ -26,6 +27,7 @@ val appModule = module {
     single<HotelRepositoryAmadeusApi> { AmadeusHotelRepository(get()) }
     single<RemoteHotelDataSource> { AmadeusApiService(get()) }
 
-    viewModelOf(::SelectedHotelViewModel)
+    viewModelOf(::SharedViewModel)
 
+    viewModelOf(::LocationSearchViewModel)
 }

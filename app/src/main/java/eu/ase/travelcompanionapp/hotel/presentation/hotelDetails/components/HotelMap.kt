@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.presentation.location.components
+package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
-import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
 
 @Composable
 fun HotelMap(
@@ -33,7 +33,7 @@ fun HotelMap(
                 it.first.let { it1 -> it.second.let { it2 -> LatLng(it1, it2) } }.let { it2 ->
                     CameraPosition.fromLatLngZoom(
                         it2,
-                        15f
+                        14f
                     )
                 }
         }

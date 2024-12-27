@@ -56,7 +56,7 @@ class AmadeusApiService(
                 val token = tokenResult.data
                 safeCall<HotelSearchResponse> {
                     var url =
-                        "https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode=$city&radius=50&radiusUnit=KM"
+                        "https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode=$city&radius=20&radiusUnit=KM"
                     if (amenities.isNotEmpty()) {
                         url = "$url&amenities=$amenities"
                     }

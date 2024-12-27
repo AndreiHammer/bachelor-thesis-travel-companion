@@ -7,6 +7,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
@@ -15,10 +16,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import eu.ase.travelcompanionapp.hotel.presentation.SelectedHotelViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListScreenRoot
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationScreenRoot
+import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationScreenRoot
+import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.LocationSearchAction
+import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.LocationSearchScreen
+import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.LocationSearchViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -32,29 +36,62 @@ fun AppNavHost(
         modifier = modifier
     ) {
         navigation<Route.HotelGraph>(
-            startDestination = Route.HotelList
+            startDestination = Route.LocationSearch
         ){
+            composable<Route.LocationSearch>(
+                enterTransition = { slideInHorizontally() },
+                exitTransition = { slideOutHorizontally() }
+            ) {
+                val locationSearchViewModel = koinViewModel<LocationSearchViewModel>()
+                val sharedViewModel =
+                    it.sharedKoinViewModel<SharedViewModel>(navController)
+
+                LaunchedEffect(true) {
+                    sharedViewModel.onSelectCity("")
+                }
+                LocationSearchScreen(
+                    onAction = { action ->
+                        when (action) {
+                            is LocationSearchAction.OnSearchClick -> {
+                                // Navigate to HotelList, passing the selected city
+                                sharedViewModel.onSelectCity(action.city)
+                                navController.navigate(Route.HotelList(city = action.city))
+                            }
+                            LocationSearchAction.onMapClick -> {
+                                // Navigate to the map screen
+                            }
+                        }
+                    }
+                )
+            }
+
             composable<Route.HotelList>(
                 exitTransition = { slideOutHorizontally() },
                 popEnterTransition = {
                     slideInHorizontally()
                 }
             ){
-                val selectedHotelViewModel = it.sharedKoinViewModel<SelectedHotelViewModel>(navController)
+
+                val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
                 val viewModel = koinViewModel<HotelListViewModel>()
+                val selectedCity by sharedViewModel.selectedCity.collectAsStateWithLifecycle()
+
                 LaunchedEffect(true) {
-                    selectedHotelViewModel.onSelectHotel(null)
+                    sharedViewModel.onSelectHotel(null)
                 }
 
                 HotelListScreenRoot(
                     viewModel = viewModel,
-                    onHotelClick = {hotel->
-                        selectedHotelViewModel.onSelectHotel(hotel)
+                    onHotelClick = { hotel ->
+                        sharedViewModel.onSelectHotel(hotel)
                         navController.navigate(
                             Route.HotelDetail(hotel.hotelId)
                         )
 
-                    }
+                    },
+                    selectedCity = selectedCity,
+                    context = LocalContext.current,
+                    onBackClick = { navController.popBackStack() }
                 )
             }
 
@@ -66,9 +103,9 @@ fun AppNavHost(
                     initialOffset
                 } }
             ) {
-                val selectedHotelViewModel =
-                    it.sharedKoinViewModel<SelectedHotelViewModel>(navController)
-                val selectedHotel by selectedHotelViewModel.selectedHotel.collectAsStateWithLifecycle()
+                val sharedViewModel =
+                    it.sharedKoinViewModel<SharedViewModel>(navController)
+                val selectedHotel by sharedViewModel.selectedHotel.collectAsStateWithLifecycle()
 
                 selectedHotel?.let { selected ->
                     HotelLocationScreenRoot(

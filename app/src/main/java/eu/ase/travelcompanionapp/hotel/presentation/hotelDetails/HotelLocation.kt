@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.presentation.location
+package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,12 +17,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.hotel.domain.Hotel
-import eu.ase.travelcompanionapp.hotel.presentation.location.components.HotelMap
+import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components.HotelMap
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

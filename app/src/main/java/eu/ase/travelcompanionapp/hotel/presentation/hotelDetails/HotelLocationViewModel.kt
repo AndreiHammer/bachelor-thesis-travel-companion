@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.presentation.location
+package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

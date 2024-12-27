@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.presentation.location.components
+package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,7 +13,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import eu.ase.travelcompanionapp.R
-import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
 
 @Composable
 fun GoogleMapComponent(

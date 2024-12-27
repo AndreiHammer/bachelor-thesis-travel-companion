@@ -43,6 +43,10 @@ class HotelListViewModel(
             is HotelListAction.OnHotelClick -> {
                 // Navigate to hotel details screen
             }
+
+            HotelListAction.OnBackClick -> {
+
+            }
         }
     }
 

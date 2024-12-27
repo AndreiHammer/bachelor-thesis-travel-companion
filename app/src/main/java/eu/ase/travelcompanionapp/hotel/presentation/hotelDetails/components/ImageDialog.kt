@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.presentation.location.components
+package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import eu.ase.travelcompanionapp.R
-import eu.ase.travelcompanionapp.hotel.presentation.location.HotelLocationViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
 
 @Composable
 fun ImageDialog(
