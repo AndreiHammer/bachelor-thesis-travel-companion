@@ -1,15 +1,15 @@
-package eu.ase.travelcompanionapp.hotel.data.amadeusApi.network
+package eu.ase.travelcompanionapp.hotel.domain.repository
 
 import eu.ase.travelcompanionapp.core.domain.DataError
 import eu.ase.travelcompanionapp.core.domain.Result
-import eu.ase.travelcompanionapp.hotel.data.amadeusApi.HotelDto
+import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 
-interface RemoteHotelDataSource {
+interface HotelRepositoryAmadeusApi {
     suspend fun searchHotelsByCity(
         city: String,
         amenities: String,
         rating: String,
-        onResult: (Result<List<HotelDto>, DataError.Remote>) -> Unit
+        onResult: (Result<List<Hotel>, DataError>) -> Unit
     )
 
     suspend fun searchHotelsByLocation(
@@ -18,6 +18,6 @@ interface RemoteHotelDataSource {
         radius: Int,
         amenities: String,
         rating: String,
-        onResult: (Result<List<HotelDto>, DataError.Remote>) -> Unit
+        onResult: (Result<List<Hotel>, DataError>) -> Unit
     )
 }

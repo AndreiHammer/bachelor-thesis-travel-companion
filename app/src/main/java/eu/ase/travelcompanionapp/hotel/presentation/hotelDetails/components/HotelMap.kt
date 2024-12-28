@@ -33,7 +33,7 @@ fun HotelMap(
                 it.first.let { it1 -> it.second.let { it2 -> LatLng(it1, it2) } }.let { it2 ->
                     CameraPosition.fromLatLngZoom(
                         it2,
-                        14f
+                        15f
                     )
                 }
         }

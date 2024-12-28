@@ -1,7 +1,7 @@
 package eu.ase.travelcompanionapp.hotel.data.mappers
 
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.HotelDto
-import eu.ase.travelcompanionapp.hotel.domain.Hotel
+import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 
 fun HotelDto.toHotel(): Hotel {
     return Hotel(

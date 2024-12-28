@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
@@ -29,8 +28,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import eu.ase.travelcompanionapp.R
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +71,7 @@ fun LocationSearchScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            Text(text = "Enter City Name", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Filter your preferences:", style = MaterialTheme.typography.bodyMedium)
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -80,6 +80,9 @@ fun LocationSearchScreen(
                 onValueChange = { newCity ->
                     city.value = newCity
                     viewModel.onCityChange(newCity)
+                },
+                placeholder = {
+                    Text(text = stringResource(R.string.enter_city))
                 },
                 modifier = Modifier
                     .fillMaxWidth()

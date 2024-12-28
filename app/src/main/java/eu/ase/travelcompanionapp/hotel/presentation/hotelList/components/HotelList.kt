@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import eu.ase.travelcompanionapp.hotel.domain.Hotel
+import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 
 
 @Composable

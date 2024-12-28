@@ -33,7 +33,7 @@ fun HotelListScreenError(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "No Hotels Found") },
+                title = { Text(text = stringResource(R.string.no_hotels_found)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary

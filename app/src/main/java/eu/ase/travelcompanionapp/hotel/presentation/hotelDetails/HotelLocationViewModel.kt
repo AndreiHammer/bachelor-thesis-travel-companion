@@ -3,8 +3,8 @@ package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.Bitmap
-import eu.ase.travelcompanionapp.hotel.domain.Hotel
-import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryPlacesApi
+import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
+import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryPlacesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

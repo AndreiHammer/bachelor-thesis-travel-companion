@@ -12,7 +12,7 @@ import eu.ase.travelcompanionapp.core.domain.DataError
 import eu.ase.travelcompanionapp.core.domain.Result
 import eu.ase.travelcompanionapp.core.domain.Result.Error
 import eu.ase.travelcompanionapp.core.domain.Result.Success
-import eu.ase.travelcompanionapp.hotel.domain.Hotel
+import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 
 
 class PlacesApiService(context: Context) {

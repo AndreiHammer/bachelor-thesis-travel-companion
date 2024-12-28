@@ -4,10 +4,12 @@ import eu.ase.travelcompanionapp.core.data.HttpClientFactory
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.AmadeusApiService
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.RemoteHotelDataSource
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.repository.AmadeusHotelRepository
+import eu.ase.travelcompanionapp.hotel.data.mappers.CityToIATACodeRepositoryImpl
 import eu.ase.travelcompanionapp.hotel.data.placesApi.PlacesHotelRepository
 import eu.ase.travelcompanionapp.hotel.data.placesApi.PlacesApiService
-import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryAmadeusApi
-import eu.ase.travelcompanionapp.hotel.domain.HotelRepositoryPlacesApi
+import eu.ase.travelcompanionapp.hotel.domain.repository.CityToIATACodeRepository
+import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
+import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryPlacesApi
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
@@ -30,4 +32,5 @@ val appModule = module {
     viewModelOf(::SharedViewModel)
 
     viewModelOf(::LocationSearchViewModel)
+    single<CityToIATACodeRepository>{ CityToIATACodeRepositoryImpl(get()) }
 }

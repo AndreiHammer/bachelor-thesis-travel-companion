@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.domain
+package eu.ase.travelcompanionapp.hotel.domain.model
 
 
 data class Hotel(

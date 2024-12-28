@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
-import eu.ase.travelcompanionapp.hotel.domain.Hotel
+import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components.HotelMap
 import org.koin.androidx.compose.koinViewModel
 

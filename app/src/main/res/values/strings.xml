@@ -18,4 +18,8 @@
     <string name="amenities_icon">Amenities Icon</string>
     <string name="loading_hotels">Loading hotels...</string>
     <string name="invalid_city_error">The city you have selected is not available for search. Try using the feature of selecting the desired location on the map.</string>
+    <string name="no_hotels_found">No Hotels Found</string>
+    <string name="enter_city">Enter city...</string>
+    <string name="map_title">Search on Map</string>
+    <string name="confirm_location">Search</string>
 </resources>
