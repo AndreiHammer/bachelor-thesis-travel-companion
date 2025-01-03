@@ -46,9 +46,9 @@ fun HotelListScreenRoot(
 
 
     if (selectedCity != null) {
-        viewModel.getHotelListByCity(city = selectedCity, amenities = "", rating = "5")
+        viewModel.getHotelListByCity(city = selectedCity, amenities = "", rating = "4,5")
     } else if (latitude != null && longitude != null && radius != null) {
-        viewModel.getHotelListByLocation(latitude = latitude, longitude = longitude, radius = radius, amenities = "", rating = "5")
+        viewModel.getHotelListByLocation(latitude = latitude, longitude = longitude, radius = radius, amenities = "", rating = "4,5")
     }
 
     if (state.errorMessage != null) {
