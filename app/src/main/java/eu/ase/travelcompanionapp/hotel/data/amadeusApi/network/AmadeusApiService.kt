@@ -23,7 +23,7 @@ class AmadeusApiService(
     private val client: HttpClient
 ): RemoteHotelDataSource{
 
-    suspend fun getAccessToken(): Result<String, DataError.Remote> {
+    private suspend fun getAccessToken(): Result<String, DataError.Remote> {
         val formData = Parameters.build {
             append("grant_type", "client_credentials")
             append("client_id", BuildConfig.AMADEUS_API_KEY)

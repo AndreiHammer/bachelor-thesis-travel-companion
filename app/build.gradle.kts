@@ -126,4 +126,6 @@ dependencies {
     implementation(libs.places)
 
     implementation (libs.accompanist.pager)
+
+    implementation(libs.accompanist.permissions)
 }

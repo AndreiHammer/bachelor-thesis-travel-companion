@@ -57,7 +57,7 @@ fun AppNavHost(
                                 sharedViewModel.onSelectCity(action.city)
                                 navController.navigate(Route.HotelListCity(city = action.city))
                             }
-                            LocationSearchAction.onMapClick -> {
+                            LocationSearchAction.OnMapClick -> {
                                 navController.navigate(Route.MapSearch)
                             }
 
@@ -196,3 +196,4 @@ private inline fun <reified T: ViewModel> NavBackStackEntry.sharedKoinViewModel(
         viewModelStoreOwner = parentEntry
     )
 }
+

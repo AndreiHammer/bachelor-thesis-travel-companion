@@ -10,10 +10,10 @@ class SharedViewModel : ViewModel() {
     private val _selectedHotel = MutableStateFlow<Hotel?>(null)
     val selectedHotel = _selectedHotel.asStateFlow()
 
-    private val _selectedCity = MutableStateFlow<String>("")
+    private val _selectedCity = MutableStateFlow("")
     val selectedCity = _selectedCity.asStateFlow()
 
-    private val _selectedLocation = MutableStateFlow<LocationState>(LocationState())
+    private val _selectedLocation = MutableStateFlow(LocationState())
     val selectedLocation = _selectedLocation.asStateFlow()
 
     fun onSelectHotel(hotel: Hotel?) {

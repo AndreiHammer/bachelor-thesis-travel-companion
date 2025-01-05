@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,7 +31,7 @@ fun HotelMap(
     LaunchedEffect(coordinates) {
         coordinates?.let {
             cameraPositionState.position =
-                it.first.let { it1 -> it.second.let { it2 -> LatLng(it1, it2) } }.let { it2 ->
+                LatLng(it.first, it.second).let { it2 ->
                     CameraPosition.fromLatLngZoom(
                         it2,
                         15f
@@ -40,7 +41,7 @@ fun HotelMap(
     }
 
     var isDialogOpen by remember { mutableStateOf(false) }
-    var currentImageIndex by remember { mutableStateOf(0) }
+    var currentImageIndex by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = modifier

@@ -58,7 +58,7 @@ fun LocationSearchScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    onAction(LocationSearchAction.onMapClick)
+                    onAction(LocationSearchAction.OnMapClick)
                 }
             ) {
                 Icon(imageVector = Icons.Filled.LocationOn, contentDescription = "Map")
