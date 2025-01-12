@@ -7,5 +7,7 @@ sealed interface LocationSearchAction {
 
     data class OnSearchClick(val city: String): LocationSearchAction
 
+    data object OnProfileClick: LocationSearchAction
+
     data class OnLocationSelected(val location: LatLng, val range: Int) : LocationSearchAction
 }

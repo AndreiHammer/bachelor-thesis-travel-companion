@@ -1,5 +1,11 @@
 package eu.ase.travelcompanionapp.di
 
+import eu.ase.travelcompanionapp.authentication.data.AccountService
+import eu.ase.travelcompanionapp.authentication.domain.repository.AccountRepository
+import eu.ase.travelcompanionapp.authentication.presentation.login.LoginViewModel
+import eu.ase.travelcompanionapp.authentication.presentation.profile.ProfileViewModel
+import eu.ase.travelcompanionapp.authentication.presentation.signUp.SignUpViewModel
+import eu.ase.travelcompanionapp.authentication.presentation.splash.SplashViewModel
 import eu.ase.travelcompanionapp.core.data.HttpClientFactory
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.AmadeusApiService
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.RemoteHotelDataSource
@@ -20,6 +26,11 @@ import org.koin.dsl.module
 
 val appModule = module {
     single { HttpClientFactory.create(CIO.create()) }
+    single<AccountRepository> { AccountService() }
+    viewModelOf(::SplashViewModel)
+    viewModelOf(::SignUpViewModel)
+    viewModelOf(::LoginViewModel)
+    viewModelOf(::ProfileViewModel)
 
     viewModelOf(::HotelLocationViewModel)
     single<HotelRepositoryPlacesApi> { PlacesHotelRepository(get()) }

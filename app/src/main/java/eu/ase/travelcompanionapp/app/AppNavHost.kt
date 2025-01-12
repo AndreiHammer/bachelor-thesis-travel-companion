@@ -16,6 +16,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import eu.ase.travelcompanionapp.authentication.presentation.login.LoginScreen
+import eu.ase.travelcompanionapp.authentication.presentation.login.LoginViewModel
+import eu.ase.travelcompanionapp.authentication.presentation.profile.ProfileAction
+import eu.ase.travelcompanionapp.authentication.presentation.profile.ProfileScreen
+import eu.ase.travelcompanionapp.authentication.presentation.signUp.SignUpScreen
+import eu.ase.travelcompanionapp.authentication.presentation.signUp.SignUpViewModel
+import eu.ase.travelcompanionapp.authentication.presentation.splash.SplashScreen
+import eu.ase.travelcompanionapp.authentication.presentation.startScreen.StartScreen
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListScreenRoot
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
@@ -33,10 +41,75 @@ fun AppNavHost(
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Route.HotelGraph,
+        startDestination = Route.Root,
         modifier = modifier
     ) {
-        navigation<Route.HotelGraph>(
+        navigation<Route.Root>(
+            startDestination = Route.Splash
+        ) {
+            composable<Route.Splash>(
+                enterTransition = { slideInHorizontally { it } },
+                exitTransition = { slideOutHorizontally { it } }
+            ) {
+                SplashScreen(
+                    onUserKnown = {
+                        navController.navigate(Route.HotelGraph) {
+                            popUpTo(Route.Root) { inclusive = true }
+                        }
+                    },
+                    onUserUnknown = {
+                        navController.navigate(Route.AuthGraph) {
+                            popUpTo(Route.Root) { inclusive = true }
+                        }
+                    }
+                )
+            }
+        }
+
+        navigation<Route.AuthGraph>(
+            startDestination = Route.Start
+        ) {
+            composable<Route.Start>(
+                enterTransition = { slideInHorizontally { it } },
+                exitTransition = { slideOutHorizontally { it } }
+            ) {
+                StartScreen(
+                    onLoginClick = { navController.navigate(Route.Login) },
+                    onSignUpClick = { navController.navigate(Route.SignUp) }
+                )
+            }
+
+            composable<Route.SignUp>(
+                enterTransition = { slideInHorizontally { it } },
+                exitTransition = { slideOutHorizontally { it } }
+            ) {
+                val viewModel = koinViewModel<SignUpViewModel>()
+                SignUpScreen(
+                    onSignUpClick = { _, _ ->
+                        viewModel.onSignUpClick()
+                        navController.navigate(Route.HotelGraph){
+                            popUpTo(Route.AuthGraph) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable<Route.Login>(
+                enterTransition = { slideInHorizontally { it } },
+                exitTransition = { slideOutHorizontally { it } }
+            ) {
+                val viewModel = koinViewModel<LoginViewModel>()
+                LoginScreen(
+                    onLoginClick = { _, _ ->
+                        viewModel.onLoginClick()
+                        navController.navigate(Route.HotelGraph){
+                            popUpTo(Route.AuthGraph) { inclusive = true }
+                        }
+                    }
+                )
+            }
+        }
+       navigation<Route.HotelGraph>(
             startDestination = Route.LocationSearch
         ){
             composable<Route.LocationSearch>(
@@ -65,10 +138,41 @@ fun AppNavHost(
                                 locationSearchViewModel.setLocation(action.location, action.range, sharedViewModel)
                                 navController.navigate(Route.HotelListLocation(action.location.latitude, action.location.longitude, action.range.toFloat()))
                             }
+
+                            LocationSearchAction.OnProfileClick -> {
+                                navController.navigate(Route.Profile)
+                            }
                         }
                     }
                 )
             }
+
+           composable<Route.Profile>(
+               enterTransition = { slideInHorizontally() },
+               exitTransition = { slideOutHorizontally() }
+           ) {
+               ProfileScreen(
+                   onAction = {
+                       when(it){
+                           ProfileAction.AccountDeleted -> {
+                               navController.navigate(Route.AuthGraph){
+                                   popUpTo(Route.HotelGraph) { inclusive = true }
+                               }
+                           }
+                           ProfileAction.OnBackClick -> {
+                               navController.popBackStack()
+                           }
+                           ProfileAction.SignedOut -> {
+                               navController.navigate(Route.AuthGraph){
+                                   popUpTo(Route.HotelGraph) { inclusive = true }
+                               }
+                           }
+                       }
+                   }
+
+               )
+
+           }
 
             composable<Route.MapSearch>(
                 enterTransition = { slideInHorizontally() },

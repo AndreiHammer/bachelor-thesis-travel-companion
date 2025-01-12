@@ -22,4 +22,20 @@
     <string name="enter_city">Enter city...</string>
     <string name="map_title">Search on Map</string>
     <string name="confirm_location">Search</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="auth_image">Auth image</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_up_success">SignedUpSuccesfully</string>
+    <string name="welcome_message">Login to your account or create a new one!</string>
+    <string name="login">Login</string>
+    <string name="login_successful">Login successful!</string>
+    <string name="email_and_password_are_required">Email and password are required</string>
+    <string name="all_fields_are_required">All fields are required.</string>
+    <string name="no_user_found">No User Found</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="profile">Profile</string>
 </resources>

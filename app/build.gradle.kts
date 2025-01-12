@@ -9,6 +9,7 @@ plugins {
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("io.objectbox")
     id ("com.chaquo.python")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -128,4 +129,7 @@ dependencies {
     implementation (libs.accompanist.pager)
 
     implementation(libs.accompanist.permissions)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
 }
