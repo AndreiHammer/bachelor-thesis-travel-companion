@@ -3,7 +3,7 @@
 
  ## Features
 
-- **User Authentication**
+- **User Authentication** - Uses *Firebase Authentication* for secure login and user registration with OAuth support.
 - **Search for Accommodations** - Fetches real-time data from the *Amadeus for Developers API* for accommodations, prices, and availability.
 - **Favorite and Reserve Accommodations** - Users can mark accommodations as favorites or reserve them(without actually making a request to the *Amadeus Booking API*)
 - **Interactive Map Integration** - Displays locations on *Google Maps*, including pins for accommodations.
@@ -40,7 +40,9 @@ GOOGLE_API_KEY=your_google_api_key
 OPENAI_API_KEY=your_openai_api_key
 
 ```
-
+- Ensure you have Firebase configured in your project:
+  - Follow the official **Firebase Android Setup**.
+  - Download the *google-services.json* file from your Firebase project and place it in the projects's app directory.
 
 ## Tech Stack
 
@@ -54,7 +56,7 @@ OPENAI_API_KEY=your_openai_api_key
 
 **AI Integration:** OpenAI embeddings with Python via *Chaquopy*
 
-**Authentication**: OAuth2
+**Authentication**: OAuth via Firebase
 
 
 ## License
