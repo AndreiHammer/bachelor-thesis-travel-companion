@@ -1,6 +1,5 @@
 package eu.ase.travelcompanionapp.hotel.presentation.locationSearch
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,18 +20,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components.AutoCompleteTextField
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,14 +38,14 @@ fun LocationSearchScreen(
     modifier: Modifier = Modifier,
     onAction: (LocationSearchAction) -> Unit
 ) {
-    val viewModel: LocationSearchViewModel = koinViewModel()
 
+    val viewModel: LocationSearchViewModel = koinViewModel()
     val city = remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Search") },
+                title = { Text(text = stringResource(R.string.search)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -56,7 +53,7 @@ fun LocationSearchScreen(
                 actions = {
                     Icon(
                         imageVector = Icons.Filled.AccountCircle,
-                        contentDescription = "User Profile",
+                        contentDescription = stringResource(R.string.user_profile),
                         modifier = Modifier
                             .padding(8.dp)
                             .clickable {
@@ -75,7 +72,7 @@ fun LocationSearchScreen(
                     onAction(LocationSearchAction.OnMapClick)
                 }
             ) {
-                Icon(imageVector = Icons.Filled.LocationOn, contentDescription = "Map")
+                Icon(imageVector = Icons.Filled.LocationOn, contentDescription = stringResource(R.string.map))
             }
         }
     ) { paddingValues ->
@@ -85,29 +82,16 @@ fun LocationSearchScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            Text(text = "Filter your preferences:", style = MaterialTheme.typography.bodyMedium)
+            Text(text = stringResource(R.string.filter_your_preferences), style = MaterialTheme.typography.bodyMedium)
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            TextField(
-                value = city.value,
-                onValueChange = { newCity ->
-                    city.value = newCity
-                    viewModel.onCityChange(newCity)
-                },
-                placeholder = {
-                    Text(text = stringResource(R.string.enter_city))
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .background(Color.LightGray, shape = MaterialTheme.shapes.medium)
-                    .padding(16.dp),
-                textStyle = MaterialTheme.typography.bodyLarge,
-                singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent
-                )
+
+            AutoCompleteTextField(
+                onCitySelected = { selectedCity ->
+                    city.value = selectedCity
+                    viewModel.onCityChange(selectedCity)
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -118,7 +102,7 @@ fun LocationSearchScreen(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Search Hotels in ${city.value}")
+                Text(text = stringResource(R.string.search_hotels_in, city.value))
             }
         }
     }

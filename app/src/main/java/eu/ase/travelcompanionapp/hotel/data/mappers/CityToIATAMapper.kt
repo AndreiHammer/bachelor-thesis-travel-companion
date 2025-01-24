@@ -20,4 +20,8 @@ object CityToIATAMapper {
     fun getIATACode(city: String): String? {
         return cityToIATAMap?.get(city)
     }
+
+    fun getCityNames(): List<String> {
+        return cityToIATAMap?.keys?.toList() ?: emptyList()
+    }
 }

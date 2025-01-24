@@ -14,4 +14,8 @@ class CityToIATACodeRepositoryImpl(
     override fun getIATACode(city: String): String? {
         return CityToIATAMapper.getIATACode(city)
     }
+
+    override fun getCitySuggestions(): List<String> {
+        return CityToIATAMapper.getCityNames()
+    }
 }
