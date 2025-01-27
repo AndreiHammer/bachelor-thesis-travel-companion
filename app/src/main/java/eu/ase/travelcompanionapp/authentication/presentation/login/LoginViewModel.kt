@@ -1,5 +1,6 @@
 package eu.ase.travelcompanionapp.authentication.presentation.login
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eu.ase.travelcompanionapp.R
@@ -29,7 +30,7 @@ class LoginViewModel(
         password.value = newPassword
     }
 
-    fun onLoginClick() {
+    fun onLoginClick(context: Context) {
         val currentEmail = email.value
         val currentPassword = password.value
 
@@ -47,11 +48,14 @@ class LoginViewModel(
                 accountRepository.signIn(currentEmail, currentPassword)
                 _loginState.update { LoginState.Success }
             } catch (e: Exception) {
-                val errorMessage = e.message
-                    ?: UiText.StringResourceId(R.string.error_unknown)
+                val errorMessage = UiText.DynamicString(e.message ?: context.getString(R.string.error_unknown))
                 _loginState.update { LoginState.Error(errorMessage) }
             }
         }
+    }
+
+    fun resetState() {
+        _loginState.update { LoginState.Idle }
     }
 }
 
@@ -59,5 +63,5 @@ sealed class LoginState {
     data object Idle : LoginState()
     data object Loading : LoginState()
     data object Success : LoginState()
-    data class Error(val message: Any) : LoginState()
+    data class Error(val message: UiText) : LoginState()
 }

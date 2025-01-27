@@ -52,6 +52,8 @@ fun LoginScreen(
     val password = viewModel.password.collectAsStateWithLifecycle()
     val loginState = viewModel.loginState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -122,8 +124,9 @@ fun LoginScreen(
             .fillMaxWidth()
             .padding(12.dp))
 
+
         Button(
-            onClick = { viewModel.onLoginClick() },
+            onClick = { viewModel.onLoginClick(context) },
             enabled = loginState.value != LoginState.Loading,
             modifier = Modifier
                 .fillMaxWidth()
@@ -136,14 +139,15 @@ fun LoginScreen(
             )
         }
 
-        val context = LocalContext.current
-
         when (val state = loginState.value) {
             is LoginState.Loading -> {
                 CircularProgressIndicator(modifier = Modifier.padding(16.dp))
             }
             is LoginState.Error -> {
-                Toast.makeText(context, state.message.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, state.message.asString(context), Toast.LENGTH_SHORT).show()
+                LaunchedEffect(Unit) {
+                    viewModel.resetState()
+                }
             }
             is LoginState.Success -> {
                 Toast.makeText(context,

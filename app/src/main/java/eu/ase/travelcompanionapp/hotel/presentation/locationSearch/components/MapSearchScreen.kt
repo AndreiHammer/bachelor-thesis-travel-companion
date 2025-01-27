@@ -102,13 +102,13 @@ fun MapSearchScreen(
                     markerPosition?.let {
                         Marker(
                             state = MarkerState(position = it),
-                            title = "Selected Location"
+                            title = stringResource(R.string.selected_location)
                         )
                     }
                 }
 
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Range: $range km", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = stringResource(R.string.range_km, range), style = MaterialTheme.typography.bodyLarge)
                     Slider(
                         value = range.toFloat(),
                         onValueChange = { range = it.toInt() },

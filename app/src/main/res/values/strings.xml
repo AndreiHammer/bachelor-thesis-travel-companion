@@ -44,4 +44,12 @@
     <string name="map">Map</string>
     <string name="filter_your_preferences">Filter your preferences:</string>
     <string name="search_hotels_in">Search Hotels in %1$s</string>
+    <string name="range_km">Range: %1$s km</string>
+    <string name="selected_location">Selected Location</string>
+    <string name="location_permission_required">Location permission is required for using this feature.</string>
+    <string name="go_back">Back</string>
+    <string name="grant_permission">Grant location access.</string>
+    <string name="permission_check">Waiting for permission granting...</string>
+    <string name="location_permission_denied_message">You don\'t have access to this feature.</string>
+    <string name="sign_up_successful">Sign-up successful!</string>
 </resources>

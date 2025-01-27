@@ -1,5 +1,6 @@
 package eu.ase.travelcompanionapp.authentication.presentation.signUp
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eu.ase.travelcompanionapp.R
@@ -35,7 +36,7 @@ class SignUpViewModel(
         confirmPassword.value = newConfirmPassword
     }
 
-    fun onSignUpClick() {
+    fun onSignUpClick(context: Context) {
         val currentEmail = email.value
         val currentPassword = password.value
         val currentConfirmPassword = confirmPassword.value
@@ -62,10 +63,15 @@ class SignUpViewModel(
                 accountRepository.signUp(currentEmail, currentPassword)
                 _signUpState.update { SignUpState.Success }
             } catch (e: Exception) {
-                val errorMessage = e.message
-                    ?: UiText.StringResourceId(R.string.error_unknown)
+                val errorMessage = UiText.DynamicString(e.message ?: context.getString(R.string.error_unknown))
                 _signUpState.update { SignUpState.Error(errorMessage) }
             }
+        }
+    }
+
+    fun resetState() {
+        _signUpState.update {
+            SignUpState.Idle
         }
     }
 }
@@ -74,5 +80,5 @@ sealed class SignUpState {
     data object Idle : SignUpState()
     data object Loading : SignUpState()
     data object Success : SignUpState()
-    data class Error(val message: Any) : SignUpState()
+    data class Error(val message: UiText) : SignUpState()
 }

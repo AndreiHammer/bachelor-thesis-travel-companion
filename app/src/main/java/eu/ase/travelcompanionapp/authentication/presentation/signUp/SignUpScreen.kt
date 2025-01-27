@@ -55,6 +55,8 @@ fun SignUpScreen(
     val confirmPassword = viewModel.confirmPassword.collectAsStateWithLifecycle()
     val signUpState = viewModel.signUpState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -151,7 +153,7 @@ fun SignUpScreen(
             .padding(12.dp))
 
         Button(
-            onClick = { viewModel.onSignUpClick() },
+            onClick = { viewModel.onSignUpClick(context) },
             enabled = signUpState.value != SignUpState.Loading,
             modifier = Modifier
                 .fillMaxWidth()
@@ -164,18 +166,19 @@ fun SignUpScreen(
             )
         }
 
-        val context = LocalContext.current
-
         when (val state = signUpState.value) {
             is SignUpState.Loading -> {
                 CircularProgressIndicator(modifier = Modifier.padding(16.dp))
             }
             is SignUpState.Error -> {
-                Toast.makeText(context, state.message.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, state.message.asString(context), Toast.LENGTH_SHORT).show()
+                LaunchedEffect(Unit) {
+                    viewModel.resetState()
+                }
             }
             is SignUpState.Success -> {
-                Toast.makeText(context, "Sign-up successful!", Toast.LENGTH_SHORT).show()
-                // Optionally navigate to another screen
+                Toast.makeText(context,
+                    stringResource(R.string.sign_up_successful), Toast.LENGTH_SHORT).show()
                 LaunchedEffect(Unit) {
                     onSignUpClick(email.value, password.value)
                 }

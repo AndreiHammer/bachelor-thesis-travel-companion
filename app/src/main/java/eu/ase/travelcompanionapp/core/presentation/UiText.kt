@@ -1,7 +1,6 @@
 package eu.ase.travelcompanionapp.core.presentation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
+import android.content.Context
 
 sealed interface UiText {
     data class DynamicString(val value: String): UiText
@@ -9,11 +8,10 @@ sealed interface UiText {
         val id: Int,
     ): UiText
 
-    @Composable
-    fun asString(): String {
+    fun asString(context: Context): String {
         return when(this) {
             is DynamicString -> value
-            is StringResourceId -> stringResource(id)
+            is StringResourceId -> context.getString(id)
         }
     }
 }
