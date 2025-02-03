@@ -52,4 +52,21 @@
     <string name="permission_check">Waiting for permission granting...</string>
     <string name="location_permission_denied_message">You don\'t have access to this feature.</string>
     <string name="sign_up_successful">Sign-up successful!</string>
+    <string name="error_fetching_hotels_list">Error fetching hotels list</string>
+    <string name="invalid_city_no_iata_code_found">Invalid city. No IATA code found.</string>
+    <string name="select_rating">Select desired rating:</string>
+    <string name="select_city">Select City:</string>
+    <string name="select_amenities">Select amenities:</string>
+    <string name="done_icon">Done icon</string>
+    <string name="hotels_list">Hotels List - %1$s</string>
+    <string name="hotels_list_by_location">Hotels List - By Location</string>
+    <string-array name="hotel_amenities">
+        <item>SWIMMING_POOL</item>
+        <item>SPA</item>
+        <item>FITNESS_CENTER</item>
+        <item>RESTAURANT</item>
+        <item>PARKING</item>
+        <item>WIFI</item>
+        <item>ROOM_SERVICE</item>
+    </string-array>
 </resources>

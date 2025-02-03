@@ -14,12 +14,6 @@ class LocationSearchViewModel(
     private val _suggestions = MutableStateFlow<List<String>>(emptyList())
     val suggestions: StateFlow<List<String>> = _suggestions
 
-    private var city: String = ""
-
-    fun onCityChange(newCity: String) {
-        city = newCity
-    }
-
     private val _locationState = MutableStateFlow(LocationState())
 
     fun setLocation(location: LatLng, range: Int, sharedViewModel: SharedViewModel) {

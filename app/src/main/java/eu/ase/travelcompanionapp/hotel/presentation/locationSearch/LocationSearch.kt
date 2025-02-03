@@ -29,18 +29,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components.AmenitiesChipGroup
 import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components.AutoCompleteTextField
-import org.koin.androidx.compose.koinViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components.RatingChipGroup
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationSearchScreen(
     modifier: Modifier = Modifier,
-    onAction: (LocationSearchAction) -> Unit
+    onAction: (LocationSearchAction) -> Unit,
+    onRatingSelected: (Set<Int>) -> Unit,
+    onCitySelected: (String) -> Unit,
+    onAmenitiesSelected: (Set<String>) -> Unit,
 ) {
-
-    val viewModel: LocationSearchViewModel = koinViewModel()
     val city = remember { mutableStateOf("") }
+    val selectedRatings = remember { mutableStateOf(setOf<Int>()) }
+    val selectedAmenities = remember { mutableStateOf(setOf<String>()) }
 
     Scaffold(
         topBar = {
@@ -82,15 +86,40 @@ fun LocationSearchScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            Text(text = stringResource(R.string.filter_your_preferences), style = MaterialTheme.typography.bodyMedium)
+            Text(text = stringResource(R.string.filter_your_preferences), style = MaterialTheme.typography.headlineLarge)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = stringResource(R.string.select_city), style = MaterialTheme.typography.bodyMedium)
 
             Spacer(modifier = Modifier.height(8.dp))
-
 
             AutoCompleteTextField(
                 onCitySelected = { selectedCity ->
                     city.value = selectedCity
-                    viewModel.onCityChange(selectedCity)
+                    onCitySelected(selectedCity)
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(text = stringResource(R.string.select_rating), style = MaterialTheme.typography.bodyMedium)
+
+            RatingChipGroup(
+                selectedHotelRating = selectedRatings.value,
+                onSelectedChanged = { updatedRatings ->
+                    selectedRatings.value = updatedRatings
+                    onRatingSelected(updatedRatings)
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(text = stringResource(R.string.select_amenities), style = MaterialTheme.typography.bodyMedium)
+
+            AmenitiesChipGroup(
+                selectedHotelAmenities = selectedAmenities.value,
+                onSelectedChanged = { updatedAmenities ->
+                    selectedAmenities.value = updatedAmenities
+                    onAmenitiesSelected(updatedAmenities)
                 }
             )
 
@@ -98,7 +127,7 @@ fun LocationSearchScreen(
 
             Button(
                 onClick = {
-                    onAction(LocationSearchAction.OnSearchClick(city.value))
+                    onAction(LocationSearchAction.OnSearchClick(city.value, selectedAmenities.value, selectedRatings.value))
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

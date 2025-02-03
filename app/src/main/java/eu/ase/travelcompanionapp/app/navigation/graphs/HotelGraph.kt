@@ -43,14 +43,27 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                     when (action) {
                         is LocationSearchAction.OnSearchClick -> {
                             sharedViewModel.onSelectCity(action.city)
-                            navController.navigate(HotelRoute.HotelListCity(city = action.city))
+                            sharedViewModel.onSelectAmenities(action.amenities)
+                            sharedViewModel.onSelectRating(action.rating)
+                            navController.navigate(
+                                HotelRoute.HotelListCity(
+                                    city = action.city,
+                                    amenities = action.amenities.joinToString(","),
+                                    rating = action.rating.joinToString(",")
+                                )
+                            )
                         }
+
                         LocationSearchAction.OnMapClick -> {
                             navController.navigate(HotelRoute.MapSearch)
                         }
 
                         is LocationSearchAction.OnLocationSelected -> {
-                            locationSearchViewModel.setLocation(action.location, action.range, sharedViewModel)
+                            locationSearchViewModel.setLocation(
+                                action.location,
+                                action.range,
+                                sharedViewModel
+                            )
                             navController.navigate(
                                 HotelRoute.HotelListLocation(
                                     action.location.latitude,
@@ -64,6 +77,15 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                             navController.navigate(ProfileRoute.Profile)
                         }
                     }
+                },
+                onRatingSelected = { ratings ->
+                    sharedViewModel.onSelectRating(ratings)
+                },
+                onAmenitiesSelected = { amenities ->
+                    sharedViewModel.onSelectAmenities(amenities)
+                },
+                onCitySelected = { city ->
+                    sharedViewModel.onSelectCity(city)
                 }
             )
         }
@@ -87,7 +109,13 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                         )
                     )
                 },
-                modifier = Modifier
+                modifier = Modifier,
+                onRatingSelected = { ratings ->
+                    sharedViewModel.onSelectRating(ratings)
+                },
+                onAmenitiesSelected = { amenities ->
+                    sharedViewModel.onSelectAmenities(amenities)
+                }
             )
         }
 
@@ -103,6 +131,8 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
             val viewModel = koinViewModel<HotelListViewModel>()
             val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
             val locationState = sharedViewModel.selectedLocation.collectAsStateWithLifecycle()
+            val selectedRatings by sharedViewModel.selectedRatings.collectAsStateWithLifecycle()
+            val selectedAmenities by sharedViewModel.selectedAmenities.collectAsStateWithLifecycle()
 
             val latitude = locationState.value.location?.latitude
             val longitude = locationState.value.location?.longitude
@@ -124,6 +154,8 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                 latitude = latitude,
                 longitude = longitude,
                 radius = radius,
+                amenities = selectedAmenities,
+                ratings = selectedRatings,
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -140,6 +172,8 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
             val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
             val viewModel = koinViewModel<HotelListViewModel>()
             val selectedCity by sharedViewModel.selectedCity.collectAsStateWithLifecycle()
+            val selectedRatings by sharedViewModel.selectedRatings.collectAsStateWithLifecycle()
+            val selectedAmenities by sharedViewModel.selectedAmenities.collectAsStateWithLifecycle()
 
             LaunchedEffect(true) {
                 sharedViewModel.onSelectHotel(null)
@@ -155,6 +189,8 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
 
                 },
                 selectedCity = selectedCity,
+                amenities = selectedAmenities,
+                ratings = selectedRatings,
                 onBackClick = { navController.popBackStack() }
             )
         }

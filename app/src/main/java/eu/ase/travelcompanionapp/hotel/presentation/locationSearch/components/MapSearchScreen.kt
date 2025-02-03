@@ -1,20 +1,13 @@
 package eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -45,10 +38,18 @@ import eu.ase.travelcompanionapp.R
 fun MapSearchScreen(
     onBackClick: () -> Unit,
     onLocationSelected: (LatLng, Int) -> Unit,
+    onRatingSelected: (Set<Int>) -> Unit,
+    onAmenitiesSelected: (Set<String>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var markerPosition by remember { mutableStateOf<LatLng?>(null) }
     var range by remember { mutableIntStateOf(10) }
+    var selectedHotelRating by remember { mutableStateOf<Set<Int>>(emptySet()) }
+    var selectedHotelAmenities by remember { mutableStateOf<Set<String>>(emptySet()) }
+
+    // Reset previous selections when searching by location
+    onRatingSelected(selectedHotelRating)
+    onAmenitiesSelected(selectedHotelAmenities)
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(44.4268, 0.0), 6f)
@@ -95,9 +96,7 @@ fun MapSearchScreen(
                             isMyLocationEnabled = true
                         )
                     },
-                    onMapClick = { latLng ->
-                        markerPosition = latLng
-                    }
+                    onMapClick = { latLng -> markerPosition = latLng }
                 ) {
                     markerPosition?.let {
                         Marker(
@@ -124,6 +123,22 @@ fun MapSearchScreen(
                     ) {
                         Text(text = stringResource(R.string.confirm_location))
                     }
+
+                    RatingChipGroup(
+                        selectedHotelRating = selectedHotelRating,
+                        onSelectedChanged = { updatedRating ->
+                            selectedHotelRating = updatedRating
+                            onRatingSelected(updatedRating)
+                        }
+                    )
+
+                    AmenitiesChipGroup(
+                        selectedHotelAmenities = selectedHotelAmenities,
+                        onSelectedChanged = { updatedAmenities ->
+                            selectedHotelAmenities = updatedAmenities
+                            onAmenitiesSelected(updatedAmenities)
+                        }
+                    )
                 }
             }
         }

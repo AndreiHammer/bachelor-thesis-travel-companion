@@ -13,6 +13,12 @@ class SharedViewModel : ViewModel() {
     private val _selectedCity = MutableStateFlow("")
     val selectedCity = _selectedCity.asStateFlow()
 
+    private val _selectedRatings = MutableStateFlow(setOf<Int>())
+    val selectedRatings = _selectedRatings.asStateFlow()
+
+    private val _selectedAmenities = MutableStateFlow(setOf<String>())
+    val selectedAmenities = _selectedAmenities.asStateFlow()
+
     private val _selectedLocation = MutableStateFlow(LocationState())
     val selectedLocation = _selectedLocation.asStateFlow()
 
@@ -22,6 +28,14 @@ class SharedViewModel : ViewModel() {
 
     fun onSelectCity(city: String) {
         _selectedCity.value = city
+    }
+
+    fun onSelectRating(ratings: Set<Int>) {
+        _selectedRatings.value = ratings
+    }
+
+    fun onSelectAmenities(amenities: Set<String>) {
+        _selectedAmenities.value = amenities
     }
 
     fun onSelectLocation(location: LatLng, range: Int) {

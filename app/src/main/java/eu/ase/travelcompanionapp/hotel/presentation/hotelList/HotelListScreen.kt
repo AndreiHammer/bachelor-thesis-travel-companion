@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,15 +40,16 @@ fun HotelListScreenRoot(
     latitude: Double? = null,
     longitude: Double? = null,
     radius: Int? = null,
+    amenities: Set<String>? = emptySet(),
+    ratings: Set<Int>? = emptySet(),
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.hotelState.collectAsStateWithLifecycle()
 
-
     if (selectedCity != null) {
-        viewModel.getHotelListByCity(city = selectedCity, amenities = "", rating = "4,5")
+        viewModel.getHotelListByCity(city = selectedCity, amenities = amenities?.joinToString(",") ?: "", rating = ratings?.joinToString(",") ?: "")
     } else if (latitude != null && longitude != null && radius != null) {
-        viewModel.getHotelListByLocation(latitude = latitude, longitude = longitude, radius = radius, amenities = "", rating = "4,5")
+        viewModel.getHotelListByLocation(latitude = latitude, longitude = longitude, radius = radius, amenities = amenities?.joinToString(",") ?: "", rating = ratings?.joinToString(",") ?: "")
     }
 
     if (state.errorMessage != null) {
@@ -88,7 +89,8 @@ fun HotelListScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = if (selectedCity != null) "Hotels List - $selectedCity" else "Hotels List - By Location")
+                    Text(text = if (selectedCity != null) stringResource(R.string.hotels_list, selectedCity)
+                        else stringResource(R.string.hotels_list_by_location))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -99,7 +101,7 @@ fun HotelListScreen(
                 navigationIcon = {
                     IconButton(onClick = { onAction(HotelListAction.OnBackClick) }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
                         )
                     }
