@@ -5,8 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -86,6 +85,7 @@ fun HotelListScreen(
     onAction: (HotelListAction) -> Unit,
 ) {
     Scaffold(
+        contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
             TopAppBar(
                 title = {
@@ -96,8 +96,6 @@ fun HotelListScreen(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.statusBars),
                 navigationIcon = {
                     IconButton(onClick = { onAction(HotelListAction.OnBackClick) }) {
                         Icon(

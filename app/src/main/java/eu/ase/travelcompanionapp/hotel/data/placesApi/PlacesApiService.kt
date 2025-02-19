@@ -32,33 +32,33 @@ class PlacesApiService(context: Context) {
                     fetchHotelDetails(placeId, hotelName, country, onResult)
                 } ?: onResult(Error(DataError.Remote.UNKNOWN))
             }
-            .addOnFailureListener { exception ->
+            .addOnFailureListener {
                 onResult(Error(DataError.Remote.UNKNOWN))
             }
     }
 
     private fun fetchHotelDetails(placeId: String, hotelName: String, country: String, onResult: (Result<Pair<Hotel, List<Bitmap>>, DataError>) -> Unit) {
-        val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.PHONE_NUMBER, Place.Field.RATING, Place.Field.ADDRESS, Place.Field.PHOTO_METADATAS)
+        val fields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.LOCATION, Place.Field.INTERNATIONAL_PHONE_NUMBER, Place.Field.RATING, Place.Field.FORMATTED_ADDRESS, Place.Field.PHOTO_METADATAS)
         val fetchPlaceRequest = FetchPlaceRequest.newInstance(placeId, fields)
 
         placesClient.fetchPlace(fetchPlaceRequest).addOnSuccessListener { response ->
             val place = response.place
 
-            val latitude = place.latLng?.latitude ?: 0.0
-            val longitude = place.latLng?.longitude ?: 0.0
+            val latitude = place.location?.latitude ?: 0.0
+            val longitude = place.location?.longitude ?: 0.0
             val hotel = Hotel(
                 hotelId = place.id ?: "",
                 chainCode = null,
                 iataCode = "",
                 dupeId = null,
-                name = place.name ?: hotelName,
+                name = place.displayName ?: hotelName,
                 latitude = latitude,
                 longitude = longitude,
                 countryCode = country,
                 amenities = arrayListOf(),
                 rating = place.rating?.toInt(),
                 giataId = null,
-                phone = place.phoneNumber
+                phone = place.internationalPhoneNumber
             )
 
             val photoMetadatas = place.photoMetadatas
@@ -81,12 +81,12 @@ class PlacesApiService(context: Context) {
                         if (photosUris.size == photosToFetch.size) {
                             onResult(Success(Pair(hotel, photosUris)))
                         }
-                    }.addOnFailureListener { exception ->
+                    }.addOnFailureListener {
                         onResult(Error(DataError.Remote.UNKNOWN))
                     }
                 }
             }
-        }.addOnFailureListener { exception ->
+        }.addOnFailureListener {
             onResult(Error(DataError.Remote.UNKNOWN))
         }
     }

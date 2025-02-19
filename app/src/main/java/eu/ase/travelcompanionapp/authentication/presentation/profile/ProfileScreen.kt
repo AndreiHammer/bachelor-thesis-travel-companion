@@ -9,8 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -54,6 +53,7 @@ fun ProfileScreen(
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(R.string.profile)) },
@@ -68,9 +68,7 @@ fun ProfileScreen(
                             contentDescription = stringResource(R.string.back)
                         )
                     }
-                },
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.statusBars)
+                }
             )
         },
 
