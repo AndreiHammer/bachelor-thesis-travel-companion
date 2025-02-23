@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Travel Companion App</string>
+    <string name="app_name_2">Travel Companion</string>
     <string name="description_unavailable">Description not available.</string>
     <string name="error_disk_full">Oops, it seems like your disk is full.</string>
     <string name="error_unknown">Oops, something went wrong.</string>
@@ -60,6 +61,17 @@
     <string name="done_icon">Done icon</string>
     <string name="hotels_list">Hotels List - %1$s</string>
     <string name="hotels_list_by_location">Hotels List - By Location</string>
+    <string name="select_dates">Select Check-In and Check-Out Dates</string>
+    <string name="check_out_date_must_be_after_check_in_date">Check-out date must be after check-in date!</string>
+    <string name="select_number_of_adults">Select number of guests</string>
+    <string name="toggle_filters">Toggle filters</string>
+    <string name="select_search_radius">Select search radius</string>
+    <string name="check_in_date">Check-In Date</string>
+    <string name="check_out_date">Check-Out Date</string>
+    <string name="adult">Adult</string>
+    <string name="adults">Adults</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
     <string-array name="hotel_amenities">
         <item>SWIMMING_POOL</item>
         <item>SPA</item>

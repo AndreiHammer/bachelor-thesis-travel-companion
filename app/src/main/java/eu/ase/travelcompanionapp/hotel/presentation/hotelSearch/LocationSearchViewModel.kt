@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.presentation.locationSearch
+package eu.ase.travelcompanionapp.hotel.presentation.hotelSearch
 
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng

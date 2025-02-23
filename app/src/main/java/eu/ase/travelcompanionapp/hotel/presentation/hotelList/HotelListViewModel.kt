@@ -64,7 +64,6 @@ class HotelListViewModel(
                             errorMessage = "Error fetching hotels list"
                         )
                     }
-
                     is Result.Success -> {
                         _state.value = _state.value.copy(
                             isLoading = false,
@@ -88,11 +87,9 @@ class HotelListViewModel(
         }
     }
 
-
     data class HotelListState(
         val isLoading: Boolean = true,
         val hotels: List<Hotel> = emptyList(),
-        val errorMessage: String? = null,
-        val badIataCode : Boolean = false
+        val errorMessage: String? = null
     )
 }

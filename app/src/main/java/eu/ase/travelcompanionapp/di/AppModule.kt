@@ -10,7 +10,7 @@ import eu.ase.travelcompanionapp.core.data.HttpClientFactory
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.AmadeusApiService
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.RemoteHotelDataSource
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.repository.AmadeusHotelRepository
-import eu.ase.travelcompanionapp.hotel.data.mappers.CityToIATACodeRepositoryImpl
+import eu.ase.travelcompanionapp.hotel.data._IATAparsing.CityToIATACodeRepositoryImpl
 import eu.ase.travelcompanionapp.hotel.data.placesApi.PlacesHotelRepository
 import eu.ase.travelcompanionapp.hotel.data.placesApi.PlacesApiService
 import eu.ase.travelcompanionapp.hotel.domain.repository.CityToIATACodeRepository
@@ -19,7 +19,7 @@ import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryPlacesAp
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.LocationSearchViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
 import io.ktor.client.engine.cio.CIO
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module

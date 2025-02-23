@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.data.mappers
+package eu.ase.travelcompanionapp.hotel.data._IATAparsing
 
 import android.content.Context
 import com.google.gson.Gson

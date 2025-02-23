@@ -5,7 +5,9 @@ import eu.ase.travelcompanionapp.core.domain.Result
 import eu.ase.travelcompanionapp.core.domain.map
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.RemoteHotelDataSource
 import eu.ase.travelcompanionapp.hotel.data.mappers.toHotel
+import eu.ase.travelcompanionapp.hotel.data.mappers.toHotelOffer
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
+import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
 
 class AmadeusHotelRepository(
@@ -39,6 +41,22 @@ class AmadeusHotelRepository(
             onResult(result.map { hotelDto ->
                 hotelDto.map {
                     it.toHotel()
+                }
+            })
+        }
+    }
+
+    override suspend fun searchHotelOffers(
+        hotelIds: String,
+        checkInDate: String,
+        checkOutDate: String,
+        adults: String,
+        onResult: (Result<List<HotelOffer>, DataError.Remote>) -> Unit
+    ) {
+        remoteHotelDataSource.searchHotelOffers(hotelIds, checkInDate, checkOutDate, adults){ result ->
+            onResult(result.map { hotelOffersDto ->
+                hotelOffersDto.map {
+                    it.toHotelOffer()
                 }
             })
         }

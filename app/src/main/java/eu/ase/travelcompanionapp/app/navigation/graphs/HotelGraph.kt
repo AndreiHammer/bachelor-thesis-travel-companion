@@ -17,10 +17,10 @@ import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationScreenRoot
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListScreenRoot
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.LocationSearchAction
-import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.LocationSearchScreen
-import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.LocationSearchViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components.MapSearchScreen
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchAction
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchScreen
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.MapSearchScreen
 import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.HotelGraph(navController: NavHostController) {

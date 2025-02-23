@@ -1,18 +1,16 @@
-package eu.ase.travelcompanionapp.hotel.presentation.locationSearch
+package eu.ase.travelcompanionapp.hotel.presentation.hotelSearch
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -28,9 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
-import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components.AmenitiesChipGroup
-import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components.AutoCompleteTextField
-import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components.RatingChipGroup
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.AutoCompleteTextField
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.filters.CityFilterSearch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,14 +39,12 @@ fun LocationSearchScreen(
     onAmenitiesSelected: (Set<String>) -> Unit,
 ) {
     val city = remember { mutableStateOf("") }
-    val selectedRatings = remember { mutableStateOf(setOf<Int>()) }
-    val selectedAmenities = remember { mutableStateOf(setOf<String>()) }
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(R.string.search)) },
+                title = { Text(text = stringResource(R.string.app_name_2)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -99,38 +94,14 @@ fun LocationSearchScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = stringResource(R.string.select_rating), style = MaterialTheme.typography.bodyMedium)
-
-            RatingChipGroup(
-                selectedHotelRating = selectedRatings.value,
-                onSelectedChanged = { updatedRatings ->
-                    selectedRatings.value = updatedRatings
-                    onRatingSelected(updatedRatings)
-                }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(text = stringResource(R.string.select_amenities), style = MaterialTheme.typography.bodyMedium)
-
-            AmenitiesChipGroup(
-                selectedHotelAmenities = selectedAmenities.value,
-                onSelectedChanged = { updatedAmenities ->
-                    selectedAmenities.value = updatedAmenities
-                    onAmenitiesSelected(updatedAmenities)
-                }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = {
-                    onAction(LocationSearchAction.OnSearchClick(city.value, selectedAmenities.value, selectedRatings.value))
+            CityFilterSearch(
+                city = city.value,
+                onSearchClick = { selectedCity, selectedAmenities, selectedRatings ->
+                    onAction(LocationSearchAction.OnSearchClick(selectedCity, selectedAmenities, selectedRatings))
                 },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(R.string.search_hotels_in, city.value))
-            }
+                onRatingSelected = onRatingSelected,
+                onAmenitiesSelected = onAmenitiesSelected
+            )
         }
     }
 }

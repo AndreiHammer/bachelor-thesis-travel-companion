@@ -1,9 +1,16 @@
-package eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components
+package eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +39,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.filters.LocationFilterSearch
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +54,10 @@ fun MapSearchScreen(
     var range by remember { mutableIntStateOf(10) }
     var selectedHotelRating by remember { mutableStateOf<Set<Int>>(emptySet()) }
     var selectedHotelAmenities by remember { mutableStateOf<Set<String>>(emptySet()) }
+    var checkInDate by remember { mutableStateOf("") }
+    var checkOutDate by remember { mutableStateOf("") }
+    var adults by remember { mutableIntStateOf(1) }
+    var isFilterExpanded by remember { mutableStateOf(false) }
 
     // Reset previous selections when searching by location
     onRatingSelected(selectedHotelRating)
@@ -55,7 +67,6 @@ fun MapSearchScreen(
         position = CameraPosition.fromLatLngZoom(LatLng(44.4268, 0.0), 6f)
     }
 
-    // Check and request permission on first launch
     val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     LaunchedEffect(Unit) {
         if (locationPermissionState.status !is PermissionStatus.Granted) {
@@ -75,6 +86,14 @@ fun MapSearchScreen(
                         )
                     }
                 },
+                actions = {
+                    IconButton(onClick = { isFilterExpanded = !isFilterExpanded }) {
+                        Icon(
+                            imageVector = if (isFilterExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                            contentDescription = stringResource(R.string.toggle_filters)
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -83,19 +102,12 @@ fun MapSearchScreen(
         }
     ) { paddingValues ->
         Box(modifier = modifier.fillMaxSize().padding(paddingValues)) {
-            // Handle the map only if the permission is granted
             if (locationPermissionState.status is PermissionStatus.Granted) {
                 GoogleMap(
                     modifier = Modifier.fillMaxSize(),
                     cameraPositionState = cameraPositionState,
-                    uiSettings = MapUiSettings().copy(
-                        myLocationButtonEnabled = true
-                    ),
-                    properties = remember {
-                        MapProperties(
-                            isMyLocationEnabled = true
-                        )
-                    },
+                    uiSettings = MapUiSettings().copy(myLocationButtonEnabled = true),
+                    properties = remember { MapProperties(isMyLocationEnabled = true) },
                     onMapClick = { latLng -> markerPosition = latLng }
                 ) {
                     markerPosition?.let {
@@ -107,39 +119,42 @@ fun MapSearchScreen(
                 }
 
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = stringResource(R.string.range_km, range), style = MaterialTheme.typography.bodyLarge)
-                    Slider(
-                        value = range.toFloat(),
-                        onValueChange = { range = it.toInt() },
-                        valueRange = 1f..50f
-                    )
-                    Button(
-                        onClick = {
-                            markerPosition?.let { location ->
-                                onLocationSelected(location, range)
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
+                    AnimatedVisibility(
+                        visible = isFilterExpanded,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
                     ) {
-                        Text(text = stringResource(R.string.confirm_location))
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                        ) {
+                            LocationFilterSearch(
+                                range = range,
+                                onRangeChange = { newRange -> range = newRange },
+                                onSearchClick = { amenities, ratings, checkIn, checkOut, adultCount ->
+                                    markerPosition?.let { location ->
+                                        onLocationSelected(location, range)
+                                    }
+                                    selectedHotelRating = ratings
+                                    selectedHotelAmenities = amenities
+                                    checkInDate = checkIn
+                                    checkOutDate = checkOut
+                                    adults = adultCount
+                                },
+                                onRatingSelected = { selectedHotelRating = it },
+                                onAmenitiesSelected = { selectedHotelAmenities = it },
+                                initialSelectedRatings = selectedHotelRating,
+                                initialSelectedAmenities = selectedHotelAmenities,
+                                initialCheckInDate = checkInDate,
+                                initialCheckOutDate = checkOutDate,
+                                initialAdults = adults
+                            )
+                        }
                     }
-
-                    RatingChipGroup(
-                        selectedHotelRating = selectedHotelRating,
-                        onSelectedChanged = { updatedRating ->
-                            selectedHotelRating = updatedRating
-                            onRatingSelected(updatedRating)
-                        }
-                    )
-
-                    AmenitiesChipGroup(
-                        selectedHotelAmenities = selectedHotelAmenities,
-                        onSelectedChanged = { updatedAmenities ->
-                            selectedHotelAmenities = updatedAmenities
-                            onAmenitiesSelected(updatedAmenities)
-                        }
-                    )
                 }
+
             }
         }
     }

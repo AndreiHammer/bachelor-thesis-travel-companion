@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components
+package eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
-import eu.ase.travelcompanionapp.hotel.presentation.locationSearch.LocationSearchViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

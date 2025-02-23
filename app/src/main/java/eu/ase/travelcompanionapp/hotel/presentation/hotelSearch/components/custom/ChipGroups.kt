@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.presentation.locationSearch.components
+package eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

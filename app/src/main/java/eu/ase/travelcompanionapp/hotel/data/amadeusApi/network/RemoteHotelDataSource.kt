@@ -3,6 +3,7 @@ package eu.ase.travelcompanionapp.hotel.data.amadeusApi.network
 import eu.ase.travelcompanionapp.core.domain.DataError
 import eu.ase.travelcompanionapp.core.domain.Result
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.HotelDto
+import eu.ase.travelcompanionapp.hotel.data.amadeusApi.HotelOffersDto
 
 interface RemoteHotelDataSource {
     suspend fun searchHotelsByCity(
@@ -19,5 +20,13 @@ interface RemoteHotelDataSource {
         amenities: String,
         rating: String,
         onResult: (Result<List<HotelDto>, DataError.Remote>) -> Unit
+    )
+
+    suspend fun searchHotelOffers(
+        hotelIds: String,
+        checkInDate: String,
+        checkOutDate: String,
+        adults: String,
+        onResult: (Result<List<HotelOffersDto>, DataError.Remote>) -> Unit
     )
 }
