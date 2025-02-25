@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.AmenitiesChipGroup
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.DatePickerWithDialog
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.RatingChipGroup
@@ -27,9 +28,7 @@ import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custo
 @Composable
 fun CityFilterSearch(
     city: String,
-    onSearchClick: (String, Set<String>, Set<Int>) -> Unit,
-    onRatingSelected: (Set<Int>) -> Unit,
-    onAmenitiesSelected: (Set<String>) -> Unit
+    onAction: (LocationSearchAction) -> Unit
 ) {
     val selectedRatings = remember { mutableStateOf(setOf<Int>()) }
     val selectedAmenities = remember { mutableStateOf(setOf<String>()) }
@@ -100,7 +99,7 @@ fun CityFilterSearch(
         selectedHotelRating = selectedRatings.value,
         onSelectedChanged = { updatedRatings ->
             selectedRatings.value = updatedRatings
-            onRatingSelected(updatedRatings)
+            onAction(LocationSearchAction.OnRatingSelected(updatedRatings))
         }
     )
 
@@ -112,7 +111,7 @@ fun CityFilterSearch(
         selectedHotelAmenities = selectedAmenities.value,
         onSelectedChanged = { updatedAmenities ->
             selectedAmenities.value = updatedAmenities
-            onAmenitiesSelected(updatedAmenities)
+            onAction(LocationSearchAction.OnAmenitiesSelected(updatedAmenities))
         }
     )
 
@@ -120,7 +119,10 @@ fun CityFilterSearch(
 
     Button(
         onClick = {
-            onSearchClick(city, selectedAmenities.value, selectedRatings.value)
+            onAction(LocationSearchAction.OnSearchClick(city,
+                selectedAmenities.value,
+                selectedRatings.value))
+            onAction(LocationSearchAction.OnOfferDetailsSet(checkInDate.value, checkOutDate.value, adults.intValue))
         },
         modifier = Modifier.fillMaxWidth()
     ) {

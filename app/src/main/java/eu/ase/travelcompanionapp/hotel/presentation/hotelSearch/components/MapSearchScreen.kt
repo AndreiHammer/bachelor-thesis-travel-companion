@@ -1,5 +1,6 @@
 package eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components
 
+import android.Manifest
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -39,15 +40,13 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.filters.LocationFilterSearch
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MapSearchScreen(
-    onBackClick: () -> Unit,
-    onLocationSelected: (LatLng, Int) -> Unit,
-    onRatingSelected: (Set<Int>) -> Unit,
-    onAmenitiesSelected: (Set<String>) -> Unit,
+    onAction: (LocationSearchAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var markerPosition by remember { mutableStateOf<LatLng?>(null) }
@@ -60,14 +59,14 @@ fun MapSearchScreen(
     var isFilterExpanded by remember { mutableStateOf(false) }
 
     // Reset previous selections when searching by location
-    onRatingSelected(selectedHotelRating)
-    onAmenitiesSelected(selectedHotelAmenities)
+    onAction(LocationSearchAction.OnRatingSelected(emptySet()))
+    onAction(LocationSearchAction.OnAmenitiesSelected(emptySet()))
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(44.4268, 0.0), 6f)
     }
 
-    val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     LaunchedEffect(Unit) {
         if (locationPermissionState.status !is PermissionStatus.Granted) {
             locationPermissionState.launchPermissionRequest()
@@ -79,7 +78,7 @@ fun MapSearchScreen(
             TopAppBar(
                 title = { Text(text = stringResource(R.string.map_title)) },
                 navigationIcon = {
-                    IconButton(onClick = { onBackClick() }) {
+                    IconButton(onClick = { onAction(LocationSearchAction.OnBackClick) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
@@ -132,10 +131,14 @@ fun MapSearchScreen(
                         ) {
                             LocationFilterSearch(
                                 range = range,
-                                onRangeChange = { newRange -> range = newRange },
                                 onSearchClick = { amenities, ratings, checkIn, checkOut, adultCount ->
                                     markerPosition?.let { location ->
-                                        onLocationSelected(location, range)
+                                        onAction(
+                                            LocationSearchAction.OnLocationSelected(
+                                                location,
+                                                range
+                                            )
+                                        )
                                     }
                                     selectedHotelRating = ratings
                                     selectedHotelAmenities = amenities
@@ -143,13 +146,13 @@ fun MapSearchScreen(
                                     checkOutDate = checkOut
                                     adults = adultCount
                                 },
-                                onRatingSelected = { selectedHotelRating = it },
-                                onAmenitiesSelected = { selectedHotelAmenities = it },
                                 initialSelectedRatings = selectedHotelRating,
                                 initialSelectedAmenities = selectedHotelAmenities,
                                 initialCheckInDate = checkInDate,
                                 initialCheckOutDate = checkOutDate,
-                                initialAdults = adults
+                                initialAdults = adults,
+                                onAction = onAction,
+                                onRangeChange = { newRange -> range = newRange }
                             )
                         }
                     }

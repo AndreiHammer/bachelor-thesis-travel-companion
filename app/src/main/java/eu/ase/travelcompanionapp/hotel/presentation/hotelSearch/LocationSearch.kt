@@ -34,9 +34,6 @@ import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.filte
 fun LocationSearchScreen(
     modifier: Modifier = Modifier,
     onAction: (LocationSearchAction) -> Unit,
-    onRatingSelected: (Set<Int>) -> Unit,
-    onCitySelected: (String) -> Unit,
-    onAmenitiesSelected: (Set<String>) -> Unit,
 ) {
     val city = remember { mutableStateOf("") }
 
@@ -88,7 +85,7 @@ fun LocationSearchScreen(
             AutoCompleteTextField(
                 onCitySelected = { selectedCity ->
                     city.value = selectedCity
-                    onCitySelected(selectedCity)
+                    onAction(LocationSearchAction.OnCitySelected(selectedCity))
                 }
             )
 
@@ -96,11 +93,7 @@ fun LocationSearchScreen(
 
             CityFilterSearch(
                 city = city.value,
-                onSearchClick = { selectedCity, selectedAmenities, selectedRatings ->
-                    onAction(LocationSearchAction.OnSearchClick(selectedCity, selectedAmenities, selectedRatings))
-                },
-                onRatingSelected = onRatingSelected,
-                onAmenitiesSelected = onAmenitiesSelected
+                onAction = onAction
             )
         }
     }

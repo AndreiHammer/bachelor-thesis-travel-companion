@@ -11,7 +11,7 @@ sealed interface HotelRoute {
     data object MapSearch : HotelRoute
 
     @Serializable
-    data class HotelListCity(val city: String, val amenities: String, val rating: String) : HotelRoute
+    data class HotelListCity(val city: String) : HotelRoute
 
     @Serializable
     data class HotelListLocation(
@@ -22,4 +22,11 @@ sealed interface HotelRoute {
 
     @Serializable
     data class HotelDetail(val id: String) : HotelRoute
+
+    @Serializable
+    data class HotelOffers(
+        val hotelId: String,
+        val checkInDate: String,
+        val checkOutDate: String,
+        val adults: Int): HotelRoute
 }

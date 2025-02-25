@@ -72,6 +72,16 @@
     <string name="adults">Adults</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="lowest_price">Price starting at:</string>
+    <string name="view_offers">View Offers</string>
+    <string name="loading_offers">Loading offers...</string>
+    <string name="no_offers_available_for_this_hotel">No offers available for this hotel</string>
+    <string name="book_now">Book Now</string>
+    <string name="non_refundable">Non-Refundable</string>
+    <string name="standard_room">Standard Room</string>
+    <string name="check_out">Check-out</string>
+    <string name="n_a">N/A</string>
+    <string name="check_in">Check-in</string>
     <string-array name="hotel_amenities">
         <item>SWIMMING_POOL</item>
         <item>SPA</item>

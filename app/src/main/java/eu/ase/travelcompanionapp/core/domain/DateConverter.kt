@@ -1,29 +1,27 @@
 package eu.ase.travelcompanionapp.core.domain
 
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class DateConverter {
+    private val displayFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
+    private val apiFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+
     fun convertMillisToLocalDate(millis: Long): ZonedDateTime {
-        // Interpret the milliseconds as the start of the day in UTC, then convert to Los Angeles time
-        val utcDateAtStartOfDay = Instant
-            .ofEpochMilli(millis)
-            .atZone(ZoneOffset.UTC)
-            .toLocalDate()
-
-        // Convert to the same instant in Local time zone
-        val localDate = utcDateAtStartOfDay.atStartOfDay(ZoneId.systemDefault())
-
-        return localDate
-
+        val instant = Instant.ofEpochMilli(millis)
+        return instant.atZone(ZoneId.systemDefault())
     }
 
     fun dateToString(date: ZonedDateTime): String {
-        val dateFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
-        return dateFormatter.format(date)
+        return displayFormatter.format(date)
+    }
+
+    fun displayDateToApiFormat(displayDate: String): String {
+        val localDate = LocalDate.parse(displayDate, displayFormatter)
+        return localDate.format(apiFormatter)
     }
 }

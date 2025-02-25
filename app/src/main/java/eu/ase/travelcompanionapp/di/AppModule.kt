@@ -19,6 +19,7 @@ import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryPlacesAp
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.HotelOffersViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
 import io.ktor.client.engine.cio.CIO
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -44,4 +45,6 @@ val appModule = module {
 
     viewModelOf(::LocationSearchViewModel)
     single<CityToIATACodeRepository>{ CityToIATACodeRepositoryImpl(get()) }
+
+    viewModelOf(::HotelOffersViewModel)
 }

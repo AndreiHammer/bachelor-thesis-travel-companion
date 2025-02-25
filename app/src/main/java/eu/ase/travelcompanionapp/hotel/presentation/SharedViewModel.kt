@@ -22,6 +22,24 @@ class SharedViewModel : ViewModel() {
     private val _selectedLocation = MutableStateFlow(LocationState())
     val selectedLocation = _selectedLocation.asStateFlow()
 
+    private val _selectedCheckInDate = MutableStateFlow("")
+    val selectedCheckInDate = _selectedCheckInDate.asStateFlow()
+
+    private val _selectedCheckOutDate = MutableStateFlow("")
+    val selectedCheckOutDate = _selectedCheckOutDate.asStateFlow()
+
+    private val _selectedAdults = MutableStateFlow(1)
+    val selectedAdults = _selectedAdults.asStateFlow()
+
+    fun onSelectAdults(adults: Int) {
+        _selectedAdults.value = adults
+    }
+
+    fun onSelectDates(checkInDate: String, checkOutDate: String) {
+        _selectedCheckInDate.value = checkInDate
+        _selectedCheckOutDate.value = checkOutDate
+    }
+
     fun onSelectHotel(hotel: Hotel?) {
         _selectedHotel.value = hotel
     }

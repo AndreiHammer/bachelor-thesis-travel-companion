@@ -1,7 +1,11 @@
-package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails
+package eu.ase.travelcompanionapp.hotel.presentation.hotelOffers
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,65 +18,39 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
-import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
-import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components.HotelMap
+import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.components.HotelOffersSection
 import org.koin.androidx.compose.koinViewModel
-
-@Composable
-fun HotelLocationScreenRoot(
-    hotel: Hotel,
-    onAction: (HotelLocationAction) -> Unit,
-    modifier: Modifier = Modifier,
-    checkInDate: String,
-    checkOutDate: String,
-    adults: Int
-) {
-
-    HotelLocationScreen(
-        hotel = hotel,
-        modifier = modifier,
-        onAction= onAction,
-        checkInDate = checkInDate,
-        checkOutDate = checkOutDate,
-        adults = adults
-    )
-}
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HotelLocationScreen(
-    hotel: Hotel,
-    modifier: Modifier = Modifier,
-    onAction: (HotelLocationAction) -> Unit,
+fun HotelOffersScreen(
+    hotelId: String,
     checkInDate: String,
     checkOutDate: String,
-    adults: Int
+    adults: Int,
+    onAction: (HotelOffersAction) -> Unit
 ) {
-    val viewModel: HotelLocationViewModel = koinViewModel()
+    val viewModel: HotelOffersViewModel = koinViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val hotelState = viewModel.hotelState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(hotel.name, hotel.countryCode) {
-        viewModel.getHotelDetails(hotel.name, hotel.countryCode)
+    LaunchedEffect(hotelId) {
+        viewModel.getHotelOffers(hotelId, checkInDate, checkOutDate, adults)
     }
-
-
-    val isLoading = hotelState.value.photos.isEmpty()
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
             TopAppBar(
-                title = { Text(text =hotel.name) },
+                title = { Text(text = "Hotel Offers") },
                 navigationIcon = {
-                    IconButton(onClick = { onAction(HotelLocationAction.OnBackClick) }) {
+                    IconButton(onClick = { onAction(HotelOffersAction.OnBackClick) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
@@ -85,32 +63,30 @@ fun HotelLocationScreen(
                 )
             )
         }
-    ) { paddingValues ->
+    ) { innerPadding ->
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(innerPadding)
         ) {
-            if (isLoading) {
+            if (state.isLoading) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    BlurredAnimatedText(text = stringResource(R.string.loading_details))
+                    BlurredAnimatedText(text = stringResource(R.string.loading_offers))
                 }
             } else {
-                HotelMap(
-                    modifier = Modifier.fillMaxSize(),
-                    hotelState = hotelState.value,
-                    onNavigateToOffers = {
-                        onAction(HotelLocationAction.OnViewOfferClick(checkInDate, checkOutDate, adults))
+                HotelOffersSection(
+                    hotelOffers = state.offers,
+                    errorMessage = state.error ?: "No offers available",
+                    onBookNow = {
+                        onAction(HotelOffersAction.OnBookNow)
                     }
                 )
             }
         }
     }
 }
-
-

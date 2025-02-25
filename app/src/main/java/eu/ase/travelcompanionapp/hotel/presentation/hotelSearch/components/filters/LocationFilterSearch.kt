@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.AmenitiesChipGroup
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.DatePickerWithDialog
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.RatingChipGroup
@@ -27,15 +28,14 @@ import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custo
 @Composable
 fun LocationFilterSearch(
     range: Int,
-    onRangeChange: (Int) -> Unit,
-    onSearchClick: (Set<String>, Set<Int>, String, String, Int) -> Unit,
-    onRatingSelected: (Set<Int>) -> Unit,
-    onAmenitiesSelected: (Set<String>) -> Unit,
     initialSelectedRatings: Set<Int>,
     initialSelectedAmenities: Set<String>,
     initialCheckInDate: String,
     initialCheckOutDate: String,
-    initialAdults: Int
+    initialAdults: Int,
+    onAction: (LocationSearchAction) -> Unit,
+    onSearchClick: (Set<String>, Set<Int>, String, String, Int) -> Unit,
+    onRangeChange: (Int) -> Unit
 ) {
     val selectedRatings = remember { mutableStateOf(initialSelectedRatings) }
     val selectedAmenities = remember { mutableStateOf(initialSelectedAmenities) }
@@ -111,7 +111,7 @@ fun LocationFilterSearch(
             selectedHotelRating = selectedRatings.value,
             onSelectedChanged = { updatedRatings ->
                 selectedRatings.value = updatedRatings
-                onRatingSelected(updatedRatings)
+                onAction(LocationSearchAction.OnRatingSelected(updatedRatings))
             }
         )
 
@@ -122,7 +122,7 @@ fun LocationFilterSearch(
             selectedHotelAmenities = selectedAmenities.value,
             onSelectedChanged = { updatedAmenities ->
                 selectedAmenities.value = updatedAmenities
-                onAmenitiesSelected(updatedAmenities)
+                onAction(LocationSearchAction.OnAmenitiesSelected(updatedAmenities))
             }
         )
 

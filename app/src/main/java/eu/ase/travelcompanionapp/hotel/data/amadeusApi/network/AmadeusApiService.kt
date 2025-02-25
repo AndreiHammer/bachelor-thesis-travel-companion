@@ -135,11 +135,11 @@ class AmadeusApiService(
                 val token = tokenResult.data
                 safeCall<HotelOffersResponse> {
                     // BEST OFFER
+                    /*val url =
+                        "https://test.api.amadeus.com/v3/shopping/hotel-offers?hotelIds=$hotelIds&adults=$adults&includeClosed=false&bestRateOnly=true&checkInDate=$checkInDate&checkOutDate=$checkOutDate"*/
+                    // ALL OFFERS
                     val url =
-                        "https://test.api.amadeus.com/v3/shopping/hotel-offers?hotelIds=$hotelIds&adults=$adults&includeClosed=false&bestRateOnly=true&checkInDate=$checkInDate&checkOutDate=$checkOutDate"
-                    /* ALL OFFERS
-                    val url =
-                        "https://test.api.amadeus.com/v3/shopping/hotel-offers?hotelIds=$hotelIds&adults=$adults&includeClosed=false&bestRateOnly=false&checkInDate=$checkInDate&checkOutDate=$checkOutDate"*/
+                        "https://test.api.amadeus.com/v3/shopping/hotel-offers?hotelIds=$hotelIds&adults=$adults&includeClosed=false&bestRateOnly=false&checkInDate=$checkInDate&checkOutDate=$checkOutDate"
                     client.get(url){
                         headers{
                             bearerAuth(token)
