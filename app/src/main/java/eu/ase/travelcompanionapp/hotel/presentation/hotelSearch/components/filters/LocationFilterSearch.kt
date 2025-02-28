@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.AmenitiesChipGroup
-import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.DatePickerWithDialog
+import eu.ase.travelcompanionapp.core.presentation.DatePickerWithDialog
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.RatingChipGroup
 
 @Composable

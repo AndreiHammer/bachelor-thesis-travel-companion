@@ -19,4 +19,8 @@ interface AccountRepository {
 
     suspend fun signOut()
     suspend fun deleteAccount()
+
+    suspend fun updateUserProfile(
+        user: User
+    )
 }

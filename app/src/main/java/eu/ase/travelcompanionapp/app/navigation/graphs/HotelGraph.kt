@@ -151,7 +151,6 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                     navController.navigate(
                         HotelRoute.HotelDetail(hotel.hotelId)
                     )
-
                 },
                 latitude = latitude,
                 longitude = longitude,
@@ -267,7 +266,6 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                             }
                             HotelOffersAction.OnBookNow -> {}
                         }
-
                     }
                 )
             }

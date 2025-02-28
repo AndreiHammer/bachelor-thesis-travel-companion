@@ -82,6 +82,21 @@
     <string name="check_out">Check-out</string>
     <string name="n_a">N/A</string>
     <string name="check_in">Check-in</string>
+    <string name="account_actions">Account Actions</string>
+    <string name="select_birth_date">Select Birth Date</string>
+    <string name="birth_date">Birth Date</string>
+    <string name="gender">Gender</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="add_your_name">Add your name</string>
+    <string name="are_you_sure_you_want_to_sign_out">Are you sure you want to sign out?</string>
+    <string name="are_you_sure_you_want_to_delete_your_account_this_action_cannot_be_undone">Are you sure you want to delete your account? This action cannot be undone.</string>
+    <string name="delete">Delete</string>
+    <string name="profile_updated_successfully">Profile updated successfully</string>
     <string-array name="hotel_amenities">
         <item>SWIMMING_POOL</item>
         <item>SPA</item>

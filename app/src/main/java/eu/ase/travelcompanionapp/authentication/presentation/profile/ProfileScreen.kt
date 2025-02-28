@@ -3,15 +3,13 @@ package eu.ase.travelcompanionapp.authentication.presentation.profile
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,17 +18,24 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.authentication.presentation.profile.components.AccountActionsCard
+import eu.ase.travelcompanionapp.authentication.presentation.profile.components.PersonalInfoCard
+import eu.ase.travelcompanionapp.authentication.presentation.profile.components.ProfileHeader
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,28 +44,21 @@ fun ProfileScreen(
     onAction: (ProfileAction) -> Unit,
     viewModel: ProfileViewModel = koinViewModel()
 ) {
-    val userEmail by viewModel.userEmail.collectAsStateWithLifecycle()
+    val userData by viewModel.userData.collectAsStateWithLifecycle()
     val actionState by viewModel.actionState.collectAsStateWithLifecycle()
+    val showSignOutDialog by viewModel.showSignOutDialog.collectAsStateWithLifecycle()
+    val showDeleteDialog by viewModel.showDeleteDialog.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
-    when (actionState) {
-        is ProfileActionState.SignedOut -> onAction(ProfileAction.SignedOut)
-        is ProfileActionState.AccountDeleted -> onAction(ProfileAction.AccountDeleted)
-        is ProfileActionState.Error -> {
-            val errorMessage = (actionState as ProfileActionState.Error).message
-            Toast.makeText(LocalContext.current, errorMessage, Toast.LENGTH_SHORT).show()
-        }
-        else -> Unit
-    }
+    var name by remember(userData) { mutableStateOf(userData.name) }
+    var phoneNumber by remember(userData) { mutableStateOf(userData.phoneNumber) }
+    var birthDate by remember(userData) { mutableStateOf(userData.birthDate) }
+    var gender by remember(userData) { mutableStateOf(userData.gender) }
 
     Scaffold(
-        contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(R.string.profile)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
+                title = { Text(stringResource(R.string.profile)) },
                 navigationIcon = {
                     IconButton(onClick = { onAction(ProfileAction.OnBackClick) }) {
                         Icon(
@@ -68,43 +66,115 @@ fun ProfileScreen(
                             contentDescription = stringResource(R.string.back)
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
-        },
-
-    ){ paddingValues ->
+        }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = userEmail ?: stringResource(R.string.no_user_found),
-                style = MaterialTheme.typography.bodyLarge
+            ProfileHeader(userData)
+
+            PersonalInfoCard(
+                name = name,
+                email = userData.email,
+                phoneNumber = phoneNumber,
+                birthDate = birthDate,
+                gender = gender,
+                onNameChange = { name = it },
+                onPhoneChange = { phoneNumber = it },
+                onBirthDateChange = { birthDate = it },
+                onGenderChange = { gender = it },
+                onSaveClick = {
+                    viewModel.updateUserData(
+                        userData.copy(
+                            name = name,
+                            phoneNumber = phoneNumber,
+                            birthDate = birthDate,
+                            gender = gender
+                        )
+                    )
+                }
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = { viewModel.signOut() },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(id = R.string.sign_out))
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = { viewModel.deleteAccount() },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-            ) {
-                Text(text = stringResource(id = R.string.delete_account))
-            }
+            AccountActionsCard(
+                onSignOutClick = { viewModel.setShowSignOutDialog(true) },
+                onDeleteAccountClick = { viewModel.setShowDeleteDialog(true) }
+            )
         }
     }
 
+    // Dialogs
+    if (showSignOutDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.setShowSignOutDialog(false) },
+            title = { Text(stringResource(R.string.sign_out)) },
+            text = { Text(stringResource(R.string.are_you_sure_you_want_to_sign_out)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.setShowSignOutDialog(false)
+                        viewModel.signOut()
+                    }
+                ) {
+                    Text(stringResource(R.string.sign_out))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.setShowSignOutDialog(false) }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
 
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.setShowDeleteDialog(false) },
+            title = { Text(stringResource(R.string.delete_account)) },
+            text = { Text(stringResource(R.string.are_you_sure_you_want_to_delete_your_account_this_action_cannot_be_undone)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.setShowDeleteDialog(false)
+                        viewModel.deleteAccount()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text(stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.setShowDeleteDialog(false) }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
+    LaunchedEffect(actionState) {
+        when (actionState) {
+            is ProfileActionState.SignedOut -> onAction(ProfileAction.SignedOut)
+            is ProfileActionState.AccountDeleted -> onAction(ProfileAction.AccountDeleted)
+            is ProfileActionState.Error -> {
+                Toast.makeText(context, (actionState as ProfileActionState.Error).message, Toast.LENGTH_SHORT).show()
+            }
+            is ProfileActionState.Success -> {
+                Toast.makeText(context,
+                    context.getString(R.string.profile_updated_successfully), Toast.LENGTH_SHORT).show()
+            }
+            else -> Unit
+        }
+    }
 }
