@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.core.data
+package eu.ase.travelcompanionapp.core.data.network
 
 import eu.ase.travelcompanionapp.core.domain.DataError
 import eu.ase.travelcompanionapp.core.domain.Result

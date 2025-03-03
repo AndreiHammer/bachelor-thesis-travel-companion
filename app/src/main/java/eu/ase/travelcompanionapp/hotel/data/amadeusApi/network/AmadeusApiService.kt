@@ -1,7 +1,7 @@
 package eu.ase.travelcompanionapp.hotel.data.amadeusApi.network
 
 import eu.ase.travelcompanionapp.BuildConfig
-import eu.ase.travelcompanionapp.core.data.safeCall
+import eu.ase.travelcompanionapp.core.data.network.safeCall
 import eu.ase.travelcompanionapp.core.domain.DataError
 import eu.ase.travelcompanionapp.core.domain.Result
 import eu.ase.travelcompanionapp.core.domain.map

@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.core.data
+package eu.ase.travelcompanionapp.core.data.network
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine

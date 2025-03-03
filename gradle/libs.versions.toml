@@ -17,6 +17,8 @@ koin = "3.5.6"
 mapsCompose = "2.12.0"
 material3-adaptive = "1.0.0"
 compose-material-icons-extended = "1.7.8"
+objectboxAndroid = "4.1.0"
+objectboxAndroidObjectbrowser = "4.0.2"
 places = "4.1.0"
 playServicesFitness = "21.2.0"
 playServicesMaps = "19.0.0"
@@ -64,6 +66,8 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-compose-material3-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "material3-adaptive" }
 compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "compose-material-icons-extended" }
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+objectbox-android = { module = "io.objectbox:objectbox-android", version.ref = "objectboxAndroid" }
+objectbox-android-objectbrowser = { module = "io.objectbox:objectbox-android-objectbrowser", version.ref = "objectboxAndroidObjectbrowser" }
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 play-services-fitness = { group = "com.google.android.gms", name = "play-services-fitness", version.ref = "playServicesFitness" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }

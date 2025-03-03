@@ -1,13 +1,13 @@
 package eu.ase.travelcompanionapp.di
 
-import eu.ase.travelcompanionapp.app.TravelCompanionApp
 import eu.ase.travelcompanionapp.authentication.data.AccountService
 import eu.ase.travelcompanionapp.authentication.domain.repository.AccountRepository
 import eu.ase.travelcompanionapp.authentication.presentation.login.LoginViewModel
 import eu.ase.travelcompanionapp.authentication.presentation.profile.ProfileViewModel
 import eu.ase.travelcompanionapp.authentication.presentation.signUp.SignUpViewModel
 import eu.ase.travelcompanionapp.authentication.presentation.splash.SplashViewModel
-import eu.ase.travelcompanionapp.core.data.HttpClientFactory
+import eu.ase.travelcompanionapp.core.data.network.HttpClientFactory
+import eu.ase.travelcompanionapp.core.data.localDB.DatabaseManager
 import eu.ase.travelcompanionapp.core.data.localDB.UserEntity
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.AmadeusApiService
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.RemoteHotelDataSource
@@ -25,13 +25,12 @@ import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.HotelOffersViewM
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
 import io.ktor.client.engine.cio.CIO
 import io.objectbox.BoxStore
-import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
 val coreModule = module {
     single { HttpClientFactory.create(CIO.create()) }
-    single<BoxStore> { (androidApplication() as TravelCompanionApp).boxStore }
+    single<BoxStore> { DatabaseManager.boxStore }
 }
 
 val databaseModule = module {

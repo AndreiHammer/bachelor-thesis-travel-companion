@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    id("io.objectbox")
     id ("com.chaquo.python")
     id("com.google.gms.google-services")
 }
@@ -121,6 +120,8 @@ dependencies {
     implementation(libs.bundles.coil)
 
     implementation(libs.objectbox.kotlin)
+    debugImplementation(libs.objectbox.android.objectbrowser)
+    releaseImplementation(libs.objectbox.android)
 
     implementation(libs.androidx.runtime.livedata)
 
@@ -133,3 +134,5 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
 }
+
+apply(plugin = "io.objectbox")

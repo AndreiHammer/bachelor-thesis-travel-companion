@@ -3,7 +3,8 @@ package eu.ase.travelcompanionapp.app
 import android.app.Application
 import com.google.android.libraries.places.api.Places
 import eu.ase.travelcompanionapp.BuildConfig
-import eu.ase.travelcompanionapp.core.data.localDB.MyObjectBox
+import eu.ase.travelcompanionapp.core.data.localDB.DatabaseManager
+import eu.ase.travelcompanionapp.core.data.localDB.DebugHelper
 import eu.ase.travelcompanionapp.di.authModule
 import eu.ase.travelcompanionapp.di.coreModule
 import eu.ase.travelcompanionapp.di.databaseModule
@@ -16,21 +17,25 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 
 class TravelCompanionApp: Application() {
-    lateinit var boxStore: BoxStore
-        private set
+
+    private val boxStore: BoxStore
+        get() = DatabaseManager.boxStore
 
     override fun onCreate() {
         super.onCreate()
 
-        boxStore = MyObjectBox.builder()
-            .androidContext(this)
-            .build()
+        // Initialize the database
+        DatabaseManager.initialize(this)
 
+        // Initialize debug tools (only has effect in debug builds)
+        DebugHelper.initialize(this, boxStore)
+
+        // Initialize Places API
         if (!Places.isInitialized()) {
             Places.initializeWithNewPlacesApiEnabled(applicationContext, BuildConfig.GOOGLE_API_KEY)
         }
 
-
+        // Initialize Koin dependency injection
         startKoin {
             androidContext(this@TravelCompanionApp)
             androidLogger()
