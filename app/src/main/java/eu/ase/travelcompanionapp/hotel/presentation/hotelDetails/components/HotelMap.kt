@@ -57,14 +57,31 @@ fun HotelMap(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        ImageList(
-            hotelState = hotelState,
-            onImageClick = { index ->
-                currentImageIndex = index
-                isDialogOpen = true
-            },
-            modifier = Modifier.weight(1f)
-        )
+        if (hotelState.photos.isEmpty()) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.no_photos_available),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+            }
+        } else {
+            ImageList(
+                hotelState = hotelState,
+                onImageClick = { index ->
+                    currentImageIndex = index
+                    isDialogOpen = true
+                },
+                modifier = Modifier.weight(1f)
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -86,7 +103,7 @@ fun HotelMap(
         )
     }
 
-    if (isDialogOpen) {
+    if (isDialogOpen && hotelState.photos.isNotEmpty()) {
         ImageDialog(
             hotelState = hotelState,
             currentImageIndex = currentImageIndex,

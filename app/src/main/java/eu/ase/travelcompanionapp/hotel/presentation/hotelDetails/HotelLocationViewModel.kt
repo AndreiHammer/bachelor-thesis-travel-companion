@@ -19,14 +19,20 @@ class HotelLocationViewModel(
 
     fun getHotelDetails(locationName: String, country: String) {
         viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true)
+            
             hotelRepository.getHotelDetails(locationName, country) { result ->
                 when (result) {
                     is Result.Error -> {
-                        _state.value = _state.value.copy(errorMessage = "Error fetching hotel details.")
+                        _state.value = _state.value.copy(
+                            isLoading = false,
+                            errorMessage = "Error fetching hotel details."
+                        )
                     }
                     is Result.Success -> {
                         val (hotel, photos) = result.data
                         _state.value = _state.value.copy(
+                            isLoading = false,
                             hotel = hotel,
                             photos = photos
                         )

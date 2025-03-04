@@ -31,8 +31,8 @@ suspend inline fun <reified T> responseToResult(
     response: HttpResponse
 ): Result<T, DataError.Remote> {
     return when(response.status.value) {
-        in 200..299 -> {
-            try{
+        in 200..299, 400 -> {
+            try {
                 Result.Success(response.body())
             } catch (e: Exception) {
                 Result.Error(DataError.Remote.SERIALIZATION)

@@ -97,6 +97,9 @@
     <string name="are_you_sure_you_want_to_delete_your_account_this_action_cannot_be_undone">Are you sure you want to delete your account? This action cannot be undone.</string>
     <string name="delete">Delete</string>
     <string name="profile_updated_successfully">Profile updated successfully</string>
+    <string name="hotels_found">Hotels found: %d</string>
+    <string name="no_offers_available">No offers available</string>
+    <string name="hotel_offers">Hotel Offers</string>
     <string-array name="hotel_amenities">
         <item>SWIMMING_POOL</item>
         <item>SPA</item>
@@ -106,4 +109,11 @@
         <item>WIFI</item>
         <item>ROOM_SERVICE</item>
     </string-array>
+    <string name="no_photos_available">No photos available for this hotel</string>
+    <string name="no_location_data">No location data</string>
+    <string name="hotel_photos">Hotel Photos</string>
+    <string name="location_icon">Location Icon</string>
+    <string name="rating">Rating</string>
+    <string name="amenities">Amenities</string>
+    <string name="not_rated">Not Rated</string>
 </resources>

@@ -61,6 +61,7 @@ fun MapSearchScreen(
     // Reset previous selections when searching by location
     onAction(LocationSearchAction.OnRatingSelected(emptySet()))
     onAction(LocationSearchAction.OnAmenitiesSelected(emptySet()))
+    onAction(LocationSearchAction.OnOfferDetailsSet("", "", 0))
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(44.4268, 0.0), 6f)
@@ -145,6 +146,14 @@ fun MapSearchScreen(
                                     checkInDate = checkIn
                                     checkOutDate = checkOut
                                     adults = adultCount
+
+                                    onAction(
+                                        LocationSearchAction.OnOfferDetailsSet(
+                                            checkIn,
+                                            checkOut,
+                                            adultCount
+                                        )
+                                    )
                                 },
                                 initialSelectedRatings = selectedHotelRating,
                                 initialSelectedAmenities = selectedHotelAmenities,

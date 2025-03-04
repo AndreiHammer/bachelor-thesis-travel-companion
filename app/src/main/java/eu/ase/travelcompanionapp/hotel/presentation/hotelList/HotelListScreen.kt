@@ -1,6 +1,5 @@
 package eu.ase.travelcompanionapp.hotel.presentation.hotelList
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +28,12 @@ import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.components.HotelList
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.components.HotelListScreenError
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Surface
 
 
 @Composable
@@ -40,95 +46,139 @@ fun HotelListScreenRoot(
     longitude: Double? = null,
     radius: Int? = null,
     amenities: Set<String>? = emptySet(),
-    ratings: Set<Int>? = emptySet(),
-    modifier: Modifier = Modifier
+    ratings: Set<Int>? = emptySet()
 ) {
     val state by viewModel.hotelState.collectAsStateWithLifecycle()
 
-    if (selectedCity != null) {
-        viewModel.getHotelListByCity(city = selectedCity, amenities = amenities?.joinToString(",") ?: "", rating = ratings?.joinToString(",") ?: "")
-    } else if (latitude != null && longitude != null && radius != null) {
-        viewModel.getHotelListByLocation(latitude = latitude, longitude = longitude, radius = radius, amenities = amenities?.joinToString(",") ?: "", rating = ratings?.joinToString(",") ?: "")
+    LaunchedEffect(selectedCity, latitude, longitude, radius, amenities, ratings) {
+        if (selectedCity != null) {
+            viewModel.getHotelListByCity(
+                city = selectedCity,
+                amenities = amenities?.joinToString(",") ?: "",
+                rating = if (ratings.isNullOrEmpty()) "1,2,3,4,5" else ratings.joinToString(",")
+            )
+        } else if (latitude != null && longitude != null && radius != null) {
+            viewModel.getHotelListByLocation(
+                latitude = latitude,
+                longitude = longitude,
+                radius = radius,
+                amenities = amenities?.joinToString(",") ?: "",
+                rating = if (ratings.isNullOrEmpty()) "1,2,3,4,5" else ratings.joinToString(",")
+            )
+        }
     }
 
-    if (state.errorMessage != null) {
-        HotelListScreenError(
-            errorMessage = stringResource(R.string.invalid_city_error),
-            onAction = { action ->
-                if (action is HotelListAction.OnBackClick) {
-                    onBackClick()
+    when {
+        // Show error screen for no hotels or errors
+        state.errorMessage != null || state.hotels.isEmpty() && !state.isLoading -> {
+            HotelListScreenError(
+                errorMessage = state.errorMessage ?: stringResource(R.string.no_hotels_found),
+                onAction = { action ->
+                    when (action) {
+                        HotelListAction.OnBackClick -> onBackClick()
+                        else -> {}
+                    }
                 }
-            }
-        )
-    } else {
-        HotelListScreen(
-            state = state,
-            selectedCity = selectedCity,
-            onAction = { action ->
-                when (action) {
-                    is HotelListAction.OnHotelClick -> onHotelClick(action.hotel)
-                    is HotelListAction.OnBackClick -> onBackClick()
-                }
-                viewModel.onAction(action)
-            },
-            modifier = modifier
-        )
+            )
+        }
+        // Show main screen for loading or results
+        else -> {
+            HotelListScreen(
+                state = state,
+                selectedCity = selectedCity,
+                onHotelClick = onHotelClick,
+                onBackClick = onBackClick
+            )
+        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HotelListScreen(
-    modifier: Modifier = Modifier,
+private fun HotelListScreen(
     state: HotelListViewModel.HotelListState,
     selectedCity: String?,
-    onAction: (HotelListAction) -> Unit,
+    onHotelClick: (Hotel) -> Unit,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = if (selectedCity != null) stringResource(R.string.hotels_list, selectedCity)
-                        else stringResource(R.string.hotels_list_by_location))
+                    Column {
+                        Text(
+                            text = if (selectedCity != null) 
+                                stringResource(R.string.hotels_list, selectedCity)
+                            else 
+                                stringResource(R.string.hotels_list_by_location)
+                        )
+                        if (state.hotels.isNotEmpty()) {
+                            Text(
+                                text = stringResource(
+                                    R.string.hotels_found,
+                                    state.hotels.size
+                                ),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                            )
+                        }
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { onAction(HotelListAction.OnBackClick) }) {
+                    IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
                         )
                     }
-                },
+                }
             )
         }
     ) { paddingValues ->
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center
         ) {
-            if (state.isLoading) {
-                Box(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    BlurredAnimatedText(text = stringResource(R.string.loading_hotels))
+            when {
+                state.isLoading -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.padding(24.dp)
+                    ) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        BlurredAnimatedText(
+                            text = stringResource(R.string.loading_hotels)
+                        )
+                    }
                 }
-            } else {
-                HotelList(
-                    hotels = state.hotels,
-                    onHotelClick = { hotel ->
-                        onAction(HotelListAction.OnHotelClick(hotel))
-                    },
-                    modifier = Modifier.fillMaxSize()
-                )
+                else -> {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        HotelList(
+                            hotels = state.hotels,
+                            onHotelClick = onHotelClick,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp)
+                        )
+                    }
+                }
             }
         }
     }

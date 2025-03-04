@@ -55,25 +55,26 @@ class AmadeusApiService(
             is Result.Success -> {
                 val token = tokenResult.data
                 safeCall<HotelSearchResponse> {
-                    var url =
-                        "https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode=$city&radius=20&radiusUnit=KM"
-                    if (amenities.isNotEmpty()) {
-                        url = "$url&amenities=$amenities"
-                    }
-                    if (rating.isNotEmpty()) {
-                        url = "$url&ratings=$rating"
-                    }
-
-                    client.get(url) {
+                    client.get("https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode=$city&radius=20&radiusUnit=KM" + 
+                        (if (amenities.isNotEmpty()) "&amenities=$amenities" else "") +
+                        (if (rating.isNotEmpty()) "&ratings=$rating" else "")) {
                         headers {
                             bearerAuth(token)
                         }
                     }
                 }.map { response ->
                     if (response.errors.isNotEmpty()) {
-                        onResult(Result.Error(DataError.Remote.SERIALIZATION))
+                        val error = response.errors.first()
+                        when {
+                            error.status == 400 && error.code == 895 -> {
+                                onResult(Result.Success(emptyList()))
+                            }
+                            else -> {
+                                onResult(Result.Error(DataError.Remote.UNKNOWN))
+                            }
+                        }
                     } else {
-                        onResult(Result.Success(response.data.map { it }))
+                        onResult(Result.Success(response.data))
                     }
                 }
             }
@@ -95,25 +96,26 @@ class AmadeusApiService(
             is Result.Success -> {
                 val token = tokenResult.data
                 safeCall<HotelSearchResponse> {
-                    var url =
-                        "https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-geocode?latitude=$latitude&longitude=$longitude&radius=$radius&radiusUnit=KM"
-                    if (amenities.isNotEmpty()) {
-                        url = "$url&amenities=$amenities"
-                    }
-                    if (rating.isNotEmpty()) {
-                        url = "$url&ratings=$rating"
-                    }
-
-                    client.get(url) {
+                    client.get("https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-geocode?latitude=$latitude&longitude=$longitude&radius=$radius&radiusUnit=KM" +
+                        (if (amenities.isNotEmpty()) "&amenities=$amenities" else "") +
+                        (if (rating.isNotEmpty()) "&ratings=$rating" else "")) {
                         headers {
                             bearerAuth(token)
                         }
                     }
                 }.map { response ->
                     if (response.errors.isNotEmpty()) {
-                        onResult(Result.Error(DataError.Remote.SERIALIZATION))
+                        val error = response.errors.first()
+                        when {
+                            error.status == 400 && error.code == 895 -> {
+                                onResult(Result.Success(emptyList()))
+                            }
+                            else -> {
+                                onResult(Result.Error(DataError.Remote.UNKNOWN))
+                            }
+                        }
                     } else {
-                        onResult(Result.Success(response.data.map { it }))
+                        onResult(Result.Success(response.data))
                     }
                 }
             }

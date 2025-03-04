@@ -48,7 +48,7 @@ fun HotelOffersScreen(
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
             TopAppBar(
-                title = { Text(text = "Hotel Offers") },
+                title = { Text(text = stringResource(R.string.hotel_offers)) },
                 navigationIcon = {
                     IconButton(onClick = { onAction(HotelOffersAction.OnBackClick) }) {
                         Icon(
@@ -81,7 +81,7 @@ fun HotelOffersScreen(
             } else {
                 HotelOffersSection(
                     hotelOffers = state.offers,
-                    errorMessage = state.error ?: "No offers available",
+                    errorMessage = state.error ?: stringResource(R.string.no_offers_available),
                     onBookNow = {
                         onAction(HotelOffersAction.OnBookNow)
                     }

@@ -2,21 +2,29 @@ package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,12 +34,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
 
@@ -42,30 +48,43 @@ fun ImageDialog(
     onDismiss: () -> Unit,
     onImageChange: (Int) -> Unit
 ) {
-    Dialog(onDismissRequest = onDismiss) {
-        Box(
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.5f)
-                .clip(MaterialTheme.shapes.medium)
-                .background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth(0.9f)
+                .fillMaxHeight(0.7f),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 8.dp
+            )
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
+                modifier = Modifier.fillMaxSize()
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
-                    contentAlignment = Alignment.CenterEnd
+                    contentAlignment = Alignment.TopEnd
                 ) {
-                    IconButton(onClick = onDismiss) {
+                    IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.size(48.dp)
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = stringResource(R.string.close),
-                            tint = MaterialTheme.colorScheme.onBackground
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -75,16 +94,20 @@ fun ImageDialog(
                     pageCount = { hotelState.photos.size }
                 )
 
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                ) {
                     HorizontalPager(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
-                        state = pagerState
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize()
                     ) { page ->
                         val photoUri = hotelState.photos[page]
                         Box(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
@@ -92,57 +115,60 @@ fun ImageDialog(
                                 contentDescription = stringResource(R.string.hotel_photo, page),
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .clip(MaterialTheme.shapes.medium),
+                                    .clip(RoundedCornerShape(8.dp)),
                                 contentScale = ContentScale.Fit
-                            )
-
-                            Text(
-                                text = "${page + 1}/${hotelState.photos.size}",
-                                style = TextStyle(
-                                    fontFamily = FontFamily.Default,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onBackground
-                                ),
-                                modifier = Modifier
-                                    .align(Alignment.TopCenter)
-                                    .padding(16.dp)
                             )
                         }
                     }
 
-                    IconButton(
-                        onClick = {
-                            if (pagerState.currentPage > 0) {
-                                onImageChange(pagerState.currentPage - 1)
-                            }
-                        },
+                    Row(
                         modifier = Modifier
-                            .align(Alignment.CenterStart)
-                            .padding(16.dp)
+                            .fillMaxWidth()
+                            .align(Alignment.Center),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        NavigationButton(
+                            onClick = {
+                                if (pagerState.currentPage > 0) {
+                                    onImageChange(pagerState.currentPage - 1)
+                                }
+                            },
+                            icon = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.previous_image),
-                            tint = MaterialTheme.colorScheme.onBackground
+                            enabled = pagerState.currentPage > 0
+                        )
+
+                        NavigationButton(
+                            onClick = {
+                                if (pagerState.currentPage < hotelState.photos.size - 1) {
+                                    onImageChange(pagerState.currentPage + 1)
+                                }
+                            },
+                            icon = Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = stringResource(R.string.next_image),
+                            enabled = pagerState.currentPage < hotelState.photos.size - 1
                         )
                     }
 
-                    IconButton(
-                        onClick = {
-                            if (pagerState.currentPage < hotelState.photos.size - 1) {
-                                onImageChange(pagerState.currentPage + 1)
-                            }
-                        },
+                    Box(
                         modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .padding(16.dp)
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp)
+                            .align(Alignment.BottomCenter)
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                            contentDescription = stringResource(R.string.next_image),
-                            tint = MaterialTheme.colorScheme.onBackground
-                        )
+                        Surface(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .clip(RoundedCornerShape(20.dp)),
+                            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                        ) {
+                            Text(
+                                text = "${pagerState.currentPage + 1}/${hotelState.photos.size}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+                        }
                     }
                 }
 
@@ -150,6 +176,43 @@ fun ImageDialog(
                     pagerState.animateScrollToPage(currentImageIndex)
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun NavigationButton(
+    onClick: () -> Unit,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    contentDescription: String,
+    enabled: Boolean
+) {
+    Box(
+        modifier = Modifier
+            .padding(8.dp)
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(
+                if (enabled) 
+                    MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
+                else 
+                    MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        IconButton(
+            onClick = onClick,
+            enabled = enabled,
+            modifier = Modifier.size(40.dp)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = if (enabled) 
+                    MaterialTheme.colorScheme.onSurface 
+                else 
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+            )
         }
     }
 }

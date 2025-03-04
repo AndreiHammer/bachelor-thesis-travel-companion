@@ -7,11 +7,7 @@ sealed interface DataError: Error {
         NO_INTERNET,
         SERVER,
         SERIALIZATION,
-        UNKNOWN
-    }
-
-    enum class Local: DataError {
-        DISK_FULL,
-        UNKNOWN
+        UNKNOWN,
+        NOT_FOUND
     }
 }

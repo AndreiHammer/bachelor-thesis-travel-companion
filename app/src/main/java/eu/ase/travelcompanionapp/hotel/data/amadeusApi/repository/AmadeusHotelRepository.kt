@@ -21,11 +21,16 @@ class AmadeusHotelRepository(
         onResult: (Result<List<Hotel>, DataError>) -> Unit
     ) {
         remoteHotelDataSource.searchHotelsByCity(city, amenities, rating) { result ->
-            onResult(result.map { hotelDto ->
-                hotelDto.map {
-                    it.toHotel()
+            when (result) {
+                is Result.Error -> onResult(Result.Error(result.error))
+                is Result.Success -> {
+                    if (result.data.isEmpty()) {
+                        onResult(Result.Error(DataError.Remote.NOT_FOUND))
+                    } else {
+                        onResult(Result.Success(result.data.map { it.toHotel() }))
+                    }
                 }
-            })
+            }
         }
     }
 
@@ -38,11 +43,16 @@ class AmadeusHotelRepository(
         onResult: (Result<List<Hotel>, DataError>) -> Unit
     ) {
         remoteHotelDataSource.searchHotelsByLocation(latitude, longitude, radius, amenities, rating) { result ->
-            onResult(result.map { hotelDto ->
-                hotelDto.map {
-                    it.toHotel()
+            when (result) {
+                is Result.Error -> onResult(Result.Error(result.error))
+                is Result.Success -> {
+                    if (result.data.isEmpty()) {
+                        onResult(Result.Error(DataError.Remote.NOT_FOUND))
+                    } else {
+                        onResult(Result.Success(result.data.map { it.toHotel() }))
+                    }
                 }
-            })
+            }
         }
     }
 
@@ -53,11 +63,9 @@ class AmadeusHotelRepository(
         adults: String,
         onResult: (Result<List<HotelOffer>, DataError.Remote>) -> Unit
     ) {
-        remoteHotelDataSource.searchHotelOffers(hotelIds, checkInDate, checkOutDate, adults){ result ->
+        remoteHotelDataSource.searchHotelOffers(hotelIds, checkInDate, checkOutDate, adults) { result ->
             onResult(result.map { hotelOffersDto ->
-                hotelOffersDto.map {
-                    it.toHotelOffer()
-                }
+                hotelOffersDto.map { it.toHotelOffer() }
             })
         }
     }

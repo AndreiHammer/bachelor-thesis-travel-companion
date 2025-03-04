@@ -63,8 +63,7 @@ fun HotelLocationScreen(
         viewModel.getHotelDetails(hotel.name, hotel.countryCode)
     }
 
-
-    val isLoading = hotelState.value.photos.isEmpty()
+    val isLoading = hotelState.value.isLoading
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,

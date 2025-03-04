@@ -36,6 +36,9 @@ fun LocationSearchScreen(
     onAction: (LocationSearchAction) -> Unit,
 ) {
     val city = remember { mutableStateOf("") }
+    onAction(LocationSearchAction.OnRatingSelected(emptySet()))
+    onAction(LocationSearchAction.OnAmenitiesSelected(emptySet()))
+    onAction(LocationSearchAction.OnOfferDetailsSet("", "", 0))
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,

@@ -65,7 +65,7 @@ class PlacesApiService(context: Context) {
             val photosUris = mutableListOf<Bitmap>()
 
             if (photoMetadatas.isNullOrEmpty()) {
-                onResult(Error(DataError.Remote.UNKNOWN))
+                onResult(Success(Pair(hotel, emptyList())))
             } else {
                 val photosToFetch = photoMetadatas.take(10)
 
@@ -82,7 +82,11 @@ class PlacesApiService(context: Context) {
                             onResult(Success(Pair(hotel, photosUris)))
                         }
                     }.addOnFailureListener {
-                        onResult(Error(DataError.Remote.UNKNOWN))
+                        if (photosUris.isNotEmpty()) {
+                            onResult(Success(Pair(hotel, photosUris)))
+                        } else {
+                            onResult(Success(Pair(hotel, emptyList())))
+                        }
                     }
                 }
             }
