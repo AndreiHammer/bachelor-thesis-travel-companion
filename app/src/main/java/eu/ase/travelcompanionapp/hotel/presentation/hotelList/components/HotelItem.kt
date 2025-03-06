@@ -41,7 +41,6 @@ fun HotelItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Ensure we have a valid rating (1-5) or default to 0
     val rating = remember(hotel.rating) {
         when {
             hotel.rating == null -> 0
@@ -115,27 +114,27 @@ fun HotelItem(
                     modifier = Modifier.padding(end = 8.dp)
                 )
                 
-                Row {
-                    repeat(5) { index ->
-                        if (index < rating) {
-                            Icon(
-                                imageVector = Icons.Filled.Star,
-                                contentDescription = null,
-                                tint = Color(0xFFFFC107), // Amber color for filled stars
-                                modifier = Modifier.size(20.dp)
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Outlined.Star,
-                                contentDescription = null,
-                                tint = Color(0xFFBDBDBD), // Gray color for empty stars
-                                modifier = Modifier.size(20.dp)
-                            )
+                if (rating > 0) {
+                    Row {
+                        repeat(5) { index ->
+                            if (index < rating) {
+                                Icon(
+                                    imageVector = Icons.Filled.Star,
+                                    contentDescription = null,
+                                    tint = Color(0xFFFFC107),
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Outlined.Star,
+                                    contentDescription = null,
+                                    tint = Color(0xFFBDBDBD),
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
                         }
                     }
-                }
-                
-                if (rating == 0) {
+                } else {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.not_rated),

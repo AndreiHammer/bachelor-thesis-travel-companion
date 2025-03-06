@@ -55,7 +55,7 @@ fun HotelListScreenRoot(
             viewModel.getHotelListByCity(
                 city = selectedCity,
                 amenities = amenities?.joinToString(",") ?: "",
-                rating = if (ratings.isNullOrEmpty()) "1,2,3,4,5" else ratings.joinToString(",")
+                rating = if (ratings.isNullOrEmpty()) "" else ratings.joinToString(",")
             )
         } else if (latitude != null && longitude != null && radius != null) {
             viewModel.getHotelListByLocation(
@@ -63,13 +63,12 @@ fun HotelListScreenRoot(
                 longitude = longitude,
                 radius = radius,
                 amenities = amenities?.joinToString(",") ?: "",
-                rating = if (ratings.isNullOrEmpty()) "1,2,3,4,5" else ratings.joinToString(",")
+                rating = if (ratings.isNullOrEmpty()) "" else ratings.joinToString(",")
             )
         }
     }
 
     when {
-        // Show error screen for no hotels or errors
         state.errorMessage != null || state.hotels.isEmpty() && !state.isLoading -> {
             HotelListScreenError(
                 errorMessage = state.errorMessage ?: stringResource(R.string.no_hotels_found),
@@ -81,7 +80,6 @@ fun HotelListScreenRoot(
                 }
             )
         }
-        // Show main screen for loading or results
         else -> {
             HotelListScreen(
                 state = state,
