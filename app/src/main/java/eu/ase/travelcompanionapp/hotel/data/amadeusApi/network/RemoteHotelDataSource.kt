@@ -1,7 +1,7 @@
 package eu.ase.travelcompanionapp.hotel.data.amadeusApi.network
 
-import eu.ase.travelcompanionapp.core.domain.DataError
-import eu.ase.travelcompanionapp.core.domain.Result
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.HotelDto
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.HotelOffersDto
 

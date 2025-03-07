@@ -1,8 +1,8 @@
 package eu.ase.travelcompanionapp.hotel.domain.repository
 
 import coil3.Bitmap
-import eu.ase.travelcompanionapp.core.domain.DataError
-import eu.ase.travelcompanionapp.core.domain.Result
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 
 interface HotelRepositoryPlacesApi {

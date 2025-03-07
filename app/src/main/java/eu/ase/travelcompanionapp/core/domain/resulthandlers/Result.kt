@@ -1,8 +1,8 @@
-package eu.ase.travelcompanionapp.core.domain
+package eu.ase.travelcompanionapp.core.domain.resulthandlers
 
 sealed interface Result<out D, out E: Error> {
     data class Success<out D>(val data: D): Result<D, Nothing>
-    data class Error<out E: eu.ase.travelcompanionapp.core.domain.Error>(val error: E):
+    data class Error<out E: eu.ase.travelcompanionapp.core.domain.resulthandlers.Error>(val error: E):
         Result<Nothing, E>
 }
 

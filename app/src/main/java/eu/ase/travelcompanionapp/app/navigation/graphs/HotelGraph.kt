@@ -37,6 +37,7 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                 it.sharedKoinViewModel<SharedViewModel>(navController)
 
             LocationSearchScreen(
+                sharedViewModel = sharedViewModel,
                 onAction = { action ->
                     when (action) {
                         is LocationSearchAction.OnSearchClick -> {
@@ -59,12 +60,15 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                         is LocationSearchAction.OnAmenitiesSelected -> {
                             sharedViewModel.onSelectAmenities(action.amenities)
                         }
+
                         is LocationSearchAction.OnRatingSelected -> {
                             sharedViewModel.onSelectRating(action.ratings)
                         }
+
                         is LocationSearchAction.OnCitySelected -> {
                             sharedViewModel.onSelectCity(action.city)
                         }
+
                         is LocationSearchAction.OnLocationSelected -> {}
                         is LocationSearchAction.OnOfferDetailsSet -> {
                             sharedViewModel.onSelectDates(action.checkInDate, action.checkOutDate)
@@ -72,6 +76,18 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                         }
 
                         LocationSearchAction.OnBackClick -> {}
+                        LocationSearchAction.OnNearbySearchClick -> {
+                            val locationState = sharedViewModel.selectedLocation.value
+                            if (locationState.location != null) {
+                                navController.navigate(
+                                    HotelRoute.HotelListLocation(
+                                        locationState.location.latitude,
+                                        locationState.location.longitude,
+                                        locationState.range.toFloat()
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
             )
@@ -116,6 +132,7 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                         LocationSearchAction.OnMapClick -> TODO()
                         LocationSearchAction.OnProfileClick -> TODO()
                         is LocationSearchAction.OnSearchClick -> TODO()
+                        LocationSearchAction.OnNearbySearchClick -> TODO()
                     }
                 }
             )

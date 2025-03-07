@@ -116,4 +116,8 @@
     <string name="rating">Rating</string>
     <string name="amenities">Amenities</string>
     <string name="not_rated">Not Rated</string>
+    <string name="looking_for_accommodations_nearby">Looking for accommodations nearby?</string>
+    <string name="find_hotels_near_your_current_location">Find hotels near your current location</string>
+    <string name="unable_to_get_your_location_please_check_your_location_settings">Unable to get your location. Please check your location settings.</string>
+    <string name="location_permission_needed_to_find_nearby_hotels">Location permission needed to find nearby hotels!</string>
 </resources>

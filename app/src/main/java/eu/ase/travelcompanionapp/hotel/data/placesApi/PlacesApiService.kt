@@ -8,10 +8,10 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPhotoRequest
-import eu.ase.travelcompanionapp.core.domain.DataError
-import eu.ase.travelcompanionapp.core.domain.Result
-import eu.ase.travelcompanionapp.core.domain.Result.Error
-import eu.ase.travelcompanionapp.core.domain.Result.Success
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result.Error
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result.Success
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 
 

@@ -2,8 +2,8 @@ package eu.ase.travelcompanionapp.hotel.presentation.hotelList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eu.ase.travelcompanionapp.core.domain.DataError
-import eu.ase.travelcompanionapp.core.domain.Result
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.domain.repository.CityToIATACodeRepository
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi

@@ -2,9 +2,9 @@ package eu.ase.travelcompanionapp.hotel.data.amadeusApi.network
 
 import eu.ase.travelcompanionapp.BuildConfig
 import eu.ase.travelcompanionapp.core.data.network.safeCall
-import eu.ase.travelcompanionapp.core.domain.DataError
-import eu.ase.travelcompanionapp.core.domain.Result
-import eu.ase.travelcompanionapp.core.domain.map
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.map
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.AmadeusOAuth2TokenResponse
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.Errors
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.HotelDto

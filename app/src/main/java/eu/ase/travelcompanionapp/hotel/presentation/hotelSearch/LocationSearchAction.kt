@@ -4,6 +4,8 @@ import com.google.android.gms.maps.model.LatLng
 
 
 sealed interface LocationSearchAction {
+    data object OnNearbySearchClick: LocationSearchAction
+
     data object OnMapClick: LocationSearchAction
 
     data object OnBackClick: LocationSearchAction

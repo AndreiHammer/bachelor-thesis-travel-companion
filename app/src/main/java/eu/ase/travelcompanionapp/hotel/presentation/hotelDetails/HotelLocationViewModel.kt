@@ -8,7 +8,7 @@ import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryPlacesAp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import eu.ase.travelcompanionapp.core.domain.Result
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 
 class HotelLocationViewModel(
     private val hotelRepository: HotelRepositoryPlacesApi

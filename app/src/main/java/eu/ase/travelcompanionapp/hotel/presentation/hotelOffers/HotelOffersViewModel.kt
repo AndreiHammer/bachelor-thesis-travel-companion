@@ -2,7 +2,8 @@ package eu.ase.travelcompanionapp.hotel.presentation.hotelOffers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eu.ase.travelcompanionapp.core.domain.DateConverter
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
+import eu.ase.travelcompanionapp.core.domain.utils.DateConverter
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,13 +33,13 @@ class HotelOffersViewModel(
                     adults.toString()
                 ) { result ->
                     when (result) {
-                        is eu.ase.travelcompanionapp.core.domain.Result.Error -> {
+                        is Result.Error -> {
                             _state.value = _state.value.copy(
                                 isLoading = false,
                                 error = result.error.name
                             )
                         }
-                        is eu.ase.travelcompanionapp.core.domain.Result.Success -> {
+                        is Result.Success -> {
                             _state.value = _state.value.copy(
                                 isLoading = false,
                                 offers = result.data

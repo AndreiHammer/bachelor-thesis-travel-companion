@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.core.domain
+package eu.ase.travelcompanionapp.core.domain.resulthandlers
 
 sealed interface DataError: Error {
     enum class Remote: DataError {

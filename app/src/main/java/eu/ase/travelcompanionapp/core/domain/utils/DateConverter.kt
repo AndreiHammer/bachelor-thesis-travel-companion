@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.core.domain
+package eu.ase.travelcompanionapp.core.domain.utils
 
 import java.time.Instant
 import java.time.LocalDate
@@ -23,5 +23,15 @@ class DateConverter {
     fun displayDateToApiFormat(displayDate: String): String {
         val localDate = LocalDate.parse(displayDate, displayFormatter)
         return localDate.format(apiFormatter)
+    }
+
+    fun getCurrentAndNextDayDates(): Pair<String, String> {
+        val today = LocalDate.now().atStartOfDay(ZoneId.systemDefault())
+        val tomorrow = today.plusDays(1)
+        
+        return Pair(
+            dateToString(today),
+            dateToString(tomorrow)
+        )
     }
 }
