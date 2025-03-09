@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.core.domain.utils.DateUtils
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.AmenitiesChipGroup
 import eu.ase.travelcompanionapp.core.presentation.DatePickerWithDialog
@@ -42,6 +43,9 @@ fun LocationFilterSearch(
     val checkInDate = remember { mutableStateOf(initialCheckInDate) }
     val checkOutDate = remember { mutableStateOf(initialCheckOutDate) }
     val adults = remember { mutableIntStateOf(initialAdults) }
+
+    val dateUtils = remember { DateUtils() }
+    val today = remember { System.currentTimeMillis() }
 
     Column(
         modifier = Modifier.padding(16.dp)
@@ -73,7 +77,18 @@ fun LocationFilterSearch(
             DatePickerWithDialog(
                 label = stringResource(R.string.check_in_date),
                 selectedDate = checkInDate.value,
-                onDateSelected = { dateString -> checkInDate.value = dateString },
+                minDate = today,
+                onDateSelected = { dateString ->
+                    checkInDate.value = dateString
+                    if (checkOutDate.value.isNotEmpty()) {
+                        val checkInDateTime = dateUtils.parseDisplayDate(dateString)
+                        val checkOutDateTime = dateUtils.parseDisplayDate(checkOutDate.value)
+                        if (checkOutDateTime != null && checkInDateTime != null &&
+                            !checkOutDateTime.isAfter(checkInDateTime)) {
+                            checkOutDate.value = ""
+                        }
+                    }
+                },
                 modifier = Modifier.weight(1f)
             )
 
@@ -82,7 +97,15 @@ fun LocationFilterSearch(
             DatePickerWithDialog(
                 label = stringResource(R.string.check_out_date),
                 selectedDate = checkOutDate.value,
-                onDateSelected = { dateString -> checkOutDate.value = dateString },
+                minDate = if (checkInDate.value.isNotEmpty()) {
+                    val checkInDateTime = dateUtils.parseDisplayDate(checkInDate.value)
+                    checkInDateTime?.plusDays(1)?.toInstant()?.toEpochMilli() ?: today
+                } else {
+                    dateUtils.convertMillisToLocalDate(today).plusDays(1).toInstant().toEpochMilli()
+                },
+                onDateSelected = { dateString ->
+                    checkOutDate.value = dateString
+                },
                 modifier = Modifier.weight(1f)
             )
         }

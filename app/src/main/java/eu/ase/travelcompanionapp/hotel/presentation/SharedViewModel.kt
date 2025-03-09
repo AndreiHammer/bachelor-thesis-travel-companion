@@ -1,6 +1,5 @@
 package eu.ase.travelcompanionapp.hotel.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
@@ -58,7 +57,6 @@ class SharedViewModel : ViewModel() {
     }
 
     fun onSelectLocation(location: LatLng, range: Int) {
-        Log.d("SharedViewModel", "Setting location: $location with range: $range")
         _selectedLocation.value = LocationState(location, range)
     }
 

@@ -3,7 +3,7 @@ package eu.ase.travelcompanionapp.hotel.presentation.hotelOffers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
-import eu.ase.travelcompanionapp.core.domain.utils.DateConverter
+import eu.ase.travelcompanionapp.core.domain.utils.DateUtils
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,9 +22,9 @@ class HotelOffersViewModel(
             try {
                 _state.value = _state.value.copy(isLoading = true)
 
-                val dateConverter = DateConverter()
-                val apiCheckInDate = dateConverter.displayDateToApiFormat(checkInDate)
-                val apiCheckOutDate = dateConverter.displayDateToApiFormat(checkOutDate)
+                val dateUtils = DateUtils()
+                val apiCheckInDate = dateUtils.displayDateToApiFormat(checkInDate)
+                val apiCheckOutDate = dateUtils.displayDateToApiFormat(checkOutDate)
 
                 hotelRepositoryAmadeusApi.searchHotelOffers(
                     hotelId,

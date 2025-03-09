@@ -7,7 +7,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class DateConverter {
+class DateUtils {
     private val displayFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
     private val apiFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 
@@ -33,5 +33,14 @@ class DateConverter {
             dateToString(today),
             dateToString(tomorrow)
         )
+    }
+
+    fun parseDisplayDate(displayDate: String): ZonedDateTime? {
+        return try {
+            val localDate = LocalDate.parse(displayDate, displayFormatter)
+            localDate.atStartOfDay(ZoneId.systemDefault())
+        } catch (e: Exception) {
+            null
+        }
     }
 }
