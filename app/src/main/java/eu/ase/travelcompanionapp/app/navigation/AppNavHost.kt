@@ -7,8 +7,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
 import eu.ase.travelcompanionapp.app.navigation.graphs.AuthGraph
 import eu.ase.travelcompanionapp.app.navigation.graphs.HotelGraph
 import eu.ase.travelcompanionapp.app.navigation.graphs.ProfileGraph
@@ -18,9 +18,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppNavHost(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
-    val navController = rememberNavController()
     val context = LocalContext.current
     NavHost(
         navController = navController,
