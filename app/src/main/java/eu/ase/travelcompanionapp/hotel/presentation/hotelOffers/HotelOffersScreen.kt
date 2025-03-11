@@ -35,9 +35,8 @@ fun HotelOffersScreen(
     checkInDate: String,
     checkOutDate: String,
     adults: Int,
-    onAction: (HotelOffersAction) -> Unit
+    viewModel: HotelOffersViewModel = koinViewModel()
 ) {
-    val viewModel: HotelOffersViewModel = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(hotelId) {
@@ -50,7 +49,7 @@ fun HotelOffersScreen(
             TopAppBar(
                 title = { Text(text = stringResource(R.string.hotel_offers)) },
                 navigationIcon = {
-                    IconButton(onClick = { onAction(HotelOffersAction.OnBackClick) }) {
+                    IconButton(onClick = { viewModel.handleAction(HotelOffersAction.OnBackClick) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
@@ -83,7 +82,7 @@ fun HotelOffersScreen(
                     hotelOffers = state.offers,
                     errorMessage = state.error ?: stringResource(R.string.no_offers_available),
                     onBookNow = {
-                        onAction(HotelOffersAction.OnBookNow)
+                        viewModel.handleAction(HotelOffersAction.OnBookNow)
                     }
                 )
             }

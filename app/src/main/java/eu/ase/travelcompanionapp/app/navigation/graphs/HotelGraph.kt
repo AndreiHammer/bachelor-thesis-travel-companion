@@ -10,20 +10,21 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
-import eu.ase.travelcompanionapp.app.navigation.routes.ProfileRoute
 import eu.ase.travelcompanionapp.app.navigation.sharedKoinViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationScreenRoot
+import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.hotelFavourites.HotelFavouriteScreen
+import eu.ase.travelcompanionapp.hotel.presentation.hotelFavourites.HotelFavouriteViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListScreenRoot
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.HotelOffersAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.HotelOffersScreen
-import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchAction
+import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.HotelOffersViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchScreen
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.MapSearchScreen
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
     navigation<HotelRoute.HotelGraph>(
@@ -33,62 +34,13 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
             enterTransition = { slideInHorizontally() },
             exitTransition = { slideOutHorizontally() }
         ) {
-            val sharedViewModel =
-                it.sharedKoinViewModel<SharedViewModel>(navController)
+            val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
+            val viewModel = koinViewModel<LocationSearchViewModel>(parameters = { parametersOf(navController, sharedViewModel) })
 
             LocationSearchScreen(
                 sharedViewModel = sharedViewModel,
                 onAction = { action ->
-                    when (action) {
-                        is LocationSearchAction.OnSearchClick -> {
-                            sharedViewModel.onSelectCity(action.city)
-                            navController.navigate(
-                                HotelRoute.HotelListCity(
-                                    city = action.city
-                                )
-                            )
-                        }
-
-                        LocationSearchAction.OnMapClick -> {
-                            navController.navigate(HotelRoute.MapSearch)
-                        }
-
-                        LocationSearchAction.OnProfileClick -> {
-                            navController.navigate(ProfileRoute.Profile)
-                        }
-
-                        is LocationSearchAction.OnAmenitiesSelected -> {
-                            sharedViewModel.onSelectAmenities(action.amenities)
-                        }
-
-                        is LocationSearchAction.OnRatingSelected -> {
-                            sharedViewModel.onSelectRating(action.ratings)
-                        }
-
-                        is LocationSearchAction.OnCitySelected -> {
-                            sharedViewModel.onSelectCity(action.city)
-                        }
-
-                        is LocationSearchAction.OnLocationSelected -> {}
-                        is LocationSearchAction.OnOfferDetailsSet -> {
-                            sharedViewModel.onSelectDates(action.checkInDate, action.checkOutDate)
-                            sharedViewModel.onSelectAdults(action.adults)
-                        }
-
-                        LocationSearchAction.OnBackClick -> {}
-                        LocationSearchAction.OnNearbySearchClick -> {
-                            val locationState = sharedViewModel.selectedLocation.value
-                            if (locationState.location != null) {
-                                navController.navigate(
-                                    HotelRoute.HotelListLocation(
-                                        locationState.location.latitude,
-                                        locationState.location.longitude,
-                                        locationState.range.toFloat()
-                                    )
-                                )
-                            }
-                        }
-                    }
+                    viewModel.handleAction(action)
                 }
             )
         }
@@ -97,43 +49,12 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
             enterTransition = { slideInHorizontally() },
             exitTransition = { slideOutHorizontally() }
         ) {
-
-            val locationSearchViewModel = koinViewModel<LocationSearchViewModel>()
             val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
+            val viewModel = koinViewModel<LocationSearchViewModel>(parameters = { parametersOf(navController, sharedViewModel) })
+
             MapSearchScreen(
                 onAction = { action ->
-                    when (action) {
-                        is LocationSearchAction.OnAmenitiesSelected -> {
-                            sharedViewModel.onSelectAmenities(action.amenities)
-                        }
-                        is LocationSearchAction.OnRatingSelected -> {
-                            sharedViewModel.onSelectRating(action.ratings)
-                        }
-                        is LocationSearchAction.OnCitySelected -> {
-                        }
-                        is LocationSearchAction.OnLocationSelected -> {
-                            locationSearchViewModel.setLocation(action.location, action.range, sharedViewModel)
-                            navController.navigate(
-                                HotelRoute.HotelListLocation(
-                                    action.location.latitude,
-                                    action.location.longitude,
-                                    action.range.toFloat()
-                                )
-                            )
-                        }
-                        is LocationSearchAction.OnOfferDetailsSet -> {
-                            sharedViewModel.onSelectDates(action.checkInDate, action.checkOutDate)
-                            sharedViewModel.onSelectAdults(action.adults)
-                        }
-
-                        LocationSearchAction.OnBackClick -> {
-                            navController.popBackStack()
-                        }
-                        LocationSearchAction.OnMapClick -> TODO()
-                        LocationSearchAction.OnProfileClick -> TODO()
-                        is LocationSearchAction.OnSearchClick -> TODO()
-                        LocationSearchAction.OnNearbySearchClick -> TODO()
-                    }
+                    viewModel.handleAction(action)
                 }
             )
         }
@@ -147,8 +68,9 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
             }
             }
         ){
-            val viewModel = koinViewModel<HotelListViewModel>()
             val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
+            val viewModel = koinViewModel<HotelListViewModel>(parameters = { parametersOf(navController, sharedViewModel) })
+
             val locationState = sharedViewModel.selectedLocation.collectAsStateWithLifecycle()
             val selectedRatings by sharedViewModel.selectedRatings.collectAsStateWithLifecycle()
             val selectedAmenities by sharedViewModel.selectedAmenities.collectAsStateWithLifecycle()
@@ -163,18 +85,11 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
 
             HotelListScreenRoot(
                 viewModel = viewModel,
-                onHotelClick = { hotel ->
-                    sharedViewModel.onSelectHotel(hotel)
-                    navController.navigate(
-                        HotelRoute.HotelDetail(hotel.hotelId)
-                    )
-                },
                 latitude = latitude,
                 longitude = longitude,
                 radius = radius,
                 amenities = selectedAmenities,
-                ratings = selectedRatings,
-                onBackClick = { navController.popBackStack() }
+                ratings = selectedRatings
             )
         }
 
@@ -186,9 +101,9 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                 initialOffset
             } }
         ){
-
             val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
-            val viewModel = koinViewModel<HotelListViewModel>()
+            val viewModel = koinViewModel<HotelListViewModel>(parameters = { parametersOf(navController, sharedViewModel) })
+
             val selectedCity by sharedViewModel.selectedCity.collectAsStateWithLifecycle()
             val selectedRatings by sharedViewModel.selectedRatings.collectAsStateWithLifecycle()
             val selectedAmenities by sharedViewModel.selectedAmenities.collectAsStateWithLifecycle()
@@ -199,17 +114,9 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
 
             HotelListScreenRoot(
                 viewModel = viewModel,
-                onHotelClick = { hotel ->
-                    sharedViewModel.onSelectHotel(hotel)
-                    navController.navigate(
-                        HotelRoute.HotelDetail(hotel.hotelId)
-                    )
-
-                },
                 selectedCity = selectedCity,
                 amenities = selectedAmenities,
-                ratings = selectedRatings,
-                onBackClick = { navController.popBackStack() }
+                ratings = selectedRatings
             )
         }
 
@@ -221,36 +128,23 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                 initialOffset
             } }
         ) {
-            val sharedViewModel =
-                it.sharedKoinViewModel<SharedViewModel>(navController)
+            val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
             val selectedHotel by sharedViewModel.selectedHotel.collectAsStateWithLifecycle()
             val checkInDate by sharedViewModel.selectedCheckInDate.collectAsStateWithLifecycle()
             val checkOutDate by sharedViewModel.selectedCheckOutDate.collectAsStateWithLifecycle()
             val adults by sharedViewModel.selectedAdults.collectAsStateWithLifecycle()
 
             selectedHotel?.let { selected ->
+                val viewModel = koinViewModel<HotelLocationViewModel>(
+                    parameters = { parametersOf(navController, sharedViewModel) }
+                )
+
                 HotelLocationScreenRoot(
                     hotel = selected,
-                    onAction = { action ->
-                        when(action){
-                            HotelLocationAction.OnBackClick -> {
-                                navController.popBackStack()
-                            }
-                            is HotelLocationAction.OnViewOfferClick -> {
-                                navController.navigate(
-                                    HotelRoute.HotelOffers(
-                                        hotelId = selected.hotelId,
-                                        checkInDate = checkInDate,
-                                        checkOutDate = checkOutDate,
-                                        adults = adults
-                                    )
-                                )
-                            }
-                        }
-                    },
                     checkInDate = checkInDate,
                     checkOutDate = checkOutDate,
-                    adults = adults
+                    adults = adults,
+                    viewModel = viewModel
                 )
             }
         }
@@ -263,29 +157,43 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                 initialOffset
             } }
         ){
-            val sharedViewModel =
-                it.sharedKoinViewModel<SharedViewModel>(navController)
+            val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
             val selectedHotel by sharedViewModel.selectedHotel.collectAsStateWithLifecycle()
             val checkInDate by sharedViewModel.selectedCheckInDate.collectAsStateWithLifecycle()
             val checkOutDate by sharedViewModel.selectedCheckOutDate.collectAsStateWithLifecycle()
             val adults by sharedViewModel.selectedAdults.collectAsStateWithLifecycle()
 
             selectedHotel?.let{ hotel->
+                val viewModel = koinViewModel<HotelOffersViewModel>(
+                    parameters = { parametersOf(navController) }
+                )
+
                 HotelOffersScreen(
                     hotelId = hotel.hotelId,
                     checkInDate = checkInDate,
                     checkOutDate = checkOutDate,
                     adults = adults,
-                    onAction = { action ->
-                        when(action) {
-                            HotelOffersAction.OnBackClick -> {
-                                navController.popBackStack()
-                            }
-                            HotelOffersAction.OnBookNow -> {}
-                        }
-                    }
+                    viewModel = viewModel
                 )
             }
+        }
+
+        composable<HotelRoute.Favourites>(
+            enterTransition = { slideInHorizontally{initialOffset ->
+                initialOffset
+            } },
+            exitTransition = { slideOutHorizontally{initialOffset ->
+                initialOffset
+            } }
+        ) {
+            val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
+            val viewModel = koinViewModel<HotelFavouriteViewModel>(
+                parameters = { parametersOf(navController, sharedViewModel)}
+            )
+
+            HotelFavouriteScreen(
+                viewModel = viewModel
+            )
         }
     }
 }

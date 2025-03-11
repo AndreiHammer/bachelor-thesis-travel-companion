@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
-import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.components.HotelList
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.components.HotelListScreenError
 import org.koin.androidx.compose.koinViewModel
@@ -39,8 +38,6 @@ import androidx.compose.material3.Surface
 @Composable
 fun HotelListScreenRoot(
     viewModel: HotelListViewModel = koinViewModel(),
-    onHotelClick: (Hotel) -> Unit,
-    onBackClick: () -> Unit,
     selectedCity: String? = null,
     latitude: Double? = null,
     longitude: Double? = null,
@@ -73,10 +70,7 @@ fun HotelListScreenRoot(
             HotelListScreenError(
                 errorMessage = state.errorMessage ?: stringResource(R.string.no_hotels_found),
                 onAction = { action ->
-                    when (action) {
-                        HotelListAction.OnBackClick -> onBackClick()
-                        else -> {}
-                    }
+                    viewModel.handleAction(action)
                 }
             )
         }
@@ -84,8 +78,9 @@ fun HotelListScreenRoot(
             HotelListScreen(
                 state = state,
                 selectedCity = selectedCity,
-                onHotelClick = onHotelClick,
-                onBackClick = onBackClick
+                onAction = { action ->
+                    viewModel.handleAction(action)
+                }
             )
         }
     }
@@ -96,8 +91,7 @@ fun HotelListScreenRoot(
 private fun HotelListScreen(
     state: HotelListViewModel.HotelListState,
     selectedCity: String?,
-    onHotelClick: (Hotel) -> Unit,
-    onBackClick: () -> Unit,
+    onAction: (HotelListAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -107,9 +101,9 @@ private fun HotelListScreen(
                 title = {
                     Column {
                         Text(
-                            text = if (selectedCity != null) 
+                            text = if (selectedCity != null)
                                 stringResource(R.string.hotels_list, selectedCity)
-                            else 
+                            else
                                 stringResource(R.string.hotels_list_by_location)
                         )
                         if (state.hotels.isNotEmpty()) {
@@ -130,7 +124,7 @@ private fun HotelListScreen(
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
+                    IconButton(onClick = { onAction(HotelListAction.OnBackClick) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
@@ -170,7 +164,9 @@ private fun HotelListScreen(
                     ) {
                         HotelList(
                             hotels = state.hotels,
-                            onHotelClick = onHotelClick,
+                            onHotelClick = { hotel ->
+                                onAction(HotelListAction.OnHotelClick(hotel))
+                            },
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(horizontal = 16.dp)

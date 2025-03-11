@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
@@ -27,36 +30,32 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HotelLocationScreenRoot(
     hotel: Hotel,
-    onAction: (HotelLocationAction) -> Unit,
     modifier: Modifier = Modifier,
     checkInDate: String,
     checkOutDate: String,
-    adults: Int
+    adults: Int,
+    viewModel: HotelLocationViewModel = koinViewModel()
 ) {
-
     HotelLocationScreen(
         hotel = hotel,
         modifier = modifier,
-        onAction= onAction,
+        viewModel = viewModel,
         checkInDate = checkInDate,
         checkOutDate = checkOutDate,
         adults = adults
     )
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HotelLocationScreen(
     hotel: Hotel,
     modifier: Modifier = Modifier,
-    onAction: (HotelLocationAction) -> Unit,
+    viewModel: HotelLocationViewModel,
     checkInDate: String,
     checkOutDate: String,
     adults: Int
 ) {
-    val viewModel: HotelLocationViewModel = koinViewModel()
-
     val hotelState = viewModel.hotelState.collectAsStateWithLifecycle()
 
     LaunchedEffect(hotel.name, hotel.countryCode) {
@@ -69,9 +68,11 @@ fun HotelLocationScreen(
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
             TopAppBar(
-                title = { Text(text =hotel.name) },
+                title = { Text(text = hotel.name) },
                 navigationIcon = {
-                    IconButton(onClick = { onAction(HotelLocationAction.OnBackClick) }) {
+                    IconButton(onClick = {
+                        viewModel.handleAction(HotelLocationAction.OnBackClick, hotel)
+                    }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
@@ -81,7 +82,20 @@ fun HotelLocationScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                ),
+                actions = {
+                    IconButton(
+                        onClick = {
+                            viewModel.handleAction(HotelLocationAction.OnFavouriteClick, hotel)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = if(hotelState.value.isFavourite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = stringResource(R.string.favourite),
+                            tint = Color.Red
+                        )
+                    }
+                }
             )
         }
     ) { paddingValues ->
@@ -104,12 +118,14 @@ fun HotelLocationScreen(
                     modifier = Modifier.fillMaxSize(),
                     hotelState = hotelState.value,
                     onNavigateToOffers = {
-                        onAction(HotelLocationAction.OnViewOfferClick(checkInDate, checkOutDate, adults))
+                        viewModel.handleAction(
+                            HotelLocationAction.OnViewOfferClick(checkInDate, checkOutDate, adults),
+                            hotel
+                        )
                     }
                 )
             }
         }
     }
 }
-
 

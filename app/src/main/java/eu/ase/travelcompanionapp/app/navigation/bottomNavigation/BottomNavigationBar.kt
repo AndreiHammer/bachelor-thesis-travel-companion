@@ -56,6 +56,15 @@ fun BottomNavigationBar(navController: NavHostController) {
                                 launchSingleTop = true
                                 restoreState = true
                             }
+                        } else if (navItem.label == "Favourites") {
+                            navController.navigate(routePath("HotelRoute.Favourites")) {
+                                popUpTo(routePath("RootRoute.RootGraph")) {
+                                    inclusive = false
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                         }
                     },
                     icon = {

@@ -41,7 +41,6 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    onAction: (ProfileAction) -> Unit,
     viewModel: ProfileViewModel = koinViewModel()
 ) {
     val userData by viewModel.userData.collectAsStateWithLifecycle()
@@ -60,7 +59,7 @@ fun ProfileScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.profile)) },
                 navigationIcon = {
-                    IconButton(onClick = { onAction(ProfileAction.OnBackClick) }) {
+                    IconButton(onClick = { viewModel.handleAction(ProfileAction.OnBackClick) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
@@ -165,8 +164,8 @@ fun ProfileScreen(
 
     LaunchedEffect(actionState) {
         when (actionState) {
-            is ProfileActionState.SignedOut -> onAction(ProfileAction.SignedOut)
-            is ProfileActionState.AccountDeleted -> onAction(ProfileAction.AccountDeleted)
+            is ProfileActionState.SignedOut -> viewModel.handleAction(ProfileAction.SignedOut)
+            is ProfileActionState.AccountDeleted -> viewModel.handleAction(ProfileAction.AccountDeleted)
             is ProfileActionState.Error -> {
                 Toast.makeText(context, (actionState as ProfileActionState.Error).message, Toast.LENGTH_SHORT).show()
             }

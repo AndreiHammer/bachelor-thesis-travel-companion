@@ -2,6 +2,9 @@ package eu.ase.travelcompanionapp.authentication.presentation.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import eu.ase.travelcompanionapp.app.navigation.routes.AuthRoute
+import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.authentication.domain.model.User
 import eu.ase.travelcompanionapp.authentication.domain.repository.AccountRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,7 +13,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
+    private val navController: NavHostController
 ) : ViewModel() {
     private val _userData = MutableStateFlow(User())
     val userData: StateFlow<User> = _userData.asStateFlow()
@@ -50,7 +54,6 @@ class ProfileViewModel(
         }
     }
 
-
     fun setShowSignOutDialog(show: Boolean) {
         _showSignOutDialog.value = show
     }
@@ -59,12 +62,12 @@ class ProfileViewModel(
         _showDeleteDialog.value = show
     }
 
-
     fun signOut() {
         viewModelScope.launch {
             try {
                 accountRepository.signOut()
                 _actionState.value = ProfileActionState.SignedOut
+                navigateToAuth()
             } catch (e: Exception) {
                 _actionState.value = ProfileActionState.Error(e.message ?: "Unknown error")
             }
@@ -76,9 +79,30 @@ class ProfileViewModel(
             try {
                 accountRepository.deleteAccount()
                 _actionState.value = ProfileActionState.AccountDeleted
+                navigateToAuth()
             } catch (e: Exception) {
                 _actionState.value = ProfileActionState.Error(e.message ?: "Unknown error")
             }
+        }
+    }
+
+    fun handleAction(action: ProfileAction) {
+        when(action) {
+            ProfileAction.AccountDeleted -> {
+                navigateToAuth()
+            }
+            ProfileAction.OnBackClick -> {
+                navController.popBackStack()
+            }
+            ProfileAction.SignedOut -> {
+                navigateToAuth()
+            }
+        }
+    }
+
+    private fun navigateToAuth() {
+        navController.navigate(AuthRoute.AuthGraph) {
+            popUpTo(HotelRoute.HotelGraph) { inclusive = true }
         }
     }
 }

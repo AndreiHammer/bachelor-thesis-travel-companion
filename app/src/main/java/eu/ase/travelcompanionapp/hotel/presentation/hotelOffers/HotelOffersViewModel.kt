@@ -2,6 +2,7 @@ package eu.ase.travelcompanionapp.hotel.presentation.hotelOffers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.core.domain.utils.DateUtils
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
@@ -11,7 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HotelOffersViewModel(
-    private val hotelRepositoryAmadeusApi: HotelRepositoryAmadeusApi
+    private val hotelRepositoryAmadeusApi: HotelRepositoryAmadeusApi,
+    private val navController: NavHostController
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HotelOffersState())
@@ -52,6 +54,17 @@ class HotelOffersViewModel(
                     isLoading = false,
                     error = e.message
                 )
+            }
+        }
+    }
+
+    fun handleAction(action: HotelOffersAction) {
+        when(action) {
+            HotelOffersAction.OnBackClick -> {
+                navController.popBackStack()
+            }
+            HotelOffersAction.OnBookNow -> {
+
             }
         }
     }

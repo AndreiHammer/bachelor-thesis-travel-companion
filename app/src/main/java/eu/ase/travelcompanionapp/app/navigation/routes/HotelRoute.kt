@@ -29,4 +29,7 @@ sealed interface HotelRoute {
         val checkInDate: String,
         val checkOutDate: String,
         val adults: Int): HotelRoute
+
+    @Serializable
+    data object Favourites : HotelRoute
 }

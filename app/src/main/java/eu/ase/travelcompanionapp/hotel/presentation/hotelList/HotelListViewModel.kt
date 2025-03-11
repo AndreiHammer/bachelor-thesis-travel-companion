@@ -2,18 +2,23 @@ package eu.ase.travelcompanionapp.hotel.presentation.hotelList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.domain.repository.CityToIATACodeRepository
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
+import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HotelListViewModel(
     private val hotelRepository: HotelRepositoryAmadeusApi,
-    private val cityToIATACodeRepository: CityToIATACodeRepository
+    private val cityToIATACodeRepository: CityToIATACodeRepository,
+    private val navController: NavHostController,
+    private val sharedViewModel: SharedViewModel
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HotelListState())
@@ -105,14 +110,17 @@ class HotelListViewModel(
         }
     }
 
-    fun onAction(action: HotelListAction) {
+    fun handleAction(action: HotelListAction) {
         when (action) {
             is HotelListAction.OnHotelClick -> {
-                // Navigate to hotel details screen
+                sharedViewModel.onSelectHotel(action.hotel)
+                navController.navigate(
+                    HotelRoute.HotelDetail(action.hotel.hotelId)
+                )
             }
 
             HotelListAction.OnBackClick -> {
-
+                navController.popBackStack()
             }
         }
     }
