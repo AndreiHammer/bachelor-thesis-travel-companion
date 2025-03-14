@@ -34,18 +34,23 @@ class LocalUserRepository(
     }
 
     fun saveUser(user: User) {
-        val existingUser = findUserByFirebaseId(user.id)
-        if (existingUser != null) {
-            existingUser.apply {
-                email = user.email
-                name = user.name
-                birthDate = user.birthDate
-                gender = user.gender
-                phoneNumber = user.phoneNumber
+        try {
+            val existingUser = findUserByFirebaseId(user.id)
+            if (existingUser != null) {
+                existingUser.apply {
+                    email = user.email
+                    name = user.name
+                    birthDate = user.birthDate
+                    gender = user.gender
+                    phoneNumber = user.phoneNumber
+                }
+                userBox.put(existingUser)
+            } else {
+                val newEntity = user.toEntity()
+                userBox.put(newEntity)
             }
-            userBox.put(existingUser)
-        } else {
-            userBox.put(user.toEntity())
+        } catch (e: Exception) {
+            throw e
         }
     }
 

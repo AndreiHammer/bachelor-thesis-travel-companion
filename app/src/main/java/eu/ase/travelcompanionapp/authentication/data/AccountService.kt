@@ -1,7 +1,7 @@
 package eu.ase.travelcompanionapp.authentication.data
 
 import eu.ase.travelcompanionapp.authentication.data.auth.AuthManager
-import eu.ase.travelcompanionapp.authentication.data.repository.FirestoreUserRepository
+import eu.ase.travelcompanionapp.authentication.data.repository.RemoteUserRepository
 import eu.ase.travelcompanionapp.authentication.data.repository.LocalUserRepository
 import eu.ase.travelcompanionapp.authentication.domain.model.User
 import eu.ase.travelcompanionapp.authentication.domain.repository.AccountRepository
@@ -19,7 +19,7 @@ class AccountService(
 
     private val authManager = AuthManager()
     private val localUserRepository = LocalUserRepository(userBox)
-    private val firestoreUserRepository = FirestoreUserRepository()
+    private val remoteUserRepository = RemoteUserRepository()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val currentUser: Flow<User?> = authManager.authStateFlow.flatMapConcat { firebaseUser ->
@@ -33,7 +33,7 @@ class AccountService(
                 )
             } else {
                 flow {
-                    val firestoreUser = firestoreUserRepository.fetchUser(firebaseUser.uid)
+                    val firestoreUser = remoteUserRepository.fetchUser(firebaseUser.uid)
                     if (firestoreUser != null) {
                         localUserRepository.saveUser(firestoreUser)
                         emit(firestoreUser)
@@ -56,7 +56,7 @@ class AccountService(
     override suspend fun signIn(email: String, password: String) {
         val firebaseUser = authManager.signIn(email, password)
 
-        val firestoreUser = firestoreUserRepository.fetchUser(firebaseUser.uid)
+        val firestoreUser = remoteUserRepository.fetchUser(firebaseUser.uid)
         if (firestoreUser != null) {
             localUserRepository.saveUser(firestoreUser)
         }
@@ -72,7 +72,7 @@ class AccountService(
             )
 
             localUserRepository.saveUser(newUser)
-            firestoreUserRepository.saveUser(newUser)
+            remoteUserRepository.saveUser(newUser)
         } catch (e: Exception) {
             throw e
         }
@@ -85,7 +85,7 @@ class AccountService(
     override suspend fun updateUserProfile(user: User) {
         localUserRepository.saveUser(user)
 
-        firestoreUserRepository.saveUser(user)
+        remoteUserRepository.saveUser(user)
     }
 
     override suspend fun deleteAccount() {
@@ -93,7 +93,7 @@ class AccountService(
             val userId = authManager.currentUserId
             if (userId.isNotEmpty()) {
                 localUserRepository.deleteUser(userId)
-                firestoreUserRepository.deleteUser(userId)
+                remoteUserRepository.deleteUser(userId)
                 authManager.deleteAccount()
             }
         } catch (e: Exception) {

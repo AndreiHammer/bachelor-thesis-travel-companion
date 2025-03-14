@@ -5,7 +5,7 @@ import com.google.firebase.firestore.firestore
 import eu.ase.travelcompanionapp.authentication.domain.model.User
 import kotlinx.coroutines.tasks.await
 
-class FirestoreUserRepository {
+class RemoteUserRepository {
     private val firestore = Firebase.firestore
     private val usersCollection = firestore.collection("users")
 

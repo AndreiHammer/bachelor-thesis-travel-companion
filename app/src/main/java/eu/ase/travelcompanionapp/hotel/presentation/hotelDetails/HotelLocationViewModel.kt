@@ -11,12 +11,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
+import eu.ase.travelcompanionapp.core.domain.utils.FavoriteEvent
+import eu.ase.travelcompanionapp.core.domain.utils.FavoritesEventBus
+import eu.ase.travelcompanionapp.hotel.domain.repository.FavouriteHotelRepository
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 
 class HotelLocationViewModel(
     private val hotelRepository: HotelRepositoryPlacesApi,
     private val navController: NavHostController,
-    private val sharedViewModel: SharedViewModel
+    private val sharedViewModel: SharedViewModel,
+    private val favouriteHotelRepository: FavouriteHotelRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HotelState())
@@ -26,7 +30,10 @@ class HotelLocationViewModel(
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
 
-            val isFavourite = false
+            val hotelSelected = sharedViewModel.selectedHotel.value
+            val isFavourite = hotelSelected?.let {
+                favouriteHotelRepository.isFavourite(it.hotelId)
+            } ?: false
             
             hotelRepository.getHotelDetails(locationName, country) { result ->
                 when (result) {
@@ -50,11 +57,35 @@ class HotelLocationViewModel(
         }
     }
 
-    private fun toggleFavorite() {
-        _state.value = _state.value.copy(
-            isFavourite = !_state.value.isFavourite
-        )
-        // Later database operations here
+    private fun toggleFavorite(hotel: Hotel, checkInDate: String, checkOutDate: String, adults: Int) {
+        viewModelScope.launch {
+            val currentIsFavourite = _state.value.isFavourite
+
+            _state.value = _state.value.copy(
+                isFavourite = !currentIsFavourite
+            )
+
+            try {
+                if (currentIsFavourite) {
+                    favouriteHotelRepository.removeFavourite(hotel.hotelId)
+                } else {
+                    favouriteHotelRepository.addFavourite(
+                        hotel,
+                        checkInDate.takeIf { it.isNotEmpty() },
+                        checkOutDate.takeIf { it.isNotEmpty() },
+                        adults.takeIf { it > 0 }
+                    )
+                }
+
+                FavoritesEventBus.emitEvent(FavoriteEvent.CountChanged)
+
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    isFavourite = currentIsFavourite,
+                    errorMessage = "Failed to update favorites: ${e.message}"
+                )
+            }
+        }
     }
 
     fun handleAction(action: HotelLocationAction, hotel: Hotel) {
@@ -74,7 +105,12 @@ class HotelLocationViewModel(
                 )
             }
             is HotelLocationAction.OnFavouriteClick -> {
-                toggleFavorite()
+                toggleFavorite(
+                    hotel = hotel,
+                    checkInDate = action.checkInDate,
+                    checkOutDate = action.checkOutDate,
+                    adults = action.adults
+                )
             }
         }
     }

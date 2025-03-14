@@ -123,4 +123,8 @@
     <string name="favourite">Favourite</string>
     <string name="favourite_hotels">Favourite Hotels</string>
     <string name="tap_the_heart_icon_on_a_hotel_to_add_it_to_your_favorites">Tap the heart icon on a hotel to add it to your favorites</string>
+    <string name="booking_details">Booking Details</string>
+    <string name="guests">Guests</string>
+    <string name="number_of_guests">"Guests: %d"</string>
+    <string name="dates">dates</string>
 </resources>
