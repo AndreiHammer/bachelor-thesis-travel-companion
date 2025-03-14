@@ -43,7 +43,8 @@ fun DateSelector(
                 modifier = Modifier.fillMaxWidth(),
                 label = selectedDate.ifEmpty { stringResource(R.string.select_birth_date) },
                 selectedDate = selectedDate,
-                onDateSelected = onDateSelected
+                onDateSelected = onDateSelected,
+                allowPastDates = true
             )
         }
     }

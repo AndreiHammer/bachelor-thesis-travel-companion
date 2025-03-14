@@ -60,6 +60,12 @@ class SharedViewModel : ViewModel() {
         _selectedLocation.value = LocationState(location, range)
     }
 
+    fun updateBookingDetailsFromFavourite(checkInDate: String?, checkOutDate: String?, adults: Int?) {
+        checkInDate?.let { _selectedCheckInDate.value = it }
+        checkOutDate?.let { _selectedCheckOutDate.value = it }
+        adults?.let { _selectedAdults.value = it }
+    }
+
     data class LocationState(
         val location: LatLng? = null,
         val range: Int = 0

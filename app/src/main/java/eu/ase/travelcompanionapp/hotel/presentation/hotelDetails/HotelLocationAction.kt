@@ -5,5 +5,5 @@ sealed interface HotelLocationAction {
 
     data class OnViewOfferClick(val checkInDate: String, val checkOutDate: String, val adults: Int): HotelLocationAction
 
-    data object OnFavouriteClick: HotelLocationAction
+    data class OnFavouriteClick(val checkInDate: String?, val checkOutDate: String?, val adults: Int?) : HotelLocationAction
 }

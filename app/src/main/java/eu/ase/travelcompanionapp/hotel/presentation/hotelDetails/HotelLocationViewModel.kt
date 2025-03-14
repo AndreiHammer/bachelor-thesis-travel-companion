@@ -73,9 +73,8 @@ class HotelLocationViewModel(
                     )
                 )
             }
-            HotelLocationAction.OnFavouriteClick -> {
+            is HotelLocationAction.OnFavouriteClick -> {
                 toggleFavorite()
-                // Later database operations here
             }
         }
     }

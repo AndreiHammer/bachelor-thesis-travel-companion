@@ -39,14 +39,19 @@ fun DatePickerWithDialog(
     label: String,
     selectedDate: String,
     minDate: Long? = null,
+    allowPastDates: Boolean = false,
     onDateSelected: (String) -> Unit
 ) {
     val dateUtils = DateUtils()
     val todayStart = remember {
         LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     }
-    val effectiveMinDate = remember(minDate) {
-        minDate ?: todayStart
+    val effectiveMinDate = remember(minDate, allowPastDates) {
+        if (allowPastDates) {
+            LocalDate.now().minusYears(100).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        } else {
+            minDate ?: todayStart
+        }
     }
 
     var selectedDateMillis by remember { mutableLongStateOf(-1L) }
@@ -57,10 +62,17 @@ fun DatePickerWithDialog(
         }
     }
 
+    val yearRange = remember(allowPastDates) {
+        if (allowPastDates) {
+            IntRange(LocalDate.now().year - 100, LocalDate.now().year)
+        } else {
+            IntRange(LocalDate.now().year, LocalDate.now().year + 2)
+        }
+    }
 
     val dateState = rememberDatePickerState(
             initialSelectedDateMillis = if (selectedDateMillis > 0) selectedDateMillis else null,
-            yearRange = IntRange(LocalDate.now().year, LocalDate.now().year + 2),
+            yearRange = yearRange,
             selectableDates = object : SelectableDates {
                 override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                     val dateToCheck = Instant.ofEpochMilli(utcTimeMillis)
@@ -70,7 +82,12 @@ fun DatePickerWithDialog(
                     val minLocalDate = Instant.ofEpochMilli(effectiveMinDate)
                         .atZone(ZoneId.systemDefault())
                         .toLocalDate()
-                    return !dateToCheck.isBefore(minLocalDate)
+
+                    return if (allowPastDates) {
+                        !dateToCheck.isBefore(minLocalDate) && !dateToCheck.isAfter(LocalDate.now())
+                    } else {
+                        !dateToCheck.isBefore(minLocalDate)
+                    }
                 }
             }
         )
@@ -106,7 +123,13 @@ fun DatePickerWithDialog(
                                 val minLocalDate = Instant.ofEpochMilli(effectiveMinDate)
                                     .atZone(ZoneId.systemDefault())
                                     .toLocalDate()
-                                val isValid = !selectedLocalDate.isBefore(minLocalDate)
+
+                                val isValid = if (allowPastDates) {
+                                    !selectedLocalDate.isBefore(minLocalDate) && !selectedLocalDate.isAfter(LocalDate.now())
+                                } else {
+                                    !selectedLocalDate.isBefore(minLocalDate)
+                                }
+
                                 if (isValid) {
                                     selectedDateMillis = it
                                     val formattedDate = dateUtils.dateToString(setDate)

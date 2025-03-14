@@ -24,18 +24,13 @@ class TravelCompanionApp: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // Initialize the database
         DatabaseManager.initialize(this)
-
-        // Initialize debug tools (only has effect in debug builds)
         DebugHelper.initialize(this, boxStore)
 
-        // Initialize Places API
         if (!Places.isInitialized()) {
             Places.initializeWithNewPlacesApiEnabled(applicationContext, BuildConfig.GOOGLE_API_KEY)
         }
 
-        // Initialize Koin dependency injection
         startKoin {
             androidContext(this@TravelCompanionApp)
             androidLogger()

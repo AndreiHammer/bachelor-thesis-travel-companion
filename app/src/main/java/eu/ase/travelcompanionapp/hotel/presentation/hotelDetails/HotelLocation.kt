@@ -86,7 +86,7 @@ fun HotelLocationScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            viewModel.handleAction(HotelLocationAction.OnFavouriteClick, hotel)
+                            viewModel.handleAction(HotelLocationAction.OnFavouriteClick(checkInDate, checkOutDate, adults), hotel)
                         }
                     ) {
                         Icon(
