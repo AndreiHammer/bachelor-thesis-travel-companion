@@ -56,7 +56,7 @@
     <string name="error_fetching_hotels_list">Error fetching hotels list</string>
     <string name="invalid_city_no_iata_code_found">Invalid city. No IATA code found.</string>
     <string name="select_rating">Select desired rating:</string>
-    <string name="select_city">Select City:</string>
+    <string name="select_destination">Select Destination:</string>
     <string name="select_amenities">Select amenities:</string>
     <string name="done_icon">Done icon</string>
     <string name="hotels_list">Hotels List - %1$s</string>

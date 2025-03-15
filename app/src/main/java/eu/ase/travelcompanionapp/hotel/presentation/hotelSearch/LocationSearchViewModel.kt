@@ -22,12 +22,12 @@ class LocationSearchViewModel(
     private val dateUtils = DateUtils()
     private val locationUtils = LocationUtils()
 
-    private val _suggestions = MutableStateFlow<List<String>>(emptyList())
-    val suggestions: StateFlow<List<String>> = _suggestions
+    private val _citiesWithCountry = MutableStateFlow<List<Pair<String, String>>>(emptyList())
+    val citiesWithCountry: StateFlow<List<Pair<String, String>>> = _citiesWithCountry
 
     private val _locationState = MutableStateFlow(LocationState())
 
-    fun setLocation(location: LatLng, range: Int) {
+    private fun setLocation(location: LatLng, range: Int) {
         _locationState.value = LocationState(location, range)
         sharedViewModel.onSelectLocation(location, range)
     }
@@ -38,7 +38,7 @@ class LocationSearchViewModel(
     )
 
     fun fetchSuggestions() {
-        _suggestions.value = cityToIATACodeRepository.getCitySuggestions()
+        _citiesWithCountry.value = cityToIATACodeRepository.getCityWithCountrySuggestions()
     }
 
     fun performNearbySearch(

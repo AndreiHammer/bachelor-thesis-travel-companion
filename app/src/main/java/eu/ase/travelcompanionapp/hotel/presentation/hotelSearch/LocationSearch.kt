@@ -37,7 +37,7 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.AutoCompleteTextField
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.autocomplete.AutoCompleteTextField
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.NearbyAccomodationsCard
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.filters.CityFilterSearch
 import org.koin.androidx.compose.koinViewModel
@@ -155,7 +155,7 @@ fun LocationSearchScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = stringResource(R.string.filter_your_preferences), style = MaterialTheme.typography.headlineLarge)
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = stringResource(R.string.select_city), style = MaterialTheme.typography.bodyMedium)
+            Text(text = stringResource(R.string.select_destination), style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(8.dp))
 
             AutoCompleteTextField(
