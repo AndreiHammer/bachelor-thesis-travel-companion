@@ -13,7 +13,8 @@ fun showBottomBar(currentRoute: String?): Boolean {
         routePath("ProfileRoute.Profile"),
         routePath("HotelRoute.HotelOffers"),
         routePath("HotelRoute.MapSearch"),
-        routePath("HotelRoute.Favourites")
+        routePath("HotelRoute.Favourites"),
+        routePath("ProfileRoute.Settings")
     )
 
     return currentRoute in mainRoutes ||
@@ -22,6 +23,6 @@ fun showBottomBar(currentRoute: String?): Boolean {
             currentRoute?.startsWith(routePath("HotelRoute.HotelDetail")) == true ||
             currentRoute?.startsWith(routePath("HotelRoute.HotelOffers")) == true ||
             currentRoute?.startsWith(routePath("HotelRoute.MapSearch")) == true ||
-            currentRoute?.startsWith(routePath("HotelRoute.Favourites")) == true
-
+            currentRoute?.startsWith(routePath("HotelRoute.Favourites")) == true ||
+            currentRoute?.startsWith(routePath("ProfileRoute.Profile")) == true
 }

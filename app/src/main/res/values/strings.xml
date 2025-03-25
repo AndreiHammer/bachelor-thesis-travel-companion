@@ -127,4 +127,10 @@
     <string name="guests">Guests</string>
     <string name="number_of_guests">"Guests: %d"</string>
     <string name="dates">dates</string>
+    <string name="settings">Settings</string>
+    <string name="currency_preference_updated">Currency updated!</string>
+    <string name="currency_preferences">Currencies</string>
+    <string name="use_hotel_currency">Use hotel currency</string>
+    <string name="preferred_currency">Preferred currency</string>
+    <string name="select_currency">Select currency</string>
 </resources>

@@ -9,11 +9,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import eu.ase.travelcompanionapp.app.navigation.routes.AuthRoute
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
-import eu.ase.travelcompanionapp.authentication.presentation.login.LoginScreen
-import eu.ase.travelcompanionapp.authentication.presentation.login.LoginViewModel
-import eu.ase.travelcompanionapp.authentication.presentation.signUp.SignUpScreen
-import eu.ase.travelcompanionapp.authentication.presentation.signUp.SignUpViewModel
-import eu.ase.travelcompanionapp.authentication.presentation.startScreen.StartScreen
+import eu.ase.travelcompanionapp.auth.presentation.login.LoginScreen
+import eu.ase.travelcompanionapp.auth.presentation.login.LoginViewModel
+import eu.ase.travelcompanionapp.auth.presentation.signup.SignUpScreen
+import eu.ase.travelcompanionapp.auth.presentation.signup.SignUpViewModel
+import eu.ase.travelcompanionapp.auth.presentation.startScreen.StartScreen
 import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.AuthGraph(navController: NavHostController, context: Context) {

@@ -9,7 +9,7 @@ import androidx.navigation.navigation
 import eu.ase.travelcompanionapp.app.navigation.routes.AuthRoute
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.app.navigation.routes.RootRoute
-import eu.ase.travelcompanionapp.authentication.presentation.splash.SplashScreen
+import eu.ase.travelcompanionapp.auth.presentation.splash.SplashScreen
 
 fun NavGraphBuilder.RootGraph(navController: NavHostController) {
 

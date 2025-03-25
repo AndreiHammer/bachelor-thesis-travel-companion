@@ -1,6 +1,6 @@
 package eu.ase.travelcompanionapp.hotel.data.database
 
-import eu.ase.travelcompanionapp.authentication.domain.repository.AccountRepository
+import eu.ase.travelcompanionapp.auth.domain.AuthRepository
 import eu.ase.travelcompanionapp.hotel.data.database.repository.RemoteFavouriteHotelRepository
 import eu.ase.travelcompanionapp.hotel.domain.model.BookingDetails
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 
 class FavouriteHotelRepositoryImpl(
     private val remoteRepository: RemoteFavouriteHotelRepository,
-    private val accountRepository: AccountRepository
+    private val accountRepository: AuthRepository
     ) : FavouriteHotelRepository {
 
     override fun getFavouriteHotels(): Flow<List<Hotel>> = flow {
