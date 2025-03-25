@@ -10,9 +10,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import eu.ase.travelcompanionapp.core.presentation.UiText
+import eu.ase.travelcompanionapp.user.domain.repository.AccountRepository
 
 class SignUpViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val accountRepository: AccountRepository
 ) : ViewModel() {
 
     // Email, Password, Confirm Password
@@ -60,7 +62,8 @@ class SignUpViewModel(
             _signUpState.update { SignUpState.Loading }
 
             try {
-                authRepository.signUp(currentEmail, currentPassword)
+                val userId = authRepository.signUp(currentEmail, currentPassword)
+                accountRepository.createUser(userId, currentEmail)
                 _signUpState.update { SignUpState.Success }
             } catch (e: Exception) {
                 val errorMessage = UiText.DynamicString(e.message ?: context.getString(R.string.error_unknown))
