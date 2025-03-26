@@ -13,6 +13,7 @@ import eu.ase.travelcompanionapp.di.databaseModule
 import eu.ase.travelcompanionapp.di.hotelAmadeusModule
 import eu.ase.travelcompanionapp.di.hotelPlacesModule
 import eu.ase.travelcompanionapp.di.hotelSharedModule
+import eu.ase.travelcompanionapp.di.themeModule
 import io.objectbox.BoxStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -45,7 +46,8 @@ class TravelCompanionApp: Application() {
                     hotelPlacesModule,
                     hotelAmadeusModule,
                     hotelSharedModule,
-                    currencyModule
+                    currencyModule,
+                    themeModule
                 )
             )
         }

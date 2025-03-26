@@ -14,16 +14,18 @@ import androidx.navigation.compose.rememberNavController
 import eu.ase.travelcompanionapp.app.navigation.AppNavHost
 import eu.ase.travelcompanionapp.app.navigation.bottomNavigation.BottomNavigationBar
 import eu.ase.travelcompanionapp.app.navigation.bottomNavigation.showBottomBar
-import eu.ase.travelcompanionapp.ui.theme.TravelCompanionAppTheme
+import eu.ase.travelcompanionapp.ui.ThemeManager
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
+    private val themeManager: ThemeManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
         setContent {
-            TravelCompanionAppTheme {
+            themeManager.ApplyTheme {
                 val navController = rememberNavController()
 
                 val navBackStackEntry by navController.currentBackStackEntryAsState()

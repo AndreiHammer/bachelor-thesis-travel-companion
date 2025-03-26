@@ -3,6 +3,7 @@ package eu.ase.travelcompanionapp.user.data.preferences
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -22,6 +23,7 @@ class UserPreferences(
 
     companion object {
         private const val PREFERRED_CURRENCY_KEY = "preferred_currency"
+        private const val DARK_THEME_KEY = "dark_theme"
     }
 
     private fun getPreferredCurrencyKey(): String {
@@ -33,15 +35,36 @@ class UserPreferences(
         }
     }
     
+    private fun getDarkThemeKey(): String {
+        val userId = authManager.currentUserId
+        return if (userId.isEmpty()) {
+            "guest_$DARK_THEME_KEY"
+        } else {
+            "${userId}_$DARK_THEME_KEY"
+        }
+    }
+    
     override val preferredCurrency: Flow<String> = context.userPreferencesDataStore.data.map { preferences ->
         val key = stringPreferencesKey(getPreferredCurrencyKey())
         preferences[key] ?: ""
+    }
+    
+    override val isDarkTheme: Flow<Boolean> = context.userPreferencesDataStore.data.map { preferences ->
+        val key = booleanPreferencesKey(getDarkThemeKey())
+        preferences[key] ?: false
     }
     
     override suspend fun setPreferredCurrency(currency: String) {
         val key = stringPreferencesKey(getPreferredCurrencyKey())
         context.userPreferencesDataStore.edit { preferences ->
             preferences[key] = currency
+        }
+    }
+    
+    override suspend fun setDarkTheme(isDarkTheme: Boolean) {
+        val key = booleanPreferencesKey(getDarkThemeKey())
+        context.userPreferencesDataStore.edit { preferences ->
+            preferences[key] = isDarkTheme
         }
     }
 } 

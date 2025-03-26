@@ -62,6 +62,39 @@ fun CurrencySelectionDialog(
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onCurrencySelected("") }
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CurrencyIcon(
+                                currencyCode = "",
+                                modifier = Modifier.padding(end = 12.dp)
+                            )
+
+                            Text(
+                                text = stringResource(R.string.use_hotel_currency),
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.weight(1f)
+                            )
+
+                            if (selectedCurrency.isEmpty()) {
+                                Text(
+                                    text = "✓",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    }
+
+
+
                     items(currencies) { currency ->
                         Row(
                             modifier = Modifier

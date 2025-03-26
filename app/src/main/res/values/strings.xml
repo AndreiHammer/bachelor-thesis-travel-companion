@@ -136,4 +136,18 @@
     <string name="shimmer">shimmer</string>
     <string name="_2f">%.2f</string>
     <string name="shimmer_alpha">shimmer alpha</string>
+    <string name="current_currency">Current currency:</string>
+    <string name="change">Change</string>
+    <string name="hotel_currency_info">Prices will be shown in their original currency as provided by each hotel. No currency conversion will be applied.</string>
+    <string name="preferred_currency_info">All prices will be automatically converted from their original currency to your selected currency for easier comparison.</string>
+    <string name="currency">Currency</string>
+    
+    <!-- Theme preferences -->
+    <string name="theme">Theme</string>
+    <string name="light_theme">Light theme</string>
+    <string name="dark_theme">Dark theme</string>
+    <string name="theme_info">Choose between light and dark theme. Changes will apply immediately.</string>
+    <string name="theme_updated">Theme updated!</string>
+    <string name="light_theme_active">Light theme is currently active. Switch to enable dark theme.</string>
+    <string name="dark_theme_active">Dark theme is currently active. Switch to enable light theme.</string>
 </resources>
