@@ -12,9 +12,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
+import eu.ase.travelcompanionapp.user.domain.model.Currency
 
 @Composable
-fun HotelOfferItem(hotelOffer: HotelOffer, onBookNow: (String) -> Unit) {
+fun HotelOfferItem(
+    hotelOffer: HotelOffer,
+    onBookNow: (String) -> Unit,
+    convertedPrices: Map<String, Currency>
+) {
     Column(modifier = Modifier.padding(bottom = 16.dp)) {
         hotelOffer.hotel?.name?.let {
             Text(
@@ -28,7 +33,11 @@ fun HotelOfferItem(hotelOffer: HotelOffer, onBookNow: (String) -> Unit) {
         if (hotelOffer.offers.isNotEmpty()) {
             hotelOffer.offers.forEach { offer ->
                 offer.id?.let {
-                    OfferCard(offer = offer, onBookNow = onBookNow)
+                    OfferCard(
+                        offer = offer,
+                        onBookNow = onBookNow,
+                        convertedPrice = convertedPrices[offer.id]
+                    )
                 }
             }
         } else {

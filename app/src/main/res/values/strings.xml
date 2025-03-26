@@ -133,4 +133,7 @@
     <string name="use_hotel_currency">Use hotel currency</string>
     <string name="preferred_currency">Preferred currency</string>
     <string name="select_currency">Select currency</string>
+    <string name="shimmer">shimmer</string>
+    <string name="_2f">%.2f</string>
+    <string name="shimmer_alpha">shimmer alpha</string>
 </resources>

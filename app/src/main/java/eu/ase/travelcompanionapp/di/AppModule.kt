@@ -31,8 +31,13 @@ import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.test.HotelLocat
 import eu.ase.travelcompanionapp.hotel.presentation.hotelFavourites.HotelFavouriteViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.HotelOffersViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
+import eu.ase.travelcompanionapp.user.data.currencyApi.network.CurrencyApiService
+import eu.ase.travelcompanionapp.user.data.currencyApi.network.RemoteCurrencyDataSource
+import eu.ase.travelcompanionapp.user.data.currencyApi.repository.CurrencyApiRepository
 import eu.ase.travelcompanionapp.user.data.preferences.UserPreferences
+import eu.ase.travelcompanionapp.user.domain.repository.CurrencyRepository
 import eu.ase.travelcompanionapp.user.domain.repository.UserPreferencesRepository
+import eu.ase.travelcompanionapp.user.domain.service.PriceConverter
 import eu.ase.travelcompanionapp.user.presentation.settings.SettingsViewModel
 import io.ktor.client.engine.cio.CIO
 import io.objectbox.BoxStore
@@ -131,7 +136,14 @@ val hotelSharedModule = module {
     viewModel { (navController: NavHostController) ->
         HotelOffersViewModel(
             hotelRepositoryAmadeusApi = get(),
-            navController = navController
+            navController = navController,
+            priceConverter = get()
         )
     }
+}
+
+val currencyModule = module {
+    single<RemoteCurrencyDataSource> { CurrencyApiService(get()) }
+    single<CurrencyRepository> { CurrencyApiRepository(get()) }
+    single { PriceConverter(get(), get()) }
 }

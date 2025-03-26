@@ -20,12 +20,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
+import eu.ase.travelcompanionapp.user.domain.model.Currency
 
 
 @Composable
 fun HotelOffersSection(
     hotelOffers: List<HotelOffer>,
     errorMessage: String,
+    convertedPrices: Map<String, Currency>,
     onBookNow: (String) -> Unit
 ) {
     if (hotelOffers.isEmpty()) {
@@ -58,7 +60,11 @@ fun HotelOffersSection(
             contentPadding = PaddingValues(16.dp)
         ) {
             items(hotelOffers) { hotelOffer ->
-                HotelOfferItem(hotelOffer = hotelOffer, onBookNow = onBookNow)
+                HotelOfferItem(
+                    hotelOffer = hotelOffer,
+                    onBookNow = onBookNow,
+                    convertedPrices = convertedPrices
+                )
             }
         }
     }

@@ -51,6 +51,9 @@ android {
         buildConfigField("String", "OPEN_AI_API_KEY",
             properties.getProperty("OPEN_AI_API_KEY")
         )
+        buildConfigField("String", "RAPID_API_KEY",
+            properties.getProperty("RAPID_API_KEY")
+        )
     }
 
     buildTypes {

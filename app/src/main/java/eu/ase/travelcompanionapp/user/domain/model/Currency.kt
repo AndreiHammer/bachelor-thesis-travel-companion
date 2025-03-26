@@ -2,8 +2,12 @@ package eu.ase.travelcompanionapp.user.domain.model
 
 data class Currency(
     val code: String,
-    val name: String
-) {
+    val name: String,
+    val rate: Double = 0.0,
+    val convertedAmount: Double = 0.0,
+    val originalAmount: Double = 0.0,
+    val originalCurrency: String = ""
+)  {
     companion object {
         private val currencies = mapOf(
             "CAD" to "Canadian Dollar",

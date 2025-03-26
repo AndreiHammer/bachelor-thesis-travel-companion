@@ -38,6 +38,7 @@ fun HotelOffersScreen(
     viewModel: HotelOffersViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val convertedPrices by viewModel.convertedPrices.collectAsStateWithLifecycle()
 
     LaunchedEffect(hotelId) {
         viewModel.getHotelOffers(hotelId, checkInDate, checkOutDate, adults)
@@ -81,6 +82,7 @@ fun HotelOffersScreen(
                 HotelOffersSection(
                     hotelOffers = state.offers,
                     errorMessage = state.error ?: stringResource(R.string.no_offers_available),
+                    convertedPrices = convertedPrices,
                     onBookNow = {
                         viewModel.handleAction(HotelOffersAction.OnBookNow)
                     }

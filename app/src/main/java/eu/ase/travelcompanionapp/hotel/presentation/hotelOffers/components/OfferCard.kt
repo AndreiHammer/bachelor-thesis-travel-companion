@@ -26,10 +26,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.domain.model.components.Offer
+import eu.ase.travelcompanionapp.user.domain.model.Currency
 
 
 @Composable
-fun OfferCard(offer: Offer, onBookNow: (String) -> Unit) {
+fun OfferCard(
+    offer: Offer,
+    onBookNow: (String) -> Unit,
+    convertedPrice: Currency?
+) {
     Card(
         modifier = Modifier
             .padding(10.dp)
@@ -45,11 +50,12 @@ fun OfferCard(offer: Offer, onBookNow: (String) -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "${offer.price?.currency ?: ""} ${offer.price?.total ?: "N/A"}",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+
+                PriceDisplay(
+                    originalCurrency = offer.price?.currency,
+                    originalAmount = offer.price?.total,
+                    convertedPrice = convertedPrice,
+                    style = MaterialTheme.typography.headlineMedium
                 )
 
                 // Payment Type Badge

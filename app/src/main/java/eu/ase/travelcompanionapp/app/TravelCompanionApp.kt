@@ -8,6 +8,7 @@ import eu.ase.travelcompanionapp.core.data.localDB.DebugHelper
 import eu.ase.travelcompanionapp.di.authModule
 import eu.ase.travelcompanionapp.di.userModule
 import eu.ase.travelcompanionapp.di.coreModule
+import eu.ase.travelcompanionapp.di.currencyModule
 import eu.ase.travelcompanionapp.di.databaseModule
 import eu.ase.travelcompanionapp.di.hotelAmadeusModule
 import eu.ase.travelcompanionapp.di.hotelPlacesModule
@@ -43,7 +44,8 @@ class TravelCompanionApp: Application() {
                     userModule,
                     hotelPlacesModule,
                     hotelAmadeusModule,
-                    hotelSharedModule
+                    hotelSharedModule,
+                    currencyModule
                 )
             )
         }
