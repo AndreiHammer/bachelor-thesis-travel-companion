@@ -36,6 +36,7 @@ fun HotelFavouriteScreen(
     modifier: Modifier = Modifier
 ) {
     val state = viewModel.hotelState.collectAsStateWithLifecycle()
+    val hotelPrices = viewModel.hotelPrices.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.getHotelFavourites()
@@ -85,6 +86,7 @@ fun HotelFavouriteScreen(
                 ) {
                     FavouriteHotelsList(
                         hotels = state.value.hotelsWithDetails,
+                        hotelPrices = hotelPrices.value,
                         onHotelClick = { hotel ->
                             viewModel.handleAction(HotelFavouriteAction.OnHotelClick(hotel))
                         },

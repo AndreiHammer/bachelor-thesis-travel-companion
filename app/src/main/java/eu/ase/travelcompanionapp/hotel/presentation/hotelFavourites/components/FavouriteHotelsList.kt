@@ -8,11 +8,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelWithBookingDetails
 
 @Composable
 fun FavouriteHotelsList(
     hotels: List<HotelWithBookingDetails>,
+    hotelPrices: Map<String, HotelPrice>,
     onHotelClick: (hotel: eu.ase.travelcompanionapp.hotel.domain.model.Hotel) -> Unit,
     onDeleteClick: (hotelId: String) -> Unit,
     modifier: Modifier = Modifier
@@ -30,6 +32,7 @@ fun FavouriteHotelsList(
         ) { hotelWithDetails ->
             FavouriteHotelItemWithDelete(
                 hotelWithDetails = hotelWithDetails,
+                priceInfo = hotelPrices[hotelWithDetails.hotel.hotelId],
                 onDelete = {
                     onDeleteClick(hotelWithDetails.hotel.hotelId)
                 },

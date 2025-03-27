@@ -20,7 +20,9 @@ val databaseModule = module {
         HotelFavouriteViewModel(
             navController = navController,
             sharedViewModel = sharedViewModel,
-            favouriteHotelRepository = get()
+            favouriteHotelRepository = get(),
+            priceConverter = get(),
+            hotelRepository = get()
         )
     }
 }

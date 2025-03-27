@@ -27,6 +27,7 @@ interface RemoteHotelDataSource {
         checkInDate: String,
         checkOutDate: String,
         adults: String,
+        bestRateOnly: Boolean = false,
         onResult: (Result<List<HotelOffersDto>, DataError.Remote>) -> Unit
     )
 }

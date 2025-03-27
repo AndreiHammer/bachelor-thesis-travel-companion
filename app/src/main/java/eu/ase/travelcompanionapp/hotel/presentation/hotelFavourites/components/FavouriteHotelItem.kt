@@ -27,12 +27,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelWithBookingDetails
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.components.HotelItem
+import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.components.PriceDisplay
 
 @Composable
 fun FavouriteHotelItem(
     hotelWithDetails: HotelWithBookingDetails,
+    priceInfo: HotelPrice?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -63,6 +66,46 @@ fun FavouriteHotelItem(
                     .fillMaxWidth()
                     .padding(bottom = 8.dp)
             )
+
+            if (priceInfo != null && (!priceInfo.hasError && !priceInfo.noOffers) && priceInfo.originalPrice != null) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                )
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                ) {
+                    
+                    if (priceInfo.isLoading) {
+                        Text(
+                            text = "Loading price...",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    } else {
+                        Column {
+                            Text(
+                                text = "Starting from:",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+
+                            PriceDisplay(
+                                originalCurrency = priceInfo.originalCurrency,
+                                originalAmount = priceInfo.originalPrice.toString(),
+                                convertedPrice = priceInfo.convertedPrice,
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
+            }
 
             if (hotelWithDetails.bookingDetails != null) {
                 HorizontalDivider(

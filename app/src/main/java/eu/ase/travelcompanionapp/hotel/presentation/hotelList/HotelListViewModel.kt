@@ -6,31 +6,41 @@ import androidx.navigation.NavHostController
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
-import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
+import eu.ase.travelcompanionapp.core.domain.utils.DateUtils
+import eu.ase.travelcompanionapp.hotel.domain.model.BookingDetails
+import eu.ase.travelcompanionapp.hotel.domain.model.HotelWithBookingDetails
+import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
+import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 import eu.ase.travelcompanionapp.hotel.domain.repository.CityToIATACodeRepository
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
+import eu.ase.travelcompanionapp.user.domain.service.PriceConverter
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HotelListViewModel(
     private val hotelRepository: HotelRepositoryAmadeusApi,
     private val cityToIATACodeRepository: CityToIATACodeRepository,
     private val navController: NavHostController,
-    private val sharedViewModel: SharedViewModel
+    private val sharedViewModel: SharedViewModel,
+    private val priceConverter: PriceConverter
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HotelListState())
     val hotelState: StateFlow<HotelListState> get() = _state
-
+    
+    private val _hotelPrices = MutableStateFlow<Map<String, HotelPrice>>(emptyMap())
+    val hotelPrices: StateFlow<Map<String, HotelPrice>> = _hotelPrices
 
     fun getHotelListByCity(city: String, amenities: String, rating: String) {
         
         val iataCode = cityToIATACodeRepository.getIATACode(city)
         if (iataCode == null) {
             _state.value = HotelListState(
-                hotels = emptyList(),
+                hotelItems = emptyList(),
                 errorMessage = "Invalid city code",
                 isLoading = false
             )
@@ -39,7 +49,7 @@ class HotelListViewModel(
 
         viewModelScope.launch {
             _state.value = HotelListState(
-                hotels = emptyList(),
+                hotelItems = emptyList(),
                 errorMessage = null,
                 isLoading = true
             )
@@ -53,17 +63,31 @@ class HotelListViewModel(
                             else -> "Error fetching hotels"
                         }
                         _state.value = HotelListState(
-                            hotels = emptyList(),
+                            hotelItems = emptyList(),
                             errorMessage = errorMessage,
                             isLoading = false
                         )
                     }
                     is Result.Success -> {
+                        val checkInDate = sharedViewModel.selectedCheckInDate.value
+                        val checkOutDate = sharedViewModel.selectedCheckOutDate.value
+                        val adults = sharedViewModel.selectedAdults.value
+                        
+                        val bookingDetails = if (checkInDate.isNotEmpty() && checkOutDate.isNotEmpty() && adults > 0) {
+                            BookingDetails(checkInDate, checkOutDate, adults)
+                        } else null
+                        
+                        val hotelItems = result.data.map { hotel ->
+                            HotelWithBookingDetails(hotel, bookingDetails)
+                        }
+                        
                         _state.value = HotelListState(
-                            hotels = result.data,
+                            hotelItems = hotelItems,
                             errorMessage = if (result.data.isEmpty()) "No hotels found in $city" else null,
                             isLoading = false
                         )
+                        
+                        fetchHotelPrices(hotelItems)
                     }
                 }
             }
@@ -73,7 +97,7 @@ class HotelListViewModel(
     fun getHotelListByLocation(latitude: Double, longitude: Double, radius: Int, amenities: String, rating: String) {
         viewModelScope.launch {
             _state.value = HotelListState(
-                hotels = emptyList(),
+                hotelItems = emptyList(),
                 errorMessage = null,
                 isLoading = true
             )
@@ -93,19 +117,169 @@ class HotelListViewModel(
                             else -> "Error fetching hotels"
                         }
                         _state.value = HotelListState(
-                            hotels = emptyList(),
+                            hotelItems = emptyList(),
                             errorMessage = errorMessage,
                             isLoading = false
                         )
                     }
                     is Result.Success -> {
+                        val checkInDate = sharedViewModel.selectedCheckInDate.value
+                        val checkOutDate = sharedViewModel.selectedCheckOutDate.value
+                        val adults = sharedViewModel.selectedAdults.value
+                        
+                        val bookingDetails = if (checkInDate.isNotEmpty() && checkOutDate.isNotEmpty() && adults > 0) {
+                            BookingDetails(checkInDate, checkOutDate, adults)
+                        } else null
+                        
+                        val hotelItems = result.data.map { hotel ->
+                            HotelWithBookingDetails(hotel, bookingDetails)
+                        }
+                        
                         _state.value = HotelListState(
-                            hotels = result.data,
+                            hotelItems = hotelItems,
                             errorMessage = if (result.data.isEmpty()) "No hotels found in this area" else null,
                             isLoading = false
                         )
+                        
+                        fetchHotelPrices(hotelItems)
                     }
                 }
+            }
+        }
+    }
+    
+    private fun fetchHotelPrices(hotelItems: List<HotelWithBookingDetails>) {
+        if (hotelItems.isEmpty() || hotelItems.first().bookingDetails == null) {
+            return
+        }
+        
+        val bookingDetails = hotelItems.first().bookingDetails!!
+        val checkInDate = bookingDetails.checkInDate
+        val checkOutDate = bookingDetails.checkOutDate
+        val adults = bookingDetails.adults
+
+        if (checkInDate.isNotEmpty() && checkOutDate.isNotEmpty() && adults > 0) {
+            viewModelScope.launch {
+                try {
+                    val dateUtils = DateUtils()
+                    val apiCheckInDate = dateUtils.displayDateToApiFormat(checkInDate)
+                    val apiCheckOutDate = dateUtils.displayDateToApiFormat(checkOutDate)
+
+                    println("DEBUG: Date conversion - Display dates: $checkInDate to $checkOutDate")
+                    println("DEBUG: Date conversion - API dates: $apiCheckInDate to $apiCheckOutDate")
+
+                    val batchSize = 5
+                    hotelItems.chunked(batchSize).forEachIndexed { batchIndex, hotelBatch ->
+                        if (batchIndex > 0) {
+                           delay(1000)
+                        }
+
+                        hotelBatch.forEach { hotelItem ->
+                            val hotel = hotelItem.hotel
+                            _hotelPrices.update { currentPrices ->
+                                currentPrices + (hotel.hotelId to HotelPrice(isLoading = true))
+                            }
+                            
+                            hotelRepository.searchHotelOffers(
+                                hotelIds = hotel.hotelId,
+                                checkInDate = apiCheckInDate,
+                                checkOutDate = apiCheckOutDate,
+                                adults = adults.toString(),
+                                bestRateOnly = true
+                            ) { result ->
+                                when (result) {
+                                    is Result.Error -> {
+                                        println("DEBUG: Error getting offers for hotel ${hotel.hotelId}: ${result.error}")
+                                        _hotelPrices.update { currentPrices ->
+                                            currentPrices + (hotel.hotelId to HotelPrice(
+                                                isLoading = false,
+                                                hasError = true
+                                            ))
+                                        }
+                                    }
+                                    is Result.Success -> {
+                                        println("DEBUG: Success getting offers for hotel ${hotel.hotelId}: ${result.data.size} offers found")
+                                        handleBestOfferResult(result.data, hotel.hotelId)
+                                    }
+                                }
+                            }
+                            delay(200)
+                        }
+                    }
+                } catch (e: Exception) {
+                    println("ERROR: Date conversion failed: ${e.message}")
+                    e.printStackTrace()
+                }
+            }
+        } else {
+            println("DEBUG: Skipping price fetching - checkInDate: $checkInDate, checkOutDate: $checkOutDate, adults: $adults")
+        }
+    }
+    
+
+    private fun handleBestOfferResult(offers: List<HotelOffer>, hotelId: String) {
+        if (offers.isEmpty()) {
+            _hotelPrices.update { currentPrices ->
+                currentPrices + (hotelId to HotelPrice(
+                    isLoading = false,
+                    hasError = false,
+                    noOffers = true
+                ))
+            }
+            return
+        }
+
+        val hotelOffer = offers.firstOrNull()
+        if (hotelOffer == null || hotelOffer.offers.isEmpty()) {
+            _hotelPrices.update { currentPrices ->
+                currentPrices + (hotelId to HotelPrice(
+                    isLoading = false,
+                    hasError = false,
+                    noOffers = true
+                ))
+            }
+            return
+        }
+
+        val bestOffer = hotelOffer.offers.first()
+        val totalPrice = bestOffer.price?.total?.toDoubleOrNull()
+        val currency = bestOffer.price?.currency
+        
+        if (totalPrice != null && currency != null) {
+            viewModelScope.launch {
+                priceConverter.convertPrice(totalPrice, currency) { result ->
+                    when (result) {
+                        is Result.Error -> {
+                            _hotelPrices.update { currentPrices ->
+                                currentPrices + (hotelId to HotelPrice(
+                                    isLoading = false,
+                                    hasError = false,
+                                    originalPrice = totalPrice,
+                                    originalCurrency = currency
+                                ))
+                            }
+                        }
+                        is Result.Success -> {
+                            _hotelPrices.update { currentPrices ->
+                                currentPrices + (hotelId to HotelPrice(
+                                    isLoading = false,
+                                    hasError = false,
+                                    originalPrice = totalPrice,
+                                    originalCurrency = currency,
+                                    convertedPrice = result.data
+                                ))
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            _hotelPrices.update { currentPrices ->
+                currentPrices + (hotelId to HotelPrice(
+                    isLoading = false,
+                    hasError = false,
+                    noOffers = true
+                ))
             }
         }
     }
@@ -126,7 +300,7 @@ class HotelListViewModel(
     }
 
     data class HotelListState(
-        val hotels: List<Hotel> = emptyList(),
+        val hotelItems: List<HotelWithBookingDetails> = emptyList(),
         val errorMessage: String? = null,
         val isLoading: Boolean = false
     )

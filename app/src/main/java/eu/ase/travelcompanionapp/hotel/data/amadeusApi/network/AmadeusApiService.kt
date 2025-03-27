@@ -59,6 +59,7 @@ class AmadeusApiService(
         checkInDate: String,
         checkOutDate: String,
         adults: String,
+        bestRateOnly: Boolean,
         onResult: (Result<List<HotelOffersDto>, DataError.Remote>) -> Unit
     ) {
         when (val tokenResult = hotelApiHelper.getAccessToken()) {
@@ -68,7 +69,7 @@ class AmadeusApiService(
             is Result.Success -> {
                 val token = tokenResult.data
                 safeCall<HotelOffersResponse> {
-                    val url = "https://test.api.amadeus.com/v3/shopping/hotel-offers?hotelIds=$hotelIds&adults=$adults&includeClosed=false&bestRateOnly=false&checkInDate=$checkInDate&checkOutDate=$checkOutDate"
+                    val url = "https://test.api.amadeus.com/v3/shopping/hotel-offers?hotelIds=$hotelIds&adults=$adults&includeClosed=false&bestRateOnly=$bestRateOnly&checkInDate=$checkInDate&checkOutDate=$checkOutDate"
                     client.get(url) {
                         headers {
                             bearerAuth(token)

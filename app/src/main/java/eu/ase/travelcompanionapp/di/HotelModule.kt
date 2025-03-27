@@ -45,7 +45,8 @@ val hotelAmadeusModule = module {
             hotelRepository = get(),
             cityToIATACodeRepository = get(),
             navController = navController,
-            sharedViewModel = sharedViewModel
+            sharedViewModel = sharedViewModel,
+            priceConverter = get()
         )
     }
     single<HotelRepositoryAmadeusApi> { AmadeusHotelRepository(get()) }

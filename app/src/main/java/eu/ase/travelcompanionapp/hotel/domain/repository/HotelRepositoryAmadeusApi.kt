@@ -27,6 +27,7 @@ interface HotelRepositoryAmadeusApi {
         checkInDate: String,
         checkOutDate: String,
         adults: String,
+        bestRateOnly: Boolean = false,
         onResult: (Result<List<HotelOffer>, DataError.Remote>) -> Unit
     )
 }

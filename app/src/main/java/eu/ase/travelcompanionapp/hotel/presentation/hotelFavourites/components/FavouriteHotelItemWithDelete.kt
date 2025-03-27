@@ -23,12 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelWithBookingDetails
 import kotlinx.coroutines.delay
 
 @Composable
 fun FavouriteHotelItemWithDelete(
     hotelWithDetails: HotelWithBookingDetails,
+    priceInfo:  HotelPrice?,
     onDelete: () -> Unit,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -51,6 +53,7 @@ fun FavouriteHotelItemWithDelete(
         Box(modifier = modifier.fillMaxWidth()) {
             FavouriteHotelItem(
                 hotelWithDetails = hotelWithDetails,
+                priceInfo = priceInfo,
                 onClick = onClick,
                 modifier = Modifier.fillMaxWidth()
             )

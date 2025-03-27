@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
+import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 
 
 @Composable
@@ -46,6 +47,7 @@ fun HotelListScreenRoot(
     ratings: Set<Int>? = emptySet()
 ) {
     val state by viewModel.hotelState.collectAsStateWithLifecycle()
+    val hotelPrices by viewModel.hotelPrices.collectAsStateWithLifecycle()
 
     LaunchedEffect(selectedCity, latitude, longitude, radius, amenities, ratings) {
         if (selectedCity != null) {
@@ -66,7 +68,7 @@ fun HotelListScreenRoot(
     }
 
     when {
-        state.errorMessage != null || state.hotels.isEmpty() && !state.isLoading -> {
+        state.errorMessage != null || state.hotelItems.isEmpty() && !state.isLoading -> {
             HotelListScreenError(
                 errorMessage = state.errorMessage ?: stringResource(R.string.no_hotels_found),
                 onAction = { action ->
@@ -77,6 +79,7 @@ fun HotelListScreenRoot(
         else -> {
             HotelListScreen(
                 state = state,
+                hotelPrices = hotelPrices,
                 selectedCity = selectedCity,
                 onAction = { action ->
                     viewModel.handleAction(action)
@@ -90,6 +93,7 @@ fun HotelListScreenRoot(
 @Composable
 private fun HotelListScreen(
     state: HotelListViewModel.HotelListState,
+    hotelPrices: Map<String, HotelPrice>,
     selectedCity: String?,
     onAction: (HotelListAction) -> Unit,
     modifier: Modifier = Modifier
@@ -106,11 +110,11 @@ private fun HotelListScreen(
                             else
                                 stringResource(R.string.hotels_list_by_location)
                         )
-                        if (state.hotels.isNotEmpty()) {
+                        if (state.hotelItems.isNotEmpty()) {
                             Text(
                                 text = stringResource(
                                     R.string.hotels_found,
-                                    state.hotels.size
+                                    state.hotelItems.size
                                 ),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
@@ -163,7 +167,8 @@ private fun HotelListScreen(
                         color = MaterialTheme.colorScheme.background
                     ) {
                         HotelList(
-                            hotels = state.hotels,
+                            hotelItems = state.hotelItems,
+                            hotelPrices = hotelPrices,
                             onHotelClick = { hotel ->
                                 onAction(HotelListAction.OnHotelClick(hotel))
                             },

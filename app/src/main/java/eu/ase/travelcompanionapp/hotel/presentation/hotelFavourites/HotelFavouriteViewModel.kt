@@ -4,23 +4,36 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
+import eu.ase.travelcompanionapp.core.domain.utils.DateUtils
 import eu.ase.travelcompanionapp.core.domain.utils.FavoriteEvent
 import eu.ase.travelcompanionapp.core.domain.utils.FavoritesEventBus
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelWithBookingDetails
+import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
+import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 import eu.ase.travelcompanionapp.hotel.domain.repository.FavouriteHotelRepository
+import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
+import eu.ase.travelcompanionapp.user.domain.service.PriceConverter
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HotelFavouriteViewModel(
     private val navController: NavController,
     private val sharedViewModel: SharedViewModel,
-    private val favouriteHotelRepository: FavouriteHotelRepository
+    private val favouriteHotelRepository: FavouriteHotelRepository,
+    private val hotelRepository: HotelRepositoryAmadeusApi,
+    private val priceConverter: PriceConverter
 ) : ViewModel() {
     private val _hotelState = MutableStateFlow(HotelFavouriteState())
     val hotelState = _hotelState.asStateFlow()
+    
+    private val _hotelPrices = MutableStateFlow<Map<String, HotelPrice>>(emptyMap())
+    val hotelPrices = _hotelPrices.asStateFlow()
 
     fun getHotelFavourites() {
         viewModelScope.launch {
@@ -39,6 +52,138 @@ class HotelFavouriteViewModel(
                     isLoading = false,
                     errorMessage = if (hotels.isEmpty()) "No favorite hotels found yet" else null
                 )
+
+                fetchPricesForFavourites(hotelsWithDetails)
+            }
+        }
+    }
+    
+    private fun fetchPricesForFavourites(hotelsWithDetails: List<HotelWithBookingDetails>) {
+        viewModelScope.launch {
+            val batchSize = 5
+            
+            hotelsWithDetails.chunked(batchSize).forEachIndexed { batchIndex, hotelBatch ->
+                if (batchIndex > 0) {
+                    delay(1000)
+                }
+                
+                for (hotelWithDetails in hotelBatch) {
+                    val hotel = hotelWithDetails.hotel
+                    val bookingDetails = hotelWithDetails.bookingDetails
+                    
+                    if (bookingDetails != null && 
+                        bookingDetails.checkInDate.isNotEmpty() && 
+                        bookingDetails.checkOutDate.isNotEmpty() && 
+                        bookingDetails.adults > 0) {
+                        
+                        _hotelPrices.update { currentPrices ->
+                            currentPrices + (hotel.hotelId to HotelPrice(isLoading = true))
+                        }
+                        
+                        try {
+                            val dateUtils = DateUtils()
+                            val apiCheckInDate = dateUtils.displayDateToApiFormat(bookingDetails.checkInDate)
+                            val apiCheckOutDate = dateUtils.displayDateToApiFormat(bookingDetails.checkOutDate)
+
+                            hotelRepository.searchHotelOffers(
+                                hotelIds = hotel.hotelId,
+                                checkInDate = apiCheckInDate,
+                                checkOutDate = apiCheckOutDate,
+                                adults = bookingDetails.adults.toString(),
+                                bestRateOnly = true
+                            ) { result ->
+                                when (result) {
+                                    is Result.Error -> {
+                                        _hotelPrices.update { currentPrices ->
+                                            currentPrices + (hotel.hotelId to HotelPrice(
+                                                isLoading = false,
+                                                hasError = true
+                                            ))
+                                        }
+                                    }
+                                    is Result.Success -> {
+                                        handleBestOfferResult(result.data, hotel.hotelId)
+                                    }
+                                }
+                            }
+                            delay(200)
+                        } catch (e: Exception) {
+                            _hotelPrices.update { currentPrices ->
+                                currentPrices + (hotel.hotelId to HotelPrice(
+                                    isLoading = false,
+                                    hasError = true
+                                ))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private fun handleBestOfferResult(offers: List<HotelOffer>, hotelId: String) {
+        if (offers.isEmpty()) {
+            _hotelPrices.update { currentPrices ->
+                currentPrices + (hotelId to HotelPrice(
+                    isLoading = false,
+                    hasError = false,
+                    noOffers = true
+                ))
+            }
+            return
+        }
+
+        val hotelOffer = offers.firstOrNull()
+        if (hotelOffer == null || hotelOffer.offers.isEmpty()) {
+            _hotelPrices.update { currentPrices ->
+                currentPrices + (hotelId to HotelPrice(
+                    isLoading = false,
+                    hasError = false,
+                    noOffers = true
+                ))
+            }
+            return
+        }
+
+        val bestOffer = hotelOffer.offers.first()
+        val totalPrice = bestOffer.price?.total?.toDoubleOrNull()
+        val currency = bestOffer.price?.currency
+        
+        if (totalPrice != null && currency != null) {
+            viewModelScope.launch {
+                priceConverter.convertPrice(totalPrice, currency) { result ->
+                    when (result) {
+                        is Result.Error -> {
+                            _hotelPrices.update { currentPrices ->
+                                currentPrices + (hotelId to HotelPrice(
+                                    isLoading = false,
+                                    hasError = false,
+                                    originalPrice = totalPrice,
+                                    originalCurrency = currency
+                                ))
+                            }
+                        }
+                        is Result.Success -> {
+                            _hotelPrices.update { currentPrices ->
+                                currentPrices + (hotelId to HotelPrice(
+                                    isLoading = false,
+                                    hasError = false,
+                                    originalPrice = totalPrice,
+                                    originalCurrency = currency,
+                                    convertedPrice = result.data
+                                ))
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            _hotelPrices.update { currentPrices ->
+                currentPrices + (hotelId to HotelPrice(
+                    isLoading = false,
+                    hasError = false,
+                    noOffers = true
+                ))
             }
         }
     }
@@ -81,9 +226,12 @@ class HotelFavouriteViewModel(
             }
         }
     }
+
+    data class HotelFavouriteState(
+        val hotelsWithDetails: List<HotelWithBookingDetails> = emptyList(),
+        val isLoading: Boolean = false,
+        val errorMessage: String? = null
+    )
+
 }
-data class HotelFavouriteState(
-    val hotelsWithDetails: List<HotelWithBookingDetails> = emptyList(),
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null
-)
+

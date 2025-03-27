@@ -61,9 +61,16 @@ class AmadeusHotelRepository(
         checkInDate: String,
         checkOutDate: String,
         adults: String,
+        bestRateOnly: Boolean,
         onResult: (Result<List<HotelOffer>, DataError.Remote>) -> Unit
     ) {
-        remoteHotelDataSource.searchHotelOffers(hotelIds, checkInDate, checkOutDate, adults) { result ->
+        remoteHotelDataSource.searchHotelOffers(
+            hotelIds, 
+            checkInDate, 
+            checkOutDate, 
+            adults,
+            bestRateOnly
+        ) { result ->
             onResult(result.map { hotelOffersDto ->
                 hotelOffersDto.map { it.toHotelOffer() }
             })
