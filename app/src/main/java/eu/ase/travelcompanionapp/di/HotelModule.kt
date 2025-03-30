@@ -11,7 +11,7 @@ import eu.ase.travelcompanionapp.hotel.domain.repository.CityToIATACodeRepositor
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryPlacesApi
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.test.HotelLocationTestViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.HotelOffersViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
@@ -20,21 +20,21 @@ import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
 val hotelPlacesModule = module {
-    /*viewModel { (navController: NavHostController, sharedViewModel: SharedViewModel) ->
+    viewModel { (navController: NavHostController, sharedViewModel: SharedViewModel) ->
         HotelLocationViewModel(
             hotelRepository = get(),
             navController = navController,
             sharedViewModel = sharedViewModel,
             favouriteHotelRepository = get()
         )
-    }*/
-    viewModel { (navController: NavHostController, sharedViewModel: SharedViewModel) ->
+    }
+    /*viewModel { (navController: NavHostController, sharedViewModel: SharedViewModel) ->
         HotelLocationTestViewModel(
             navController = navController,
             sharedViewModel = sharedViewModel,
             favouriteHotelRepository = get()
         )
-    }
+    }*/
     single<HotelRepositoryPlacesApi> { PlacesHotelRepository(get()) }
     single { PlacesApiService(get()) }
 }

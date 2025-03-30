@@ -151,4 +151,6 @@
     <string name="light_theme_active">Light theme is currently active. Switch to enable dark theme.</string>
     <string name="dark_theme_active">Dark theme is currently active. Switch to enable light theme.</string>
     <string name="loading_prices">Loading prices…</string>
+    <string name="location">Location</string>
+    <string name="details">Hotel Details</string>
 </resources>

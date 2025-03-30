@@ -26,7 +26,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components.GoogleMapComponent
 
 @Composable
 fun HotelMapTest(

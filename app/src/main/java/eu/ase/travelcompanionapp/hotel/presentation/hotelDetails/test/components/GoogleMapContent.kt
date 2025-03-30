@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components
+package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.test.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
