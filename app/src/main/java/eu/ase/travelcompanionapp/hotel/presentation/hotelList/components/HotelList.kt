@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import coil3.Bitmap
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelWithBookingDetails
@@ -16,6 +17,7 @@ fun HotelList(
     hotelItems: List<HotelWithBookingDetails>,
     onHotelClick: (Hotel) -> Unit,
     hotelPrices: Map<String, HotelPrice> = emptyMap(),
+    hotelImages: Map<String, Bitmap?> = emptyMap(),
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier.fillMaxWidth(),
@@ -26,7 +28,8 @@ fun HotelList(
                 hotel = hotelItem.hotel, 
                 onClick = { onHotelClick(hotelItem.hotel) },
                 hotelPrice = hotelPrices[hotelItem.hotel.hotelId],
-                bookingDetails = hotelItem.bookingDetails
+                bookingDetails = hotelItem.bookingDetails,
+                hotelImage = hotelImages[hotelItem.hotel.hotelId]
             )
         }
     }

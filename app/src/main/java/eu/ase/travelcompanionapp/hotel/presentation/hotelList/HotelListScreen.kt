@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
+import coil3.Bitmap
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 
 
@@ -48,6 +49,13 @@ fun HotelListScreenRoot(
 ) {
     val state by viewModel.hotelState.collectAsStateWithLifecycle()
     val hotelPrices by viewModel.hotelPrices.collectAsStateWithLifecycle()
+
+    // THIS WOULD BE USED WHEN THE APP IS FINISHED, IN TESTING IT IS TAKEN OUT DUE TO API COSTS
+    /*val hotelImages by viewModel.hotelImages.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state.hotelItems) {
+        viewModel.loadHotelImages()
+    }*/
 
     LaunchedEffect(selectedCity, latitude, longitude, radius, amenities, ratings) {
         if (selectedCity != null) {
@@ -81,6 +89,7 @@ fun HotelListScreenRoot(
                 state = state,
                 hotelPrices = hotelPrices,
                 selectedCity = selectedCity,
+                //hotelImages = hotelImages,
                 onAction = { action ->
                     viewModel.handleAction(action)
                 }
@@ -96,6 +105,7 @@ private fun HotelListScreen(
     hotelPrices: Map<String, HotelPrice>,
     selectedCity: String?,
     onAction: (HotelListAction) -> Unit,
+    hotelImages: Map<String, Bitmap?> = emptyMap(),
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -169,6 +179,7 @@ private fun HotelListScreen(
                         HotelList(
                             hotelItems = state.hotelItems,
                             hotelPrices = hotelPrices,
+                            hotelImages = hotelImages,
                             onHotelClick = { hotel ->
                                 onAction(HotelListAction.OnHotelClick(hotel))
                             },

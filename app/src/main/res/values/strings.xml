@@ -153,4 +153,6 @@
     <string name="loading_prices">Loading prices…</string>
     <string name="location">Location</string>
     <string name="details">Hotel Details</string>
+    <string name="hotel_image">hotel img</string>
+    <string name="loading_image">Loading image...</string>
 </resources>

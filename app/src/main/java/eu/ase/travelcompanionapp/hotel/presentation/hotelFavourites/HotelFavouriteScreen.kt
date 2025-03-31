@@ -38,6 +38,15 @@ fun HotelFavouriteScreen(
     val state = viewModel.hotelState.collectAsStateWithLifecycle()
     val hotelPrices = viewModel.hotelPrices.collectAsStateWithLifecycle()
 
+    // THIS WOULD BE USED WHEN THE APP IS FINISHED, IN TESTING IT IS TAKEN OUT DUE TO API COSTS
+    /*val hotelImages by viewModel.hotelImages.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state.value.hotelsWithDetails) {
+        if (state.value.hotelsWithDetails.isNotEmpty()) {
+            viewModel.loadHotelImages()
+        }
+    }*/
+
     LaunchedEffect(Unit) {
         viewModel.getHotelFavourites()
     }
@@ -92,7 +101,8 @@ fun HotelFavouriteScreen(
                         },
                         onDeleteClick = { hotelId ->
                             viewModel.handleAction(HotelFavouriteAction.OnRemoveFavourite(hotelId))
-                        }
+                        },
+                        //hotelImages = hotelImages
                     )
                 }
             }

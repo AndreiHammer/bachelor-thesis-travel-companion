@@ -3,6 +3,7 @@ package eu.ase.travelcompanionapp.hotel.presentation.hotelList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import coil3.Bitmap
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
@@ -13,6 +14,7 @@ import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 import eu.ase.travelcompanionapp.hotel.domain.repository.CityToIATACodeRepository
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
+import eu.ase.travelcompanionapp.hotel.domain.repository.HotelThumbnailRepository
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.user.domain.service.PriceConverter
 import kotlinx.coroutines.delay
@@ -26,7 +28,8 @@ class HotelListViewModel(
     private val cityToIATACodeRepository: CityToIATACodeRepository,
     private val navController: NavHostController,
     private val sharedViewModel: SharedViewModel,
-    private val priceConverter: PriceConverter
+    private val priceConverter: PriceConverter,
+    private val hotelThumbnailRepository: HotelThumbnailRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HotelListState())
@@ -34,6 +37,27 @@ class HotelListViewModel(
     
     private val _hotelPrices = MutableStateFlow<Map<String, HotelPrice>>(emptyMap())
     val hotelPrices: StateFlow<Map<String, HotelPrice>> = _hotelPrices
+
+    private val _hotelImages = MutableStateFlow<Map<String, Bitmap?>>(emptyMap())
+    val hotelImages: StateFlow<Map<String, Bitmap?>> = _hotelImages
+
+    fun loadHotelImages() {
+        viewModelScope.launch {
+            val currentHotels = _state.value.hotelItems
+
+            for (hotelItem in currentHotels) {
+                val hotel = hotelItem.hotel
+                _hotelImages.update { it + (hotel.hotelId to null) }
+
+                try {
+                    val image = hotelThumbnailRepository.getHotelThumbnail(hotel)
+                    _hotelImages.update { it + (hotel.hotelId to image) }
+                } catch (e: Exception) {
+                    // Keep the placeholder on error (null value)
+                }
+            }
+        }
+    }
 
     fun getHotelListByCity(city: String, amenities: String, rating: String) {
         
@@ -165,9 +189,6 @@ class HotelListViewModel(
                     val apiCheckInDate = dateUtils.displayDateToApiFormat(checkInDate)
                     val apiCheckOutDate = dateUtils.displayDateToApiFormat(checkOutDate)
 
-                    println("DEBUG: Date conversion - Display dates: $checkInDate to $checkOutDate")
-                    println("DEBUG: Date conversion - API dates: $apiCheckInDate to $apiCheckOutDate")
-
                     val batchSize = 5
                     hotelItems.chunked(batchSize).forEachIndexed { batchIndex, hotelBatch ->
                         if (batchIndex > 0) {
@@ -189,7 +210,6 @@ class HotelListViewModel(
                             ) { result ->
                                 when (result) {
                                     is Result.Error -> {
-                                        println("DEBUG: Error getting offers for hotel ${hotel.hotelId}: ${result.error}")
                                         _hotelPrices.update { currentPrices ->
                                             currentPrices + (hotel.hotelId to HotelPrice(
                                                 isLoading = false,
@@ -198,7 +218,6 @@ class HotelListViewModel(
                                         }
                                     }
                                     is Result.Success -> {
-                                        println("DEBUG: Success getting offers for hotel ${hotel.hotelId}: ${result.data.size} offers found")
                                         handleBestOfferResult(result.data, hotel.hotelId)
                                     }
                                 }
@@ -207,12 +226,9 @@ class HotelListViewModel(
                         }
                     }
                 } catch (e: Exception) {
-                    println("ERROR: Date conversion failed: ${e.message}")
                     e.printStackTrace()
                 }
             }
-        } else {
-            println("DEBUG: Skipping price fetching - checkInDate: $checkInDate, checkOutDate: $checkOutDate, adults: $adults")
         }
     }
     

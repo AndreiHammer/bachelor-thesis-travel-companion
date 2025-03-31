@@ -3,6 +3,7 @@ package eu.ase.travelcompanionapp.hotel.presentation.hotelFavourites
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import coil3.Bitmap
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.core.domain.utils.DateUtils
@@ -13,10 +14,12 @@ import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 import eu.ase.travelcompanionapp.hotel.domain.repository.FavouriteHotelRepository
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
+import eu.ase.travelcompanionapp.hotel.domain.repository.HotelThumbnailRepository
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.user.domain.service.PriceConverter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
@@ -27,13 +30,35 @@ class HotelFavouriteViewModel(
     private val sharedViewModel: SharedViewModel,
     private val favouriteHotelRepository: FavouriteHotelRepository,
     private val hotelRepository: HotelRepositoryAmadeusApi,
-    private val priceConverter: PriceConverter
+    private val priceConverter: PriceConverter,
+    private val hotelThumbnailRepository: HotelThumbnailRepository
 ) : ViewModel() {
     private val _hotelState = MutableStateFlow(HotelFavouriteState())
     val hotelState = _hotelState.asStateFlow()
-    
+
     private val _hotelPrices = MutableStateFlow<Map<String, HotelPrice>>(emptyMap())
     val hotelPrices = _hotelPrices.asStateFlow()
+
+    private val _hotelImages = MutableStateFlow<Map<String, Bitmap?>>(emptyMap())
+    val hotelImages: StateFlow<Map<String, Bitmap?>> = _hotelImages
+
+    fun loadHotelImages() {
+        viewModelScope.launch {
+            val currentHotels = _hotelState.value.hotelsWithDetails
+
+            for (hotelItem in currentHotels) {
+                val hotel = hotelItem.hotel
+                _hotelImages.update { it + (hotel.hotelId to null) }
+
+                try {
+                    val image = hotelThumbnailRepository.getHotelThumbnail(hotel)
+                    _hotelImages.update { it + (hotel.hotelId to image) }
+                } catch (e: Exception) {
+                    // Keep the placeholder on error (null value)
+                }
+            }
+        }
+    }
 
     fun getHotelFavourites() {
         viewModelScope.launch {

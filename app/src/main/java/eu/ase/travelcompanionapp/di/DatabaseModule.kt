@@ -22,7 +22,8 @@ val databaseModule = module {
             sharedViewModel = sharedViewModel,
             favouriteHotelRepository = get(),
             priceConverter = get(),
-            hotelRepository = get()
+            hotelRepository = get(),
+            hotelThumbnailRepository = get()
         )
     }
 }

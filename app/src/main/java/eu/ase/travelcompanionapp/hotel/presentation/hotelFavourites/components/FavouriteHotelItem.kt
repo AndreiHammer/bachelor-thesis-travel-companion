@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil3.Bitmap
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelWithBookingDetails
@@ -37,7 +38,8 @@ fun FavouriteHotelItem(
     hotelWithDetails: HotelWithBookingDetails,
     priceInfo: HotelPrice?,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hotelImage: Bitmap? = null
 ) {
     Card(
         modifier = modifier
@@ -62,6 +64,7 @@ fun FavouriteHotelItem(
             HotelItem(
                 hotel = hotelWithDetails.hotel,
                 onClick = onClick,
+                hotelImage = hotelImage,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp)

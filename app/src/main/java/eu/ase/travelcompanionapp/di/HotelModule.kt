@@ -5,11 +5,13 @@ import eu.ase.travelcompanionapp.hotel.data._IATAparsing.CityToIATACodeRepositor
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.AmadeusApiService
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.network.RemoteHotelDataSource
 import eu.ase.travelcompanionapp.hotel.data.amadeusApi.repository.AmadeusHotelRepository
+import eu.ase.travelcompanionapp.hotel.data.placesApi.HotelThumbnailService
 import eu.ase.travelcompanionapp.hotel.data.placesApi.PlacesApiService
 import eu.ase.travelcompanionapp.hotel.data.placesApi.PlacesHotelRepository
 import eu.ase.travelcompanionapp.hotel.domain.repository.CityToIATACodeRepository
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryPlacesApi
+import eu.ase.travelcompanionapp.hotel.domain.repository.HotelThumbnailRepository
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
@@ -46,11 +48,13 @@ val hotelAmadeusModule = module {
             cityToIATACodeRepository = get(),
             navController = navController,
             sharedViewModel = sharedViewModel,
-            priceConverter = get()
+            priceConverter = get(),
+            hotelThumbnailRepository = get()
         )
     }
     single<HotelRepositoryAmadeusApi> { AmadeusHotelRepository(get()) }
     single<RemoteHotelDataSource> { AmadeusApiService(get()) }
+    single<HotelThumbnailRepository> { HotelThumbnailService(get()) }
 }
 
 val hotelSharedModule = module {

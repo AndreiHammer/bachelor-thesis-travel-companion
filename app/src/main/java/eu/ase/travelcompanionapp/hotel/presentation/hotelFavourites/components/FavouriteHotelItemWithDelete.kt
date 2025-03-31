@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil3.Bitmap
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelWithBookingDetails
@@ -30,6 +31,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun FavouriteHotelItemWithDelete(
     hotelWithDetails: HotelWithBookingDetails,
+    hotelImage: Bitmap? = null,
     priceInfo:  HotelPrice?,
     onDelete: () -> Unit,
     onClick: () -> Unit,
@@ -55,6 +57,7 @@ fun FavouriteHotelItemWithDelete(
                 hotelWithDetails = hotelWithDetails,
                 priceInfo = priceInfo,
                 onClick = onClick,
+                hotelImage = hotelImage,
                 modifier = Modifier.fillMaxWidth()
             )
             IconButton(
