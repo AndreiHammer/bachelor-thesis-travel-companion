@@ -122,10 +122,6 @@ dependencies {
 
     implementation(libs.bundles.coil)
 
-    implementation(libs.objectbox.kotlin)
-    debugImplementation(libs.objectbox.android.objectbrowser)
-    releaseImplementation(libs.objectbox.android)
-
     implementation(libs.androidx.runtime.livedata)
 
     implementation(libs.places)
@@ -140,5 +136,3 @@ dependencies {
 
     implementation(libs.androidx.datastore.preferences)
 }
-
-apply(plugin = "io.objectbox")

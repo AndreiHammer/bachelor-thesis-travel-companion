@@ -17,7 +17,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val userModule = module {
-    single<AccountRepository> { AccountService(get(), get()) }
+    single<AccountRepository> { AccountService(get()) }
     single<UserPreferencesRepository> { UserPreferences(get()) }
     viewModel { (navController: NavHostController) ->
         ProfileViewModel(

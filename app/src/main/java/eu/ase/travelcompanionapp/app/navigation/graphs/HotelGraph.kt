@@ -12,8 +12,8 @@ import androidx.navigation.compose.navigation
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.app.navigation.sharedKoinViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
-import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationScreenRoot
-import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
+import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.test.HotelLocationTestScreenRoot
+import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.test.HotelLocationTestViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelFavourites.HotelFavouriteScreen
 import eu.ase.travelcompanionapp.hotel.presentation.hotelFavourites.HotelFavouriteViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListScreenRoot
@@ -135,7 +135,7 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
             val adults by sharedViewModel.selectedAdults.collectAsStateWithLifecycle()
 
             selectedHotel?.let { selected ->
-                val viewModel = koinViewModel<HotelLocationViewModel>(
+                /*val viewModel = koinViewModel<HotelLocationViewModel>(
                     parameters = { parametersOf(navController, sharedViewModel) }
                 )
 
@@ -145,9 +145,9 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                     checkOutDate = checkOutDate,
                     adults = adults,
                     viewModel = viewModel
-                )
+                )*/
 
-                /*val viewModel = koinViewModel<HotelLocationTestViewModel>(
+                val viewModel = koinViewModel<HotelLocationTestViewModel>(
                     parameters = { parametersOf(navController, sharedViewModel) }
                 )
 
@@ -157,7 +157,7 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                     checkOutDate = checkOutDate,
                     adults = adults,
                     viewModel = viewModel
-                )*/
+                )
             }
         }
 

@@ -11,7 +11,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,8 +36,7 @@ fun BlurredAnimatedText(
     text: String,
     modifier: Modifier = Modifier
 ) {
-    val darkTheme = isSystemInDarkTheme()
-    val textColor = if(darkTheme) Color.White else Color.Black
+    val textColor = MaterialTheme.colorScheme.onSurface
 
     val blurList = text.mapIndexed { index, character ->
         if(character == ' ') {

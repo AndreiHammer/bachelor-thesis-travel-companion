@@ -14,6 +14,5 @@ plugins {
 buildscript {
     dependencies {
         classpath(libs.secrets.gradle.plugin)
-        classpath(libs.objectbox.gradle.plugin)
     }
 }
