@@ -80,6 +80,8 @@ class ProfileViewModel(
     fun deleteAccount() {
         viewModelScope.launch {
             try {
+                val userId = authRepository.currentUserId
+                accountRepository.deleteUserData(userId)
                 authRepository.deleteAccount()
                 _actionState.value = ProfileActionState.AccountDeleted
                 navigateToAuth()

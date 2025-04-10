@@ -13,6 +13,10 @@ class AuthService : AuthRepository {
     override val currentUserId: String
         get() = authManager.currentUserId
 
+    override fun getCurrentUserEmail(): String? {
+        return authManager.getCurrentUserEmail()
+    }
+
     override fun hasUser(): Boolean = authManager.hasUser()
 
     override suspend fun signIn(email: String, password: String): String {

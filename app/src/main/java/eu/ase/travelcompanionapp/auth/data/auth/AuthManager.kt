@@ -23,6 +23,10 @@ class AuthManager {
     val currentUserId: String
         get() = auth.currentUser?.uid.orEmpty()
 
+    fun getCurrentUserEmail(): String? {
+        return auth.currentUser?.email
+    }
+
     fun hasUser(): Boolean {
         return auth.currentUser != null
     }
