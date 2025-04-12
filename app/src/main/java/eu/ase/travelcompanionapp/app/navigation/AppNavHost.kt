@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import eu.ase.travelcompanionapp.app.navigation.graphs.AuthGraph
 import eu.ase.travelcompanionapp.app.navigation.graphs.HotelGraph
+import eu.ase.travelcompanionapp.app.navigation.graphs.PaymentGraph
 import eu.ase.travelcompanionapp.app.navigation.graphs.ProfileGraph
 import eu.ase.travelcompanionapp.app.navigation.graphs.RootGraph
 import eu.ase.travelcompanionapp.app.navigation.routes.RootRoute
@@ -35,6 +36,8 @@ fun AppNavHost(
         ProfileGraph(navController = navController)
 
         HotelGraph(navController = navController)
+
+        PaymentGraph(navController = navController)
     }
 }
 

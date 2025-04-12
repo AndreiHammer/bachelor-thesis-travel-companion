@@ -3,10 +3,13 @@ package eu.ase.travelcompanionapp.hotel.presentation.hotelOffers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import eu.ase.travelcompanionapp.app.navigation.routes.PaymentRoute
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.core.domain.utils.DateUtils
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
+import eu.ase.travelcompanionapp.payment.domain.models.BookingInfo
+import eu.ase.travelcompanionapp.payment.domain.repository.BookingService
 import eu.ase.travelcompanionapp.user.domain.model.Currency
 import eu.ase.travelcompanionapp.user.domain.service.PriceConverter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +21,8 @@ import kotlinx.coroutines.launch
 class HotelOffersViewModel(
     private val hotelRepositoryAmadeusApi: HotelRepositoryAmadeusApi,
     private val priceConverter: PriceConverter,
-    private val navController: NavHostController
+    private val navController: NavHostController,
+    private val bookingService: BookingService
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HotelOffersState())
@@ -26,6 +30,8 @@ class HotelOffersViewModel(
 
     private val _convertedPrices = MutableStateFlow<Map<String, Currency>>(emptyMap())
     val convertedPrices = _convertedPrices.asStateFlow()
+
+    private val _currentBooking = MutableStateFlow<BookingInfo?>(null)
 
     fun getHotelOffers(hotelId: String, checkInDate: String, checkOutDate: String, adults: Int) {
         viewModelScope.launch {
@@ -96,15 +102,21 @@ class HotelOffersViewModel(
         }
     }
 
-
-
     fun handleAction(action: HotelOffersAction) {
-        when(action) {
+        when (action) {
             HotelOffersAction.OnBackClick -> {
                 navController.popBackStack()
             }
-            HotelOffersAction.OnBookNow -> {
+            is HotelOffersAction.OnBookNow -> {
+                viewModelScope.launch {
+                    val bookingDetails = bookingService.startBooking(action.offer)
+                    _currentBooking.value = bookingDetails
 
+                    val paymentRoute = PaymentRoute.Payment(
+                        bookingReference = bookingDetails.bookingReference
+                    )
+                    navController.navigate(paymentRoute.createRoute())
+                }
             }
         }
     }

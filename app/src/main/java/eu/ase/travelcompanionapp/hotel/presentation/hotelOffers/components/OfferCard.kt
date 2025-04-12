@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
 import eu.ase.travelcompanionapp.hotel.domain.model.components.Offer
 import eu.ase.travelcompanionapp.user.domain.model.Currency
 
@@ -32,7 +33,8 @@ import eu.ase.travelcompanionapp.user.domain.model.Currency
 @Composable
 fun OfferCard(
     offer: Offer,
-    onBookNow: (String) -> Unit,
+    hotelOffer: HotelOffer,
+    onBookNow: (HotelOffer) -> Unit,
     convertedPrice: Currency?
 ) {
     Card(
@@ -190,7 +192,10 @@ fun OfferCard(
 
             // Book Now Button
             Button(
-                onClick = { offer.id?.let { onBookNow(it) } },
+                onClick = {
+                    val singleOfferHotelOffer = hotelOffer.copy(offers = listOf(offer))
+                    onBookNow(singleOfferHotelOffer)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),

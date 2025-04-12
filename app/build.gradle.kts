@@ -54,6 +54,12 @@ android {
         buildConfigField("String", "RAPID_API_KEY",
             properties.getProperty("RAPID_API_KEY")
         )
+        buildConfigField("String", "STRIPE_PUBLISHABLE_KEY",
+            properties.getProperty("STRIPE_PUBLISHABLE_KEY")
+        )
+        buildConfigField("String", "STRIPE_SECRET_KEY",
+            properties.getProperty("STRIPE_SECRET_KEY")
+        )
     }
 
     buildTypes {
@@ -103,6 +109,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.firebase.functions.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -135,4 +142,6 @@ dependencies {
     implementation(libs.firebase.firestore)
 
     implementation(libs.androidx.datastore.preferences)
+
+    implementation (libs.stripe.android)
 }

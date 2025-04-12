@@ -71,7 +71,8 @@ val hotelSharedModule = module {
         HotelOffersViewModel(
             hotelRepositoryAmadeusApi = get(),
             navController = navController,
-            priceConverter = get()
+            priceConverter = get(),
+            bookingService = get()
         )
     }
 }

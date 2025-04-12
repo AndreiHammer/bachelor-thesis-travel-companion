@@ -17,7 +17,7 @@ import eu.ase.travelcompanionapp.user.domain.model.Currency
 @Composable
 fun HotelOfferItem(
     hotelOffer: HotelOffer,
-    onBookNow: (String) -> Unit,
+    onBookNow: (HotelOffer) -> Unit,
     convertedPrices: Map<String, Currency>
 ) {
     Column(modifier = Modifier.padding(bottom = 16.dp)) {
@@ -36,7 +36,8 @@ fun HotelOfferItem(
                     OfferCard(
                         offer = offer,
                         onBookNow = onBookNow,
-                        convertedPrice = convertedPrices[offer.id]
+                        convertedPrice = convertedPrices[offer.id],
+                        hotelOffer = hotelOffer
                     )
                 }
             }

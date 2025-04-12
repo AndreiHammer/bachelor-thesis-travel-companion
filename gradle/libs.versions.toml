@@ -27,7 +27,9 @@ ksp = "2.0.20-1.0.24"
 runtimeLivedata = "1.7.8"
 navigationRuntimeKtx = "2.8.7"
 navigationCompose = "2.8.7"
+stripeAndroid = "21.7.1"
 uiTextGoogleFonts = "1.7.8"
+firebaseFunctionsKtx = "21.2.1"
 
 
 [libraries]
@@ -78,6 +80,8 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
+stripe-android = { module = "com.stripe:stripe-android", version.ref = "stripeAndroid" }
+firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

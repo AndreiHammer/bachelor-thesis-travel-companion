@@ -28,7 +28,7 @@ fun HotelOffersSection(
     hotelOffers: List<HotelOffer>,
     errorMessage: String,
     convertedPrices: Map<String, Currency>,
-    onBookNow: (String) -> Unit
+    onBookNow: (HotelOffer) -> Unit
 ) {
     if (hotelOffers.isEmpty()) {
         Column(
