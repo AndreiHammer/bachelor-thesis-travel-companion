@@ -165,11 +165,12 @@
     <string name="payment_failed">Payment Failed: %1$s</string>
     <string name="try_again">Try again</string>
     <string name="processing_payment_request">Processing payment request...</string>
-    <string name="proceed_to_payment">Proceed to Payment</string>
+    <string name="proceed_to_payment">Proceed to Checkout</string>
     <string name="success">Success!</string>
     <string name="your_booking_is_confirmed">Your booking is confirmed.</string>
     <string name="payment_successful">Payment Successful!</string>
     <string name="return_to_booking">Return to Booking</string>
     <string name="s_c_travel_companion_s_r_l">S.C. Travel Companion S.R.L.</string>
     <string name="preparing_payment_terminal">Preparing payment terminal...</string>
+    <string name="pay_for_booking">Pay to Book</string>
 </resources>

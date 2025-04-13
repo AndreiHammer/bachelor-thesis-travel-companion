@@ -1,9 +1,9 @@
 package eu.ase.travelcompanionapp.payment.presentation
 
-import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stripe.android.paymentsheet.PaymentSheetResult
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.payment.domain.models.BookingInfo
 import eu.ase.travelcompanionapp.payment.domain.repository.BookingService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,41 +30,31 @@ class PaymentViewModel(
         }
     }
 
-    fun loadBookingDetails(bookingReference: String) {
-        val existingBooking = bookingService.currentBooking.value
-        
-        if (existingBooking != null && existingBooking.bookingReference == bookingReference) {
-            _currentBooking.value = existingBooking
-        }
-
-        _paymentState.value = PaymentState.Ready
-    }
-
     fun startPayment() {
-            viewModelScope.launch {
-                _paymentState.value = PaymentState.Loading
+        viewModelScope.launch {
+            _paymentState.value = PaymentState.Loading
 
-                try {
-                    val booking = _currentBooking.value
-                    if (booking == null) {
-                        _paymentState.value = PaymentState.Error("No active booking found")
-                        return@launch
-                    }
-                    when (val result = bookingService.processPayment(booking)) {
-                        is Result.Success -> {
-                            _paymentState.value = PaymentState.ClientSecretReceived(
-                                clientSecret = result.data.clientSecret,
-                                publishableKey = result.data.publishableKey
-                            )
-                        }
-                        is Result.Error -> {
-                            _paymentState.value = PaymentState.Error("Payment error: ${result.error}")
-                        }
-                    }
-                } catch (e: Exception) {
-                    _paymentState.value = PaymentState.Error(e.message ?: "Unknown error")
+            try {
+                val booking = _currentBooking.value
+                if (booking == null) {
+                    _paymentState.value = PaymentState.Error("No active booking found")
+                    return@launch
                 }
+                when (val result = bookingService.processPayment(booking)) {
+                    is Result.Success -> {
+                        _paymentState.value = PaymentState.ClientSecretReceived(
+                            clientSecret = result.data.clientSecret,
+                            publishableKey = result.data.publishableKey
+                        )
+                    }
+                    is Result.Error -> {
+                        _paymentState.value = PaymentState.Error("Payment error: ${result.error}")
+                    }
+                }
+            } catch (e: Exception) {
+                _paymentState.value = PaymentState.Error(e.message ?: "Unknown error")
             }
+        }
     }
 
     fun handlePaymentResult(result: PaymentSheetResult) {

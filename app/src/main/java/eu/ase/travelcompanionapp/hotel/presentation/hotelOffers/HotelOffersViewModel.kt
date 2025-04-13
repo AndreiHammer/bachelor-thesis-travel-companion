@@ -112,10 +112,7 @@ class HotelOffersViewModel(
                     val bookingDetails = bookingService.startBooking(action.offer)
                     _currentBooking.value = bookingDetails
 
-                    val paymentRoute = PaymentRoute.Payment(
-                        bookingReference = bookingDetails.bookingReference
-                    )
-                    navController.navigate(paymentRoute.createRoute())
+                    navController.navigate(PaymentRoute.Payment)
                 }
             }
         }

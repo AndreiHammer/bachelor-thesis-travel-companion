@@ -1,5 +1,7 @@
 package eu.ase.travelcompanionapp.payment.presentation.components
 
+import android.content.Context
+import android.content.res.ColorStateList
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -131,9 +134,10 @@ fun PaymentSuccessState(
 fun PaymentStripeHandler(
     clientSecret: String?,
     publishableKey: String?,
-    context: android.content.Context,
+    context: Context,
     paymentSheet: PaymentSheet
 ) {
+    val buttonColor = ColorStateList.valueOf(MaterialTheme.colorScheme.primary.toArgb())
     LaunchedEffect(clientSecret, publishableKey) {
         if (clientSecret != null && publishableKey != null) {
             PaymentConfiguration.init(context, publishableKey)
@@ -142,7 +146,7 @@ fun PaymentStripeHandler(
                 paymentIntentClientSecret = clientSecret,
                 configuration = PaymentSheet.Configuration(
                     merchantDisplayName = context.getString(R.string.s_c_travel_companion_s_r_l),
-                    allowsDelayedPaymentMethods = true
+                    primaryButtonColor = buttonColor
                 )
             )
         }
