@@ -108,7 +108,7 @@ fun BookingHistoryScreen(
                         items(state.bookings) { booking ->
                             BookingHistoryItem(
                                 booking = booking,
-                                onClick = { viewModel.onBookingClick(booking) }
+                                onClick = { /*viewModel.onBookingClick(booking)*/ }
                             )
                         }
                     }

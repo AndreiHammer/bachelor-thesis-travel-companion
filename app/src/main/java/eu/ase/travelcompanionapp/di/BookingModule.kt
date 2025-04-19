@@ -16,7 +16,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
-val paymentModule = module {
+val bookingModule = module {
     single<BookingService> { BookingServiceImpl(get()) }
     single<PaymentService> { FirebasePaymentService() }
     single<PaymentRepository> { PaymentRepositoryImpl(get()) }
