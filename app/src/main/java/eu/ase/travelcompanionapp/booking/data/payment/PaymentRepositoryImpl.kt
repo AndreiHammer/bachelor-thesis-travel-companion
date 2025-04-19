@@ -1,10 +1,10 @@
-package eu.ase.travelcompanionapp.payment.data
+package eu.ase.travelcompanionapp.booking.data.payment
 
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
-import eu.ase.travelcompanionapp.payment.domain.models.PaymentIntentRequest
-import eu.ase.travelcompanionapp.payment.domain.models.PaymentIntentResponse
-import eu.ase.travelcompanionapp.payment.domain.repository.PaymentRepository
+import eu.ase.travelcompanionapp.booking.domain.models.PaymentIntentRequest
+import eu.ase.travelcompanionapp.booking.domain.models.PaymentIntentResponse
+import eu.ase.travelcompanionapp.booking.domain.repository.PaymentRepository
 
 class PaymentRepositoryImpl(
     private val paymentService: PaymentService

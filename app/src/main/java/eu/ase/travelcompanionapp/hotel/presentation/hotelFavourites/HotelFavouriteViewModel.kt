@@ -7,8 +7,8 @@ import coil3.Bitmap
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.core.domain.utils.DateUtils
-import eu.ase.travelcompanionapp.core.domain.utils.FavoriteEvent
-import eu.ase.travelcompanionapp.core.domain.utils.FavoritesEventBus
+import eu.ase.travelcompanionapp.core.domain.utils.EventBus
+import eu.ase.travelcompanionapp.core.domain.utils.FavouriteEvent
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelWithBookingDetails
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
@@ -217,7 +217,7 @@ class HotelFavouriteViewModel(
         viewModelScope.launch {
             favouriteHotelRepository.removeFavourite(hotelId)
 
-            FavoritesEventBus.emitEvent(FavoriteEvent.CountChanged)
+            EventBus.favourites.emitEvent(FavouriteEvent.CountChanged)
 
             getHotelFavourites()
         }

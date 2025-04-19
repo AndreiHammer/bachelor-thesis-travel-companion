@@ -8,8 +8,8 @@ import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.core.domain.utils.DateUtils
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
-import eu.ase.travelcompanionapp.payment.domain.models.BookingInfo
-import eu.ase.travelcompanionapp.payment.domain.repository.BookingService
+import eu.ase.travelcompanionapp.booking.domain.models.BookingInfo
+import eu.ase.travelcompanionapp.booking.domain.repository.BookingService
 import eu.ase.travelcompanionapp.user.domain.model.Currency
 import eu.ase.travelcompanionapp.user.domain.service.PriceConverter
 import kotlinx.coroutines.flow.MutableStateFlow

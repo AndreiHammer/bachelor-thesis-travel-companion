@@ -117,8 +117,9 @@ fun ProfileScreen(
             )
 
             AccountActionsCard(
-                onSignOutClick = { viewModel.setShowSignOutDialog(true) },
-                onDeleteAccountClick = { viewModel.setShowDeleteDialog(true) }
+                onSignOutClick = { viewModel.handleAction(ProfileAction.OnSignOutClick) },
+                onDeleteAccountClick = { viewModel.handleAction(ProfileAction.OnDeleteAccountClick) },
+                onViewBookingHistoryClick = { viewModel.handleAction(ProfileAction.OnViewBookingHistoryClick) }
             )
         }
     }
@@ -133,7 +134,7 @@ fun ProfileScreen(
                 Button(
                     onClick = {
                         viewModel.setShowSignOutDialog(false)
-                        viewModel.signOut()
+                        viewModel.handleAction(ProfileAction.ConfirmSignOut)
                     }
                 ) {
                     Text(stringResource(R.string.sign_out))
@@ -156,7 +157,7 @@ fun ProfileScreen(
                 Button(
                     onClick = {
                         viewModel.setShowDeleteDialog(false)
-                        viewModel.deleteAccount()
+                        viewModel.handleAction(ProfileAction.ConfirmDeleteAccount)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error
@@ -175,8 +176,7 @@ fun ProfileScreen(
 
     LaunchedEffect(actionState) {
         when (actionState) {
-            is ProfileActionState.SignedOut -> viewModel.handleAction(ProfileAction.SignedOut)
-            is ProfileActionState.AccountDeleted -> viewModel.handleAction(ProfileAction.AccountDeleted)
+            is ProfileActionState.SignedOut, is ProfileActionState.AccountDeleted -> viewModel.handleStateChange(actionState)
             is ProfileActionState.Error -> {
                 Toast.makeText(context, (actionState as ProfileActionState.Error).message, Toast.LENGTH_SHORT).show()
             }

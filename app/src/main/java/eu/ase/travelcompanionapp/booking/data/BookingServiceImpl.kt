@@ -1,12 +1,12 @@
-package eu.ase.travelcompanionapp.payment.data.booking
+package eu.ase.travelcompanionapp.booking.data
 
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
-import eu.ase.travelcompanionapp.payment.domain.models.BookingInfo
-import eu.ase.travelcompanionapp.payment.domain.models.PaymentIntentResponse
-import eu.ase.travelcompanionapp.payment.domain.repository.BookingService
-import eu.ase.travelcompanionapp.payment.domain.repository.PaymentRepository
+import eu.ase.travelcompanionapp.booking.domain.models.BookingInfo
+import eu.ase.travelcompanionapp.booking.domain.models.PaymentIntentResponse
+import eu.ase.travelcompanionapp.booking.domain.repository.BookingService
+import eu.ase.travelcompanionapp.booking.domain.repository.PaymentRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,6 +35,7 @@ class BookingServiceImpl(
 
         val bookingDetails = BookingInfo(
             bookingReference = bookingReference,
+            userId = "",
             hotelId = hotelOffer.hotel?.hotelId,
             hotelName = hotelName,
             offerId = selectedOffer?.id,
@@ -44,6 +45,7 @@ class BookingServiceImpl(
             guests = guests,
             amount = amount,
             currency = currency,
+            paymentStatus = "",
             timestamp = System.currentTimeMillis()
         )
 

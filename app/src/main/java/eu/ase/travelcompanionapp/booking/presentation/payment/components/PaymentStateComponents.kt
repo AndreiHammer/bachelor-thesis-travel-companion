@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.payment.presentation.components
+package eu.ase.travelcompanionapp.booking.presentation.payment.components
 
 import android.content.Context
 import android.content.res.ColorStateList

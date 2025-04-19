@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.payment.presentation.components
+package eu.ase.travelcompanionapp.booking.presentation.payment.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
-import eu.ase.travelcompanionapp.payment.domain.models.BookingInfo
+import eu.ase.travelcompanionapp.booking.domain.models.BookingInfo
 
 @Composable
 fun BookingSummaryCard(bookingDetails: BookingInfo) {

@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.payment.presentation
+package eu.ase.travelcompanionapp.booking.presentation.payment
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
@@ -25,12 +25,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.stripe.android.paymentsheet.rememberPaymentSheet
 import eu.ase.travelcompanionapp.R
-import eu.ase.travelcompanionapp.payment.presentation.components.BookingSummaryCard
-import eu.ase.travelcompanionapp.payment.presentation.components.PaymentErrorState
-import eu.ase.travelcompanionapp.payment.presentation.components.PaymentLoadingState
-import eu.ase.travelcompanionapp.payment.presentation.components.PaymentReadyState
-import eu.ase.travelcompanionapp.payment.presentation.components.PaymentStripeHandler
-import eu.ase.travelcompanionapp.payment.presentation.components.PaymentSuccessState
+import eu.ase.travelcompanionapp.booking.presentation.payment.components.BookingSummaryCard
+import eu.ase.travelcompanionapp.booking.presentation.payment.components.PaymentErrorState
+import eu.ase.travelcompanionapp.booking.presentation.payment.components.PaymentLoadingState
+import eu.ase.travelcompanionapp.booking.presentation.payment.components.PaymentReadyState
+import eu.ase.travelcompanionapp.booking.presentation.payment.components.PaymentStripeHandler
+import eu.ase.travelcompanionapp.booking.presentation.payment.components.PaymentSuccessState
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

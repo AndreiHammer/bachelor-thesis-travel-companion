@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.payment.domain.models
+package eu.ase.travelcompanionapp.booking.domain.models
 
 data class PaymentIntentRequest(
     val amount: Long,

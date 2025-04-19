@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import eu.ase.travelcompanionapp.app.navigation.routes.AuthRoute
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
+import eu.ase.travelcompanionapp.app.navigation.routes.PaymentRoute
 import eu.ase.travelcompanionapp.app.navigation.routes.ProfileRoute
 import eu.ase.travelcompanionapp.auth.domain.AuthRepository
 import eu.ase.travelcompanionapp.user.domain.model.User
@@ -65,53 +66,56 @@ class ProfileViewModel(
         _showDeleteDialog.value = show
     }
 
-    fun signOut() {
-        viewModelScope.launch {
-            try {
-                authRepository.signOut()
-                _actionState.value = ProfileActionState.SignedOut
-                navigateToAuth()
-            } catch (e: Exception) {
-                _actionState.value = ProfileActionState.Error(e.message ?: "Unknown error")
-            }
-        }
-    }
-
-    fun deleteAccount() {
-        viewModelScope.launch {
-            try {
-                val userId = authRepository.currentUserId
-                accountRepository.deleteUserData(userId)
-                authRepository.deleteAccount()
-                _actionState.value = ProfileActionState.AccountDeleted
-                navigateToAuth()
-            } catch (e: Exception) {
-                _actionState.value = ProfileActionState.Error(e.message ?: "Unknown error")
-            }
-        }
-    }
-
     fun handleAction(action: ProfileAction) {
-        when(action) {
-            ProfileAction.AccountDeleted -> {
-                navigateToAuth()
-            }
+        when (action) {
             ProfileAction.OnBackClick -> {
                 navController.popBackStack()
             }
-            ProfileAction.SignedOut -> {
-                navigateToAuth()
-            }
-
             ProfileAction.OnSettingsClick -> {
                 navController.navigate(ProfileRoute.Settings)
+            }
+            ProfileAction.OnSignOutClick -> {
+                _showSignOutDialog.value = true
+            }
+            ProfileAction.ConfirmSignOut -> {
+                viewModelScope.launch {
+                    try {
+                        authRepository.signOut()
+                        _actionState.value = ProfileActionState.SignedOut
+                    } catch (e: Exception) {
+                        _actionState.value = ProfileActionState.Error(e.message ?: "Sign out failed")
+                    }
+                }
+            }
+            ProfileAction.OnDeleteAccountClick -> {
+                _showDeleteDialog.value = true
+            }
+            ProfileAction.ConfirmDeleteAccount -> {
+                viewModelScope.launch {
+                    try {
+                        authRepository.deleteAccount()
+                        _actionState.value = ProfileActionState.AccountDeleted
+                    } catch (e: Exception) {
+                        _actionState.value = ProfileActionState.Error(e.message ?: "Account deletion failed")
+                    }
+                }
+            }
+            ProfileAction.OnViewBookingHistoryClick -> {
+                navController.navigate(PaymentRoute.BookingHistory)
             }
         }
     }
 
-    private fun navigateToAuth() {
-        navController.navigate(AuthRoute.AuthGraph) {
-            popUpTo(HotelRoute.HotelGraph) { inclusive = true }
+    fun handleStateChange(state: ProfileActionState) {
+        when (state) {
+            is ProfileActionState.SignedOut, is ProfileActionState.AccountDeleted -> {
+                navController.navigate(AuthRoute.AuthGraph) {
+                    popUpTo(HotelRoute.HotelGraph) {
+                        inclusive = true
+                    }
+                }
+            }
+            else -> Unit
         }
     }
 }

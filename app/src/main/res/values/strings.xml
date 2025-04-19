@@ -173,4 +173,12 @@
     <string name="s_c_travel_companion_s_r_l">S.C. Travel Companion S.R.L.</string>
     <string name="preparing_payment_terminal">Preparing payment terminal...</string>
     <string name="pay_for_booking">Pay to Book</string>
+    <string name="booking_history">Booking History</string>
+    <string name="view_booking_history">View Booking History</string>
+    <string name="loading_your_bookings">Loading your bookings...</string>
+    <string name="no_bookings_found">No bookings found</string>
+    <string name="booked_on">Booked on %1$s</string>
+    <string name="status">Status</string>
+    <string name="unknown_hotel">Unknown Hotel</string>
+    <string name="total_booking">Total</string>
 </resources>

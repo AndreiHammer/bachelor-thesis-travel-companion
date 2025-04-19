@@ -21,7 +21,7 @@ object BottomNavItems {
         BottomNavItem(
             label = "Bookings",
             icon = Icons.Filled.ShoppingCart,
-            route = routePath("HotelRoute.Bookings")
+            route = routePath("PaymentRoute.BookingHistory")
         ),
         BottomNavItem(
             label = "Profile",

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -26,7 +27,8 @@ import eu.ase.travelcompanionapp.R
 @Composable
 fun AccountActionsCard(
     onSignOutClick: () -> Unit,
-    onDeleteAccountClick: () -> Unit
+    onDeleteAccountClick: () -> Unit,
+    onViewBookingHistoryClick: () -> Unit = {}
 ) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
@@ -45,6 +47,18 @@ fun AccountActionsCard(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.error
             )
+
+            FilledTonalButton(
+                onClick = onViewBookingHistoryClick,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
+            ) {
+                Icon(Icons.Default.ShoppingCart, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text(text = stringResource(R.string.view_booking_history))
+            }
 
             FilledTonalButton(
                 onClick = onSignOutClick,

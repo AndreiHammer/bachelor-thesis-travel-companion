@@ -29,7 +29,8 @@ fun BottomNavigationBar(
     val unselectedTextColor = MaterialTheme.colorScheme.onSurface
     val navigationBarColor = MaterialTheme.colorScheme.primary
 
-    val count by viewModel.favouriteCount.collectAsStateWithLifecycle()
+    val favCount by viewModel.favouriteCount.collectAsStateWithLifecycle()
+    val bookingCount by viewModel.bookingCount.collectAsStateWithLifecycle()
 
     Surface(
         color = navigationBarColor,
@@ -79,14 +80,39 @@ fun BottomNavigationBar(
                                     restoreState = true
                                 }
                             }
+                            "Bookings" -> {
+                                viewModel.loadBookingCount()
+                                navController.navigate(routePath("PaymentRoute.BookingHistory")) {
+                                    popUpTo(routePath("RootRoute.RootGraph")) {
+                                        inclusive = false
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
                         }
                     },
                     icon = {
-                        if (navItem.label == "Favourites" && count > 0) {
+                        if (navItem.label == "Favourites" && favCount > 0) {
                             BadgedBox(
                                 badge = {
                                     Badge {
-                                        Text(text = count.toString())
+                                        Text(text = favCount.toString())
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = navItem.icon,
+                                    contentDescription = navItem.label,
+                                    tint = if (isSelected) selectedIconColor else unselectedIconColor
+                                )
+                            }
+                        } else if (navItem.label == "Bookings" && bookingCount > 0) {
+                            BadgedBox(
+                                badge = {
+                                    Badge {
+                                        Text(text = bookingCount.toString())
                                     }
                                 }
                             ) {

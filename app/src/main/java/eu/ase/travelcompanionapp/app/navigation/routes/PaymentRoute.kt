@@ -8,4 +8,7 @@ sealed interface PaymentRoute {
 
     @Serializable
     data object Payment : PaymentRoute
+    
+    @Serializable
+    data object BookingHistory : PaymentRoute
 }

@@ -1,8 +1,8 @@
-package eu.ase.travelcompanionapp.payment.domain.repository
+package eu.ase.travelcompanionapp.booking.domain.repository
 
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
-import eu.ase.travelcompanionapp.payment.domain.models.PaymentIntentResponse
+import eu.ase.travelcompanionapp.booking.domain.models.PaymentIntentResponse
 
 interface PaymentRepository {
     suspend fun createPaymentIntent(

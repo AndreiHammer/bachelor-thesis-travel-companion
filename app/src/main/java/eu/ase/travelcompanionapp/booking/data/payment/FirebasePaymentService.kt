@@ -1,10 +1,10 @@
-package eu.ase.travelcompanionapp.payment.data
+package eu.ase.travelcompanionapp.booking.data.payment
 
 import com.google.firebase.Firebase
 import com.google.firebase.functions.functions
 import eu.ase.travelcompanionapp.BuildConfig
-import eu.ase.travelcompanionapp.payment.domain.models.PaymentIntentRequest
-import eu.ase.travelcompanionapp.payment.domain.models.PaymentIntentResponse
+import eu.ase.travelcompanionapp.booking.domain.models.PaymentIntentRequest
+import eu.ase.travelcompanionapp.booking.domain.models.PaymentIntentResponse
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import kotlinx.coroutines.Dispatchers

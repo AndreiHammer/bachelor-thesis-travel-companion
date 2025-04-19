@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
-import eu.ase.travelcompanionapp.core.domain.utils.FavoriteEvent
-import eu.ase.travelcompanionapp.core.domain.utils.FavoritesEventBus
+import eu.ase.travelcompanionapp.core.domain.utils.EventBus
+import eu.ase.travelcompanionapp.core.domain.utils.FavouriteEvent
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.domain.repository.FavouriteHotelRepository
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
@@ -106,7 +106,7 @@ class HotelLocationTestViewModel(
                     )
                 }
 
-                FavoritesEventBus.emitEvent(FavoriteEvent.CountChanged)
+                EventBus.favourites.emitEvent(FavouriteEvent.CountChanged)
 
             } catch (e: Exception) {
                 _state.value = _state.value.copy(

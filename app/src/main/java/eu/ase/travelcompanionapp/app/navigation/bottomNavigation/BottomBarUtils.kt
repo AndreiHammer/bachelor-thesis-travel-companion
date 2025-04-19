@@ -14,7 +14,8 @@ fun showBottomBar(currentRoute: String?): Boolean {
         routePath("HotelRoute.HotelOffers"),
         routePath("HotelRoute.MapSearch"),
         routePath("HotelRoute.Favourites"),
-        routePath("PaymentRoute.Payment")
+        routePath("PaymentRoute.Payment"),
+        routePath("PaymentRoute.BookingHistory")
     )
 
     return currentRoute in mainRoutes ||
@@ -25,5 +26,6 @@ fun showBottomBar(currentRoute: String?): Boolean {
             currentRoute?.startsWith(routePath("HotelRoute.MapSearch")) == true ||
             currentRoute?.startsWith(routePath("HotelRoute.Favourites")) == true ||
             currentRoute?.startsWith(routePath("ProfileRoute.Profile")) == true ||
-            currentRoute?.startsWith(routePath("PaymentRoute.Payment")) == true
+            currentRoute?.startsWith(routePath("PaymentRoute.Payment")) == true ||
+            currentRoute?.startsWith(routePath("PaymentRoute.BookingHistory")) == true
 }
