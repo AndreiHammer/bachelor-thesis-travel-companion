@@ -43,7 +43,7 @@ fun BookingHistoryScreen(
     val state by viewModel.state.collectAsState()
 
     BackHandler {
-        viewModel.onBackClick()
+        viewModel.handleAction(BookingHistoryAction.OnBackClick)
     }
 
     Scaffold(
@@ -51,7 +51,7 @@ fun BookingHistoryScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.booking_history)) },
                 navigationIcon = {
-                    IconButton(onClick = { viewModel.onBackClick() }) {
+                    IconButton(onClick = { viewModel.handleAction(BookingHistoryAction.OnBackClick) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
@@ -84,7 +84,7 @@ fun BookingHistoryScreen(
                         )
                     }
                 }
-                
+
                 state.error != null && state.bookings.isEmpty() -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -98,17 +98,26 @@ fun BookingHistoryScreen(
                         )
                     }
                 }
-                
+
                 else -> {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                     ) {
-                        items(state.bookings) { booking ->
+                        items(
+                            items = state.bookings,
+                            key = { booking -> booking.bookingReference }
+                        ) { booking ->
                             BookingHistoryItem(
                                 booking = booking,
-                                onClick = { /*viewModel.onBookingClick(booking)*/ }
+                                onClick = {
+                                    val hotel = viewModel.createHotelFromBooking(booking)
+
+                                    viewModel.handleAction(
+                                        BookingHistoryAction.OnBookingClick(booking, hotel)
+                                    )
+                                }
                             )
                         }
                     }

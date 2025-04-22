@@ -6,6 +6,12 @@ import androidx.navigation.NavController
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.booking.domain.models.BookingInfo
 import eu.ase.travelcompanionapp.booking.domain.repository.BookingRecordRepository
+import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
+import eu.ase.travelcompanionapp.core.domain.utils.CrossGraphDataHolder
+import eu.ase.travelcompanionapp.core.domain.utils.DateUtils
+import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
+import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
+import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,20 +20,25 @@ import kotlinx.coroutines.launch
 
 class BookingHistoryViewModel(
     private val bookingRecordRepository: BookingRecordRepository,
-    private val navController: NavController
+    private val navController: NavController,
+    private val hotelRepository: HotelRepositoryAmadeusApi,
+    private val sharedViewModel: SharedViewModel? = null
 ) : ViewModel() {
-    
+
     private val _state = MutableStateFlow(BookingHistoryState())
     val state: StateFlow<BookingHistoryState> = _state.asStateFlow()
     
+    private val dateUtils = DateUtils()
+    private val _cachedHotels = MutableStateFlow<Map<String, Hotel>>(emptyMap())
+
     init {
         loadBookingHistory()
     }
-    
+
     private fun loadBookingHistory() {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
-            
+
             bookingRecordRepository.getUserBookings()
                 .catch { e -> 
                     _state.value = _state.value.copy(
@@ -41,18 +52,137 @@ class BookingHistoryViewModel(
                         isLoading = false,
                         error = if (bookings.isEmpty()) "No bookings found" else null
                     )
+                    
+                    preloadHotelData(bookings)
                 }
         }
     }
     
-    fun onBackClick() {
-        navController.popBackStack()
+    private fun preloadHotelData(bookings: List<BookingInfo>) {
+        viewModelScope.launch {
+            val hotelIds = bookings.mapNotNull { it.hotelId }.distinct()
+            
+            hotelIds.forEach { hotelId ->
+                val cachedHotel = _cachedHotels.value[hotelId]
+                if (cachedHotel == null || needsValidCoordinates(cachedHotel)) {
+                    fetchHotelData(hotelId)
+                }
+            }
+        }
     }
     
-    fun onBookingClick(booking: BookingInfo) {
-        if (booking.hotelId?.isNotEmpty() == true) {
-            navController.navigate(HotelRoute.HotelDetail(booking.hotelId))
+    private fun needsValidCoordinates(hotel: Hotel): Boolean {
+        return hotel.latitude == 0.0 || hotel.longitude == 0.0 || hotel.countryCode.isEmpty()
+    }
+
+    fun handleAction(action: BookingHistoryAction) {
+        when(action) {
+            is BookingHistoryAction.OnBookingClick -> onBookingClick(action.booking, action.hotel)
+            is BookingHistoryAction.OnBackClick -> onBackClick()
         }
+    }
+
+    private fun onBackClick() {
+        navController.popBackStack()
+    }
+
+    private fun onBookingClick(booking: BookingInfo, hotel: Hotel) {
+        viewModelScope.launch {
+            if (booking.hotelId?.isNotEmpty() == true) {
+                val currentDates = dateUtils.getCurrentAndNextDayDates()
+                
+                if (sharedViewModel != null) {
+                    sharedViewModel.onSelectHotel(hotel)
+                    sharedViewModel.updateBookingDetailsFromFavourite(
+                        currentDates.first,
+                        currentDates.second,
+                        2
+                    )
+                }
+
+                CrossGraphDataHolder.tempHotel = hotel
+                CrossGraphDataHolder.tempCheckInDate = currentDates.first
+                CrossGraphDataHolder.tempCheckOutDate = currentDates.second
+                CrossGraphDataHolder.tempAdults = 2
+
+                navController.navigate(HotelRoute.HotelDetail(booking.hotelId))
+            }
+        }
+    }
+
+    fun createHotelFromBooking(booking: BookingInfo): Hotel {
+        val hotelId = booking.hotelId ?: return createFallbackHotel(null, booking.hotelName)
+        
+        val cachedHotel = _cachedHotels.value[hotelId]
+        if (cachedHotel != null) {
+            return cachedHotel
+        }
+        
+        fetchHotelData(hotelId)
+        return createFallbackHotel(hotelId, booking.hotelName)
+    }
+    
+    private fun fetchHotelData(hotelId: String) {
+        if (_cachedHotels.value.containsKey(hotelId)) return
+        
+        viewModelScope.launch {
+            try {
+                val currentDates = dateUtils.getCurrentAndNextDayDates()
+                val checkInDate = dateUtils.displayDateToApiFormat(currentDates.first)
+                val checkOutDate = dateUtils.displayDateToApiFormat(currentDates.second)
+                
+                hotelRepository.searchHotelOffers(
+                    hotelIds = hotelId,
+                    checkInDate = checkInDate,
+                    checkOutDate = checkOutDate,
+                    adults = "2",
+                    bestRateOnly = true
+                ) { result ->
+                    when (result) {
+                        is Result.Success -> {
+                            result.data.firstOrNull()?.hotel?.let { hotel ->
+                                val validHotel = if (needsValidCoordinates(hotel)) {
+                                    hotel.copy(
+                                        latitude = 44.4268,
+                                        longitude = 26.1025,
+                                        countryCode = hotel.countryCode.ifEmpty { "RO" }
+                                    )
+                                } else {
+                                    hotel
+                                }
+                                
+                                _cachedHotels.value += (hotelId to validHotel)
+                                refreshUI(hotelId)
+                            }
+                        }
+                        else -> {}
+                    }
+                }
+            } catch (_: Exception) {}
+        }
+    }
+    
+    private fun refreshUI(hotelId: String) {
+        if (_state.value.bookings.any { it.hotelId == hotelId }) {
+            _state.value = _state.value.copy()
+        }
+    }
+    
+    private fun createFallbackHotel(hotelId: String?, hotelName: String? = null): Hotel {
+        return Hotel(
+            hotelId = hotelId ?: "",
+            name = hotelName ?: "Unknown Hotel",
+            chainCode = null,
+            iataCode = "",
+            dupeId = null,
+            latitude = 44.4268,
+            longitude = 26.1025,
+            countryCode = "",
+            amenities = arrayListOf(),
+            rating = null,
+            giataId = null,
+            phone = null
+        )
     }
     
     data class BookingHistoryState(
@@ -60,4 +190,5 @@ class BookingHistoryViewModel(
         val isLoading: Boolean = false,
         val error: String? = null
     )
-} 
+}
+

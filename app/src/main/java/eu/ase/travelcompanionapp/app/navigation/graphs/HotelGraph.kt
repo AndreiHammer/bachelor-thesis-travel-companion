@@ -4,6 +4,9 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -11,6 +14,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.app.navigation.sharedKoinViewModel
+import eu.ase.travelcompanionapp.core.domain.utils.CrossGraphDataHolder
+import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.test.HotelLocationTestScreenRoot
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.test.HotelLocationTestViewModel
@@ -134,7 +139,35 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
             val checkOutDate by sharedViewModel.selectedCheckOutDate.collectAsStateWithLifecycle()
             val adults by sharedViewModel.selectedAdults.collectAsStateWithLifecycle()
 
-            selectedHotel?.let { selected ->
+            var crossGraphHotel by remember { mutableStateOf<Hotel?>(null) }
+            var crossGraphCheckIn by remember { mutableStateOf<String?>(null) }
+            var crossGraphCheckOut by remember { mutableStateOf<String?>(null) }
+            var crossGraphAdults by remember { mutableStateOf<Int?>(null) }
+
+            LaunchedEffect(Unit) {
+                CrossGraphDataHolder.tempHotel?.let { hotel ->
+                    crossGraphHotel = hotel
+
+                    crossGraphCheckIn = CrossGraphDataHolder.tempCheckInDate
+                    crossGraphCheckOut = CrossGraphDataHolder.tempCheckOutDate
+                    crossGraphAdults = CrossGraphDataHolder.tempAdults
+
+                    sharedViewModel.onSelectHotel(hotel)
+                    sharedViewModel.updateBookingDetailsFromFavourite(
+                        CrossGraphDataHolder.tempCheckInDate,
+                        CrossGraphDataHolder.tempCheckOutDate,
+                        CrossGraphDataHolder.tempAdults
+                    )
+                    CrossGraphDataHolder.clearTempData()
+                }
+            }
+            val hotelToDisplay = selectedHotel ?: crossGraphHotel
+            val displayCheckIn = crossGraphCheckIn ?: checkInDate
+            val displayCheckOut = crossGraphCheckOut ?: checkOutDate
+            val displayAdults = crossGraphAdults ?: adults
+
+            hotelToDisplay?.let { hotel ->
+
                 /*val viewModel = koinViewModel<HotelLocationViewModel>(
                     parameters = { parametersOf(navController, sharedViewModel) }
                 )
@@ -146,16 +179,15 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                     adults = adults,
                     viewModel = viewModel
                 )*/
-
                 val viewModel = koinViewModel<HotelLocationTestViewModel>(
                     parameters = { parametersOf(navController, sharedViewModel) }
                 )
 
                 HotelLocationTestScreenRoot(
-                    hotel = selected,
-                    checkInDate = checkInDate,
-                    checkOutDate = checkOutDate,
-                    adults = adults,
+                    hotel = hotel,
+                    checkInDate = displayCheckIn,
+                    checkOutDate = displayCheckOut,
+                    adults = displayAdults,
                     viewModel = viewModel
                 )
             }

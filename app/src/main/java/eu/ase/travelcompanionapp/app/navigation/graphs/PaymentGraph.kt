@@ -7,10 +7,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import eu.ase.travelcompanionapp.app.navigation.routes.PaymentRoute
+import eu.ase.travelcompanionapp.app.navigation.sharedKoinViewModel
 import eu.ase.travelcompanionapp.booking.presentation.payment.PaymentScreen
 import eu.ase.travelcompanionapp.booking.presentation.payment.PaymentViewModel
 import eu.ase.travelcompanionapp.booking.presentation.bookinghistory.BookingHistoryScreen
+import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 fun NavGraphBuilder.PaymentGraph(navController: NavHostController) {
     navigation<PaymentRoute.PaymentGraph>(
@@ -32,8 +35,11 @@ fun NavGraphBuilder.PaymentGraph(navController: NavHostController) {
             enterTransition = { slideInHorizontally { it } },
             exitTransition = { slideOutHorizontally { it } }
         ) {
+            val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
+            
             BookingHistoryScreen(
-                navController = navController
+                navController = navController,
+                viewModel = koinViewModel { parametersOf(navController, sharedViewModel) }
             )
         }
     }
