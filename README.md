@@ -8,7 +8,9 @@
 - **Favorite and Reserve Accommodations** - Users can mark accommodations as favorites or reserve them(without actually making a request to the *Amadeus Booking API*)
 - **Interactive Map Integration** - Displays locations on *Google Maps*, including pins for accommodations.
 - **Image Fetching** - Retrieves high-quality images using the *Google Places API*.
-- **Accommodation Recommendations** - Integrates AI-generated recommendations based on user preferences using *OpenAI* embeddings and *ObjectBox* On-Device Vector-Search.
+- **Payment System** - Implements a complete payment solution using Stripe SDK, allowing users to securely process accommodation bookings with multiple payment methods.
+- **Currency Conversion** - Features dynamic currency conversion functionality powered by the Exchange Rates API (RapidAPI), enabling users to view and compare prices in their preferred currency with real-time exchange rates.
+- **Accommodation Recommendations** - Integrates AI-generated recommendations based on user preferences using *OpenAI* embeddings
 - **Preferences Management** - Stores user preferences using *Preferences DataStore* for a seamless experience.
 
 
@@ -39,6 +41,15 @@ GOOGLE_API_KEY=your_google_api_key
 # OpenAI API Key
 OPENAI_API_KEY=your_openai_api_key
 
+# Rapid API Key
+RAPID_API_KEY = your_rapid_api_key
+
+#Stripe Publishable Key
+STRIPE_PUBLISHABLE_KEY = your_stripe_publishable_key
+
+#Stripe Secret Key
+STRIPE_SECRET_KEY = your_stripe_secret_key
+
 ```
 - Ensure you have Firebase configured in your project:
   - Follow the official **Firebase Android Setup**.
@@ -50,9 +61,11 @@ OPENAI_API_KEY=your_openai_api_key
 
 **Backend/ Network Connectivity:** Ktor framework
 
-**Database:** ObjectBox with vector search capabilities
+**Database:** Cloud Firestore
 
-**APIs:** Amadeus API; Google Maps SDK; Google Places API
+**APIs:** Amadeus API; Google Maps SDK; Google Places API; Currency Conversion And Exchange Rates from RapidAPI
+
+**Payment:** Stripe
 
 **AI Integration:** OpenAI embeddings with Python via *Chaquopy*
 
