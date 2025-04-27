@@ -17,6 +17,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 class BookingHistoryViewModel(
     private val bookingRecordRepository: BookingRecordRepository,
@@ -30,6 +33,7 @@ class BookingHistoryViewModel(
     
     private val dateUtils = DateUtils()
     private val _cachedHotels = MutableStateFlow<Map<String, Hotel>>(emptyMap())
+    private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 
     init {
         loadBookingHistory()
@@ -47,14 +51,54 @@ class BookingHistoryViewModel(
                     )
                 }
                 .collect { bookings ->
+                    val (active, past) = categorizeBookings(bookings)
+                    
                     _state.value = _state.value.copy(
                         bookings = bookings,
+                        activeBookings = active,
+                        pastBookings = past,
                         isLoading = false,
                         error = if (bookings.isEmpty()) "No bookings found" else null
                     )
                     
                     preloadHotelData(bookings)
                 }
+        }
+    }
+    
+    private fun categorizeBookings(bookings: List<BookingInfo>): Pair<List<BookingInfo>, List<BookingInfo>> {
+        val today = LocalDate.now()
+        val active = mutableListOf<BookingInfo>()
+        val past = mutableListOf<BookingInfo>()
+        
+        bookings.forEach { booking ->
+            try {
+                val checkInDate = parseBookingDate(booking.checkInDate)
+                
+                if (checkInDate != null && checkInDate.isAfter(today) || checkInDate == today) {
+                    active.add(booking)
+                } else {
+                    past.add(booking)
+                }
+            } catch (e: Exception) {
+                active.add(booking)
+            }
+        }
+        
+        return Pair(active, past)
+    }
+    
+    private fun parseBookingDate(dateString: String?): LocalDate? {
+        if (dateString.isNullOrEmpty()) return null
+        
+        return try {
+            LocalDate.parse(dateString, dateFormatter)
+        } catch (e: DateTimeParseException) {
+            try {
+                dateUtils.parseDisplayDate(dateString)?.toLocalDate()
+            } catch (e: Exception) {
+                null
+            }
         }
     }
     
@@ -79,7 +123,12 @@ class BookingHistoryViewModel(
         when(action) {
             is BookingHistoryAction.OnBookingClick -> onBookingClick(action.booking, action.hotel)
             is BookingHistoryAction.OnBackClick -> onBackClick()
+            is BookingHistoryAction.OnTabSelected -> onTabSelected(action.index)
         }
+    }
+    
+    private fun onTabSelected(index: Int) {
+        _state.value = _state.value.copy(selectedTabIndex = index)
     }
 
     private fun onBackClick() {
@@ -187,8 +236,11 @@ class BookingHistoryViewModel(
     
     data class BookingHistoryState(
         val bookings: List<BookingInfo> = emptyList(),
+        val activeBookings: List<BookingInfo> = emptyList(),
+        val pastBookings: List<BookingInfo> = emptyList(),
         val isLoading: Boolean = false,
-        val error: String? = null
+        val error: String? = null,
+        val selectedTabIndex: Int = 0
     )
 }
 

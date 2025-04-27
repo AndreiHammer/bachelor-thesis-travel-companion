@@ -185,4 +185,8 @@
     <string name="error">Error</string>
     <string name="personalized_recommendations">Personalized Recommendations</string>
     <string name="discover_hotels_tailored_to_preferences">Discover hotels tailored to your preferences</string>
+    <string name="active_reservations">Active Reservations</string>
+    <string name="past_reservations">Past Reservations</string>
+    <string name="no_active_reservations">No active reservations</string>
+    <string name="no_past_reservations">No past reservations</string>
 </resources>
