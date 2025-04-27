@@ -53,6 +53,43 @@ class BookingServiceImpl(
         return bookingDetails
     }
 
+    override fun startBookingWithConvertedPrice(
+        hotelOffer: HotelOffer,
+        convertedAmount: Double,
+        convertedCurrency: String
+    ): BookingInfo {
+        val bookingReference = generateBookingReference()
+        val selectedOffer = hotelOffer.offers.firstOrNull()
+
+        val hotelName = hotelOffer.hotel?.name ?: "Unknown Hotel"
+        val roomType = selectedOffer?.room?.description ?: 
+                      (selectedOffer?.room?.typeEstimated?.category ?: "Standard Room")
+        val checkInDate = selectedOffer?.checkInDate ?: "Not specified"
+        val checkOutDate = selectedOffer?.checkOutDate ?: "Not specified"
+        val guests = selectedOffer?.guests?.adults ?: 1
+
+        val amount = (convertedAmount * 100).toLong()
+
+        val bookingDetails = BookingInfo(
+            bookingReference = bookingReference,
+            userId = "",
+            hotelId = hotelOffer.hotel?.hotelId,
+            hotelName = hotelName,
+            offerId = selectedOffer?.id,
+            checkInDate = checkInDate,
+            checkOutDate = checkOutDate,
+            roomType = roomType,
+            guests = guests,
+            amount = amount,
+            currency = convertedCurrency,
+            paymentStatus = "",
+            timestamp = System.currentTimeMillis()
+        )
+
+        _currentBooking.value = bookingDetails
+        return bookingDetails
+    }
+
     override suspend fun processPayment(bookingDetails: BookingInfo): Result<PaymentIntentResponse, DataError> {
         val metadata = mapOf(
             "booking_reference" to bookingDetails.bookingReference,

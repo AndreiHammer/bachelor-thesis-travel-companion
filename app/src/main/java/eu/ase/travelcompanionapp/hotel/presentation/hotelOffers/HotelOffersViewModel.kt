@@ -109,7 +109,17 @@ class HotelOffersViewModel(
             }
             is HotelOffersAction.OnBookNow -> {
                 viewModelScope.launch {
-                    val bookingDetails = bookingService.startBooking(action.offer)
+                    val offerId = action.offer.offers.firstOrNull()?.id.orEmpty()
+                    val convertedCurrency = _convertedPrices.value[offerId]
+                    val bookingDetails = if (convertedCurrency != null) {
+                        bookingService.startBookingWithConvertedPrice(
+                            action.offer,
+                            convertedCurrency.convertedAmount,
+                            convertedCurrency.code
+                        )
+                    } else {
+                        bookingService.startBooking(action.offer)
+                    }
                     _currentBooking.value = bookingDetails
 
                     navController.navigate(PaymentRoute.Payment)

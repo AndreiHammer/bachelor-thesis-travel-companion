@@ -11,5 +11,12 @@ interface BookingService {
     val currentBooking: StateFlow<BookingInfo?>
 
     fun startBooking(hotelOffer: HotelOffer): BookingInfo
+    
+    fun startBookingWithConvertedPrice(
+        hotelOffer: HotelOffer,
+        convertedAmount: Double,
+        convertedCurrency: String
+    ): BookingInfo
+    
     suspend fun processPayment(bookingDetails: BookingInfo): Result<PaymentIntentResponse, DataError>
-}
+} 

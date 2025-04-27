@@ -185,5 +185,5 @@ private fun BookingDetailRow(icon: BookingIcon, label: String, value: String) {
 }
 
 private fun formatCurrency(amount: Long, currency: String): String {
-    return "${amount / 100.0} $currency"
+    return String.format("%.2f %s", amount / 100.0, currency)
 }
