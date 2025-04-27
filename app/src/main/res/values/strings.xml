@@ -183,4 +183,6 @@
     <string name="total_booking">Total</string>
     <string name="complete_your_payment">Complete Payment</string>
     <string name="error">Error</string>
+    <string name="personalized_recommendations">Personalized Recommendations</string>
+    <string name="discover_hotels_tailored_to_preferences">Discover hotels tailored to your preferences</string>
 </resources>

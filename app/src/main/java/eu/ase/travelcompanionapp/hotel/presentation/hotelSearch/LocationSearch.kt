@@ -39,6 +39,7 @@ import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.autocomplete.AutoCompleteTextField
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.NearbyAccomodationsCard
+import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.custom.RecommendationCard
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.filters.CityFilterSearch
 import org.koin.androidx.compose.koinViewModel
 
@@ -152,6 +153,15 @@ fun LocationSearchScreen(
                     }
                 }
             )
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            RecommendationCard(
+                onRecommendationClick = {
+                    onAction(LocationSearchAction.OnRecommendationsClick)
+                }
+            )
+            
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = stringResource(R.string.filter_your_preferences), style = MaterialTheme.typography.headlineLarge)
             Spacer(modifier = Modifier.height(16.dp))

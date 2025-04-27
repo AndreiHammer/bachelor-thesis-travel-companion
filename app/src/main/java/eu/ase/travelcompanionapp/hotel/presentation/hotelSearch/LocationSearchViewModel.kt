@@ -128,6 +128,10 @@ class LocationSearchViewModel(
             LocationSearchAction.OnBackClick -> {
                 navController.popBackStack()
             }
+            
+            LocationSearchAction.OnRecommendationsClick -> {
+                navController.navigate(HotelRoute.Recommendations)
+            }
         }
     }
 }

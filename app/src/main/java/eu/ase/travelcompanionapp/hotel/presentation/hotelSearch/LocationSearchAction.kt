@@ -23,4 +23,6 @@ sealed interface LocationSearchAction {
     data class OnLocationSelected(val location: LatLng, val range: Int) : LocationSearchAction
 
     data class OnOfferDetailsSet(val checkInDate: String, val checkOutDate: String, val adults: Int) : LocationSearchAction
+    
+    data object OnRecommendationsClick: LocationSearchAction
 }
