@@ -7,18 +7,12 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    id ("com.chaquo.python")
     id("com.google.gms.google-services")
 }
 
 android {
     namespace = "eu.ase.travelcompanionapp"
     compileSdk = 35
-    flavorDimensions += "pyVersion"
-    productFlavors {
-        create("py310") { dimension = "pyVersion" }
-        create("py311") { dimension = "pyVersion" }
-    }
     defaultConfig {
         applicationId = "eu.ase.travelcompanionapp"
         minSdk = 28
@@ -83,19 +77,6 @@ android {
         compose = true
     }
 }
-chaquopy {
-    productFlavors {
-        getByName("py310") { version = "3.10" }
-        getByName("py311") { version = "3.11" }
-    }
-    defaultConfig {
-        pip{
-            install("numpy")
-            install("openai==0.28.1")
-        }
-    }
-}
-
 
 dependencies {
 

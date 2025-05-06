@@ -21,7 +21,7 @@
     <string name="invalid_city_error">The city you have selected is not available for search. Try using the feature of selecting the desired location on the map.</string>
     <string name="no_hotels_found">No Hotels Found</string>
     <string name="enter_city">Enter city...</string>
-    <string name="map_title">Search on Map</string>
+    <string name="map_title">Map Search</string>
     <string name="confirm_location">Search</string>
     <string name="passwords_do_not_match">Passwords do not match</string>
     <string name="auth_image">Auth image</string>
@@ -44,7 +44,13 @@
     <string name="user_profile">User Profile</string>
     <string name="map">Map</string>
     <string name="filter_your_preferences">Filter your preferences:</string>
+    <string name="plan_your_stay">Plan your perfect stay</string>
     <string name="search_hotels_in">Search Hotels in %1$s</string>
+    <string name="select_destination">Select Destination:</string>
+    <string name="select_number_of_adults">Select number of guests</string>
+    <string name="number_of_guests">Number of guests: %d</string>
+    <string name="select_location">Search by location</string>
+    <string name="where_to">Where to?</string>
     <string name="range_km">Range: %1$s km</string>
     <string name="selected_location">Selected Location</string>
     <string name="location_permission_required">Location permission is required for using this feature.</string>
@@ -56,15 +62,13 @@
     <string name="error_fetching_hotels_list">Error fetching hotels list</string>
     <string name="invalid_city_no_iata_code_found">Invalid city. No IATA code found.</string>
     <string name="select_rating">Select desired rating:</string>
-    <string name="select_destination">Select Destination:</string>
     <string name="select_amenities">Select amenities:</string>
     <string name="done_icon">Done icon</string>
     <string name="hotels_list">Hotels List - %1$s</string>
     <string name="hotels_list_by_location">Hotels List - By Location</string>
     <string name="select_dates">Select Check-In and Check-Out Dates</string>
     <string name="check_out_date_must_be_after_check_in_date">Check-out date must be after check-in date!</string>
-    <string name="select_number_of_adults">Select number of guests</string>
-    <string name="toggle_filters">Toggle filters</string>
+    <string name="toggle_filters">Toggle Filters</string>
     <string name="select_search_radius">Select search radius</string>
     <string name="check_in_date">Check-In Date</string>
     <string name="check_out_date">Check-Out Date</string>
@@ -125,7 +129,6 @@
     <string name="tap_the_heart_icon_on_a_hotel_to_add_it_to_your_favorites">Tap the heart icon on a hotel to add it to your favorites</string>
     <string name="booking_details">Booking Details</string>
     <string name="guests">Guests</string>
-    <string name="number_of_guests">"Guests: %d"</string>
     <string name="dates">dates</string>
     <string name="settings">Settings</string>
     <string name="currency_preference_updated">Currency updated!</string>
@@ -141,6 +144,11 @@
     <string name="hotel_currency_info">Prices will be shown in their original currency as provided by each hotel. No currency conversion will be applied.</string>
     <string name="preferred_currency_info">All prices will be automatically converted from their original currency to your selected currency for easier comparison.</string>
     <string name="currency">Currency</string>
+    
+    <!-- Location Search Screen -->
+    <string name="looking_for_quick_options">Looking for quick options?</string>
+    <string name="increase_guests">Increase guests</string>
+    <string name="decrease_guests">Decrease guests</string>
     
     <!-- Theme preferences -->
     <string name="theme">Theme</string>
@@ -189,4 +197,8 @@
     <string name="past_reservations">Past Reservations</string>
     <string name="no_active_reservations">No active reservations</string>
     <string name="no_past_reservations">No past reservations</string>
+    <string name="find_your_perfect_stay">Find Your Perfect Stay</string>
+    <string name="stars">stars</string>
+    <string name="filters">Filters</string>
+    <string name="select_location_on_map">Please tap on the map to select a location</string>
 </resources>

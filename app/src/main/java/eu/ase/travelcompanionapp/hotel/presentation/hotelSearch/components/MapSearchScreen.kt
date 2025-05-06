@@ -7,11 +7,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -25,9 +27,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
@@ -58,7 +62,6 @@ fun MapSearchScreen(
     var adults by remember { mutableIntStateOf(1) }
     var isFilterExpanded by remember { mutableStateOf(false) }
 
-    // Reset previous selections when searching by location
     onAction(LocationSearchAction.OnRatingSelected(emptySet()))
     onAction(LocationSearchAction.OnAmenitiesSelected(emptySet()))
     onAction(LocationSearchAction.OnOfferDetailsSet("", "", 0))
@@ -87,12 +90,10 @@ fun MapSearchScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { isFilterExpanded = !isFilterExpanded }) {
-                        Icon(
-                            imageVector = if (isFilterExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                            contentDescription = stringResource(R.string.toggle_filters)
-                        )
-                    }
+                    FilterButton(
+                        isExpanded = isFilterExpanded,
+                        onClick = { isFilterExpanded = !isFilterExpanded }
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -106,7 +107,10 @@ fun MapSearchScreen(
                 GoogleMap(
                     modifier = Modifier.fillMaxSize(),
                     cameraPositionState = cameraPositionState,
-                    uiSettings = MapUiSettings().copy(myLocationButtonEnabled = true),
+                    uiSettings = MapUiSettings().copy(
+                        myLocationButtonEnabled = true,
+                        zoomControlsEnabled = true
+                    ),
                     properties = remember { MapProperties(isMyLocationEnabled = true) },
                     onMapClick = { latLng -> markerPosition = latLng }
                 ) {
@@ -118,56 +122,113 @@ fun MapSearchScreen(
                     }
                 }
 
-                Column(modifier = Modifier.padding(16.dp)) {
-                    AnimatedVisibility(
-                        visible = isFilterExpanded,
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically()
+                AnimatedVisibility(
+                    visible = isFilterExpanded,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically(),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .zIndex(1f)
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 450.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface
+                        )
                     ) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-                        ) {
-                            LocationFilterSearch(
-                                range = range,
-                                onSearchClick = { amenities, ratings, checkIn, checkOut, adultCount ->
-                                    markerPosition?.let { location ->
-                                        onAction(
-                                            LocationSearchAction.OnLocationSelected(
-                                                location,
-                                                range
-                                            )
-                                        )
-                                    }
-                                    selectedHotelRating = ratings
-                                    selectedHotelAmenities = amenities
-                                    checkInDate = checkIn
-                                    checkOutDate = checkOut
-                                    adults = adultCount
-
+                        LocationFilterSearch(
+                            range = range,
+                            onSearchClick = { amenities, ratings, checkIn, checkOut, adultCount ->
+                                markerPosition?.let { location ->
                                     onAction(
-                                        LocationSearchAction.OnOfferDetailsSet(
-                                            checkIn,
-                                            checkOut,
-                                            adultCount
+                                        LocationSearchAction.OnLocationSelected(
+                                            location,
+                                            range
                                         )
                                     )
-                                },
-                                initialSelectedRatings = selectedHotelRating,
-                                initialSelectedAmenities = selectedHotelAmenities,
-                                initialCheckInDate = checkInDate,
-                                initialCheckOutDate = checkOutDate,
-                                initialAdults = adults,
-                                onAction = onAction,
-                                onRangeChange = { newRange -> range = newRange }
-                            )
-                        }
+                                }
+                                selectedHotelRating = ratings
+                                selectedHotelAmenities = amenities
+                                checkInDate = checkIn
+                                checkOutDate = checkOut
+                                adults = adultCount
+
+                                onAction(
+                                    LocationSearchAction.OnOfferDetailsSet(
+                                        checkIn,
+                                        checkOut,
+                                        adultCount
+                                    )
+                                )
+
+                                isFilterExpanded = false
+                            },
+                            initialSelectedRatings = selectedHotelRating,
+                            initialSelectedAmenities = selectedHotelAmenities,
+                            initialCheckInDate = checkInDate,
+                            initialCheckOutDate = checkOutDate,
+                            initialAdults = adults,
+                            onAction = onAction,
+                            onRangeChange = { newRange -> range = newRange }
+                        )
                     }
                 }
 
+                if (isFilterExpanded && markerPosition == null) {
+                    Card(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.select_location_on_map),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        )
+                    }
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun FilterButton(
+    isExpanded: Boolean,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
+        modifier = Modifier.padding(end = 8.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Search,
+            contentDescription = null,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(text = stringResource(R.string.filters))
+        Spacer(modifier = Modifier.width(4.dp))
+        Icon(
+            imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp 
+                       else Icons.Default.KeyboardArrowDown,
+            contentDescription = null,
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
