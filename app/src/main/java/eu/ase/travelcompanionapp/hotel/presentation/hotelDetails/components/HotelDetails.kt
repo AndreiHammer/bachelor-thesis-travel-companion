@@ -37,14 +37,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.app.navigation.routes.TouristAttractionsRoute
 import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
+import eu.ase.travelcompanionapp.core.presentation.components.BitmapImageDialog
+import eu.ase.travelcompanionapp.core.presentation.components.BitmapPhotoCarousel
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
+import eu.ase.travelcompanionapp.touristattractions.presentation.components.TouristAttractionsSection
+import eu.ase.travelcompanionapp.touristattractions.presentation.TouristAttractionsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,11 +58,13 @@ fun HotelDetails(
     hotel: Hotel,
     modifier: Modifier = Modifier,
     viewModel: HotelLocationViewModel,
+    navController: NavController,
     checkInDate: String,
     checkOutDate: String,
     adults: Int
 ) {
     val hotelState = viewModel.hotelState.collectAsStateWithLifecycle()
+    val touristAttractionsState = viewModel.touristAttractionsState.collectAsStateWithLifecycle()
     val cameraPositionState = rememberCameraPositionState()
     var isImageDialogOpen by remember { mutableStateOf(false) }
     var currentImageIndex by remember { mutableIntStateOf(0) }
@@ -151,7 +159,7 @@ fun HotelDetails(
 
                 item {
                     Spacer(modifier = Modifier.height(8.dp))
-                    PhotoCarousel(
+                    BitmapPhotoCarousel(
                         photos = hotelState.value.photos,
                         onImageClick = { index ->
                             currentImageIndex = index
@@ -174,7 +182,35 @@ fun HotelDetails(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    val attractions = touristAttractionsState.value.attractions
+                    
+                    TouristAttractionsSection(
+                        attractions = attractions,
+                        isLoading = touristAttractionsState.value.isLoading,
+                        onSeeAllClick = { lat, lng ->
+                            navController.navigate(
+                                TouristAttractionsRoute.TouristAttractionsList(
+                                    latitude = lat,
+                                    longitude = lng
+                                )
+                            )
+                        },
+                        onAttractionClick = { attraction ->
+                            attraction.id?.let { id ->
+                                TouristAttractionsViewModel.cacheAttraction(attraction)
+                                navController.navigate(
+                                    TouristAttractionsRoute.TouristAttractionDetails(
+                                        attractionId = id
+                                    )
+                                )
+                            }
+                        }
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
                     BookingActionCard(
                         onViewOffers = {
                             viewModel.handleAction(
@@ -193,8 +229,8 @@ fun HotelDetails(
             }
 
             if (isImageDialogOpen && hotelState.value.photos.isNotEmpty()) {
-                ImageDialog(
-                    hotelState = hotelState.value,
+                BitmapImageDialog(
+                    photos = hotelState.value.photos,
                     currentImageIndex = currentImageIndex,
                     onDismiss = { isImageDialogOpen = false },
                     onImageChange = { index -> currentImageIndex = index }

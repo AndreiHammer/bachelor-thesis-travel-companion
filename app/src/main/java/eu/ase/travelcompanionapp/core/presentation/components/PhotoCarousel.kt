@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components
+package eu.ase.travelcompanionapp.core.presentation.components
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
@@ -31,15 +31,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import eu.ase.travelcompanionapp.R
 
 @Composable
 fun PhotoCarousel(
-    photos: List<Bitmap>,
-    onImageClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    imageCount: Int,
+    onImageClick: ((Int) -> Unit)? = null,
+    modifier: Modifier = Modifier,
+    imageContent: @Composable (page: Int) -> Unit
 ) {
-    if (photos.isEmpty()) {
+    if (imageCount == 0) {
         Box(
             modifier = modifier
                 .fillMaxWidth()
@@ -55,7 +57,7 @@ fun PhotoCarousel(
                     tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                     modifier = Modifier.size(64.dp)
                 )
-                Spacer(modifier = modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.no_photos_available),
                     style = MaterialTheme.typography.bodyLarge,
@@ -64,7 +66,7 @@ fun PhotoCarousel(
             }
         }
     } else {
-        val pagerState = rememberPagerState(pageCount = { photos.size })
+        val pagerState = rememberPagerState(pageCount = { imageCount })
 
         Box(
             modifier = modifier
@@ -80,14 +82,15 @@ fun PhotoCarousel(
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .clickable { onImageClick(page) }
+                        .then(
+                            if (onImageClick != null) {
+                                Modifier.clickable { onImageClick(page) }
+                            } else {
+                                Modifier
+                            }
+                        )
                 ) {
-                    Image(
-                        bitmap = photos[page].asImageBitmap(),
-                        contentDescription = stringResource(R.string.hotel_photo, page),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
+                    imageContent(page)
 
                     Box(
                         modifier = Modifier
@@ -98,7 +101,7 @@ fun PhotoCarousel(
                             .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
                         Text(
-                            text = "${pagerState.currentPage + 1}/${photos.size}",
+                            text = "${pagerState.currentPage + 1}/$imageCount",
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.onSurface
@@ -107,7 +110,6 @@ fun PhotoCarousel(
                 }
             }
 
-            // Dots indicator
             Row(
                 Modifier
                     .height(16.dp)
@@ -116,7 +118,7 @@ fun PhotoCarousel(
                     .padding(bottom = 8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                repeat(photos.size) { iteration ->
+                repeat(imageCount) { iteration ->
                     val color = if (pagerState.currentPage == iteration)
                         MaterialTheme.colorScheme.primary
                     else
@@ -133,3 +135,43 @@ fun PhotoCarousel(
         }
     }
 }
+
+@Composable
+fun BitmapPhotoCarousel(
+    photos: List<Bitmap>,
+    onImageClick: ((Int) -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    PhotoCarousel(
+        imageCount = photos.size,
+        onImageClick = onImageClick,
+        modifier = modifier
+    ) { page ->
+        Image(
+            bitmap = photos[page].asImageBitmap(),
+            contentDescription = stringResource(R.string.photo_number, page + 1),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+@Composable
+fun UrlPhotoCarousel(
+    photoUrls: List<String>,
+    onImageClick: ((Int) -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    PhotoCarousel(
+        imageCount = photoUrls.size,
+        onImageClick = onImageClick,
+        modifier = modifier
+    ) { page ->
+        AsyncImage(
+            model = photoUrls[page],
+            contentDescription = stringResource(R.string.photo_number, page + 1),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+} 

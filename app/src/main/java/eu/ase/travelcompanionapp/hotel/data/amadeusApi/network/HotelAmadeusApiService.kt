@@ -12,7 +12,7 @@ import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 
-class AmadeusApiService(
+class HotelAmadeusApiService(
     private val client: HttpClient
 ): RemoteHotelDataSource {
 

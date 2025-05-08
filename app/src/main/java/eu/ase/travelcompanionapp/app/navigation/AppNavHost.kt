@@ -14,6 +14,7 @@ import eu.ase.travelcompanionapp.app.navigation.graphs.HotelGraph
 import eu.ase.travelcompanionapp.app.navigation.graphs.PaymentGraph
 import eu.ase.travelcompanionapp.app.navigation.graphs.ProfileGraph
 import eu.ase.travelcompanionapp.app.navigation.graphs.RootGraph
+import eu.ase.travelcompanionapp.app.navigation.graphs.TouristAttractionsGraph
 import eu.ase.travelcompanionapp.app.navigation.routes.RootRoute
 import org.koin.androidx.compose.koinViewModel
 
@@ -38,6 +39,8 @@ fun AppNavHost(
         HotelGraph(navController = navController)
 
         PaymentGraph(navController = navController)
+
+        TouristAttractionsGraph(navController = navController)
     }
 }
 

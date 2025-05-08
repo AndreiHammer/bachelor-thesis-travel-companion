@@ -201,4 +201,16 @@
     <string name="stars">stars</string>
     <string name="filters">Filters</string>
     <string name="select_location_on_map">Please tap on the map to select a location</string>
+    <string name="tourist_attractions_nearby">Tourist Attractions Nearby</string>
+    <string name="no_tourist_attractions_found_nearby">No tourist attractions found nearby</string>
+    <string name="nearby_tourist_attractions">Nearby Tourist Attractions</string>
+    <string name="see_all">See All</string>
+    <string name="unknown_attraction">Unknown Attraction</string>
+    <string name="tourist_attraction">Tourist Attraction</string>
+    <string name="description">Description</string>
+    <string name="no_description_available">No description available</string>
+    <string name="price">Price</string>
+    <string name="book_this_attraction">Book This Attraction</string>
+    <string name="attraction_not_found">Attraction not found</string>
+    <string name="photo_number">Photo Number</string>
 </resources>

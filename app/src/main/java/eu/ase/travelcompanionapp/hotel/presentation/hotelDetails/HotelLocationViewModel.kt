@@ -12,19 +12,27 @@ import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.domain.repository.FavouriteHotelRepository
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryPlacesApi
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
+import eu.ase.travelcompanionapp.touristattractions.domain.model.TouristAttraction
+import eu.ase.travelcompanionapp.touristattractions.domain.repository.TouristAttractionRepositoryAmadeusApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HotelLocationViewModel(
     private val hotelRepository: HotelRepositoryPlacesApi,
     private val navController: NavHostController,
     private val sharedViewModel: SharedViewModel,
-    private val favouriteHotelRepository: FavouriteHotelRepository
+    private val favouriteHotelRepository: FavouriteHotelRepository,
+    private val touristAttractionRepository: TouristAttractionRepositoryAmadeusApi
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HotelState())
     val hotelState: StateFlow<HotelState> get() = _state
+
+    private val _touristAttractionsState = MutableStateFlow(TouristAttractionsState())
+    val touristAttractionsState: StateFlow<TouristAttractionsState> = _touristAttractionsState.asStateFlow()
 
     fun getHotelDetails(locationName: String, country: String) {
         viewModelScope.launch {
@@ -34,7 +42,7 @@ class HotelLocationViewModel(
             val isFavourite = hotelSelected?.let {
                 favouriteHotelRepository.isFavourite(it.hotelId)
             } ?: false
-            
+
             hotelRepository.getHotelDetails(locationName, country) { result ->
                 when (result) {
                     is Result.Error -> {
@@ -51,6 +59,38 @@ class HotelLocationViewModel(
                             photos = photos,
                             isFavourite = isFavourite
                         )
+
+                        val latitude = hotel.latitude
+                        val longitude = hotel.longitude
+
+                        fetchNearbyAttractions(latitude, longitude)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun fetchNearbyAttractions(latitude: Double, longitude: Double) {
+        viewModelScope.launch {
+            _touristAttractionsState.update { it.copy(isLoading = true, error = null) }
+
+            touristAttractionRepository.searchTouristAttractionsByLocation(latitude, longitude) { result ->
+                when (result) {
+                    is Result.Error -> {
+                        _touristAttractionsState.update { it.copy(
+                            isLoading = false,
+                            error = "Failed to load tourist attractions",
+                            attractions = emptyList()
+                        )}
+                    }
+                    is Result.Success -> {
+                        val attractions = result.data
+
+                        _touristAttractionsState.update { it.copy(
+                            isLoading = false,
+                            attractions = attractions,
+                            error = null
+                        )}
                     }
                 }
             }
@@ -121,5 +161,11 @@ class HotelLocationViewModel(
         val photos: List<Bitmap> = emptyList(),
         val errorMessage: String? = null,
         val isFavourite: Boolean = false
+    )
+
+    data class TouristAttractionsState(
+        val isLoading: Boolean = false,
+        val attractions: List<TouristAttraction> = emptyList(),
+        val error: String? = null
     )
 }

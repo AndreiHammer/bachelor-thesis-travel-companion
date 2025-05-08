@@ -51,7 +51,6 @@ fun CityFilterSearch(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        SectionTitle(title = stringResource(R.string.select_dates))
 
         OutlinedCard(
             modifier = Modifier.fillMaxWidth(),

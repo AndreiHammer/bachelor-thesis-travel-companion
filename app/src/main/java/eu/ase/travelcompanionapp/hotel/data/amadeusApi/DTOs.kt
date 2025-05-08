@@ -170,29 +170,3 @@ data class OffersDto (
     @SerialName("policies"     ) var policies     : PoliciesDto?    = PoliciesDto(),
     @SerialName("self"         ) var self         : String?      = null
 )
-@Serializable
-data class BookingResponse (
-    @SerialName("code"   ) var code   : Int?    = null,
-    @SerialName("title"  ) var title  : String? = null,
-    @SerialName("status" ) var status : Int?    = null,
-    @SerialName("warnings" ) var warnings : ArrayList<Warnings> = arrayListOf(),
-    @SerialName("data"     ) var data     : ArrayList<BookingData>     = arrayListOf(),
-    @SerialName("errors") var errors: ArrayList<Errors> = arrayListOf()
-)
-@Serializable
-data class Warnings (
-    @SerialName("code"  ) var code  : Int?    = null,
-    @SerialName("title" ) var title : String? = null
-)
-@Serializable
-data class AssociatedRecords (
-    @SerialName("reference"        ) var reference        : String? = null,
-    @SerialName("originSystemCode" ) var originSystemCode : String? = null
-)
-@Serializable
-data class BookingData (
-    @SerialName("type"                   ) var type                   : String?                      = null,
-    @SerialName("id"                     ) var id                     : String?                      = null,
-    @SerialName("providerConfirmationId" ) var providerConfirmationId : String?                      = null,
-    @SerialName("associatedRecords"      ) var associatedRecords      : ArrayList<AssociatedRecords> = arrayListOf()
-)

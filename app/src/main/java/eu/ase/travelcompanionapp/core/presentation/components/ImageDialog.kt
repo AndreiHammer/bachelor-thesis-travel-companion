@@ -1,5 +1,6 @@
-package eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components
+package eu.ase.travelcompanionapp.core.presentation.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,15 +39,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import coil3.compose.AsyncImage
 import eu.ase.travelcompanionapp.R
-import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
 
 @Composable
 fun ImageDialog(
-    hotelState: HotelLocationViewModel.HotelState,
+    imageCount: Int,
     currentImageIndex: Int,
     onDismiss: () -> Unit,
-    onImageChange: (Int) -> Unit
+    onImageChange: (Int) -> Unit,
+    imageContent: @Composable (Int) -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -91,7 +93,7 @@ fun ImageDialog(
 
                 val pagerState = rememberPagerState(
                     initialPage = currentImageIndex,
-                    pageCount = { hotelState.photos.size }
+                    pageCount = { imageCount }
                 )
 
                 Box(
@@ -103,21 +105,13 @@ fun ImageDialog(
                         state = pagerState,
                         modifier = Modifier.fillMaxSize()
                     ) { page ->
-                        val photoUri = hotelState.photos[page]
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(8.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Image(
-                                bitmap = photoUri.asImageBitmap(),
-                                contentDescription = stringResource(R.string.hotel_photo, page),
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.Fit
-                            )
+                            imageContent(page)
                         }
                     }
 
@@ -140,13 +134,13 @@ fun ImageDialog(
 
                         NavigationButton(
                             onClick = {
-                                if (pagerState.currentPage < hotelState.photos.size - 1) {
+                                if (pagerState.currentPage < imageCount - 1) {
                                     onImageChange(pagerState.currentPage + 1)
                                 }
                             },
                             icon = Icons.AutoMirrored.Filled.ArrowForward,
                             contentDescription = stringResource(R.string.next_image),
-                            enabled = pagerState.currentPage < hotelState.photos.size - 1
+                            enabled = pagerState.currentPage < imageCount - 1
                         )
                     }
 
@@ -163,7 +157,7 @@ fun ImageDialog(
                             color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
                         ) {
                             Text(
-                                text = "${pagerState.currentPage + 1}/${hotelState.photos.size}",
+                                text = "${pagerState.currentPage + 1}/$imageCount",
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Medium,
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
@@ -177,6 +171,54 @@ fun ImageDialog(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun BitmapImageDialog(
+    photos: List<Bitmap>,
+    currentImageIndex: Int,
+    onDismiss: () -> Unit,
+    onImageChange: (Int) -> Unit
+) {
+    ImageDialog(
+        imageCount = photos.size,
+        currentImageIndex = currentImageIndex,
+        onDismiss = onDismiss,
+        onImageChange = onImageChange
+    ) { page ->
+        Image(
+            bitmap = photos[page].asImageBitmap(),
+            contentDescription = stringResource(R.string.photo_number, page),
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Fit
+        )
+    }
+}
+
+@Composable
+fun UrlImageDialog(
+    photoUrls: List<String>,
+    currentImageIndex: Int,
+    onDismiss: () -> Unit,
+    onImageChange: (Int) -> Unit
+) {
+    ImageDialog(
+        imageCount = photoUrls.size,
+        currentImageIndex = currentImageIndex,
+        onDismiss = onDismiss,
+        onImageChange = onImageChange
+    ) { page ->
+        AsyncImage(
+            model = photoUrls[page],
+            contentDescription = stringResource(R.string.photo_number, page),
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Fit
+        )
     }
 }
 
@@ -215,4 +257,4 @@ private fun NavigationButton(
             )
         }
     }
-}
+} 
