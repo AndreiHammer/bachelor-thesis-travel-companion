@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.touristattractions.presentation
+package eu.ase.travelcompanionapp.touristattractions.presentation.list
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -17,19 +17,27 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.touristattractions.domain.model.TouristAttraction
-import eu.ase.travelcompanionapp.touristattractions.presentation.components.*
+import eu.ase.travelcompanionapp.touristattractions.presentation.TouristAttractionsViewModel
+import eu.ase.travelcompanionapp.touristattractions.presentation.TouristSharedViewModel
+import eu.ase.travelcompanionapp.touristattractions.presentation.list.components.AttractionEmptyState
+import eu.ase.travelcompanionapp.touristattractions.presentation.list.components.AttractionErrorState
+import eu.ase.travelcompanionapp.touristattractions.presentation.list.components.AttractionLoadingState
+import eu.ase.travelcompanionapp.touristattractions.presentation.list.components.EnhancedAttractionCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TouristAttractionsListScreen(
     viewModel: TouristAttractionsViewModel,
-    latitude: Double,
-    longitude: Double
+    sharedViewModel: TouristSharedViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val latitude by sharedViewModel.selectedLatitude.collectAsStateWithLifecycle()
+    val longitude by sharedViewModel.selectedLongitude.collectAsStateWithLifecycle()
     
     LaunchedEffect(latitude, longitude) {
-        viewModel.loadAttractionsByLocation(latitude, longitude)
+        if (latitude != 0.0 && longitude != 0.0) {
+            viewModel.loadAttractionsByLocation(latitude, longitude)
+        }
     }
     
     Scaffold(

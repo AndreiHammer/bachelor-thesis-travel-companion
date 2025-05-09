@@ -7,13 +7,8 @@ sealed interface TouristAttractionsRoute {
     data object TouristAttractionsGraph : TouristAttractionsRoute
 
     @Serializable
-    data class TouristAttractionsList(
-        val latitude: Double,
-        val longitude: Double
-    ) : TouristAttractionsRoute
+    data object TouristAttractionsList : TouristAttractionsRoute
 
     @Serializable
-    data class TouristAttractionDetails(
-        val attractionId: String
-    ) : TouristAttractionsRoute
+    data object TouristAttractionDetails : TouristAttractionsRoute
 } 

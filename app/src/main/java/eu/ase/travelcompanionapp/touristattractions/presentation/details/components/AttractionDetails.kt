@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.touristattractions.presentation.components
+package eu.ase.travelcompanionapp.touristattractions.presentation.details.components
 
 import android.content.Intent
 import android.net.Uri

@@ -49,7 +49,7 @@ import eu.ase.travelcompanionapp.core.presentation.components.BitmapPhotoCarouse
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
-import eu.ase.travelcompanionapp.touristattractions.presentation.components.TouristAttractionsSection
+import eu.ase.travelcompanionapp.touristattractions.presentation.list.components.TouristAttractionsSection
 import eu.ase.travelcompanionapp.touristattractions.presentation.TouristAttractionsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -189,20 +189,17 @@ fun HotelDetails(
                         attractions = attractions,
                         isLoading = touristAttractionsState.value.isLoading,
                         onSeeAllClick = { lat, lng ->
+                            viewModel.setupTouristAttractionsNavigation(lat, lng)
                             navController.navigate(
-                                TouristAttractionsRoute.TouristAttractionsList(
-                                    latitude = lat,
-                                    longitude = lng
-                                )
+                                TouristAttractionsRoute.TouristAttractionsList
                             )
                         },
                         onAttractionClick = { attraction ->
-                            attraction.id?.let { id ->
+                            attraction.id?.let {
                                 TouristAttractionsViewModel.cacheAttraction(attraction)
+                                viewModel.setupTouristAttractionDetailsNavigation(attraction)
                                 navController.navigate(
-                                    TouristAttractionsRoute.TouristAttractionDetails(
-                                        attractionId = id
-                                    )
+                                    TouristAttractionsRoute.TouristAttractionDetails
                                 )
                             }
                         }

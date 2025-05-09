@@ -14,11 +14,14 @@ import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryPlacesAp
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.touristattractions.domain.model.TouristAttraction
 import eu.ase.travelcompanionapp.touristattractions.domain.repository.TouristAttractionRepositoryAmadeusApi
+import eu.ase.travelcompanionapp.touristattractions.presentation.TouristSharedViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class HotelLocationViewModel(
     private val hotelRepository: HotelRepositoryPlacesApi,
@@ -26,13 +29,15 @@ class HotelLocationViewModel(
     private val sharedViewModel: SharedViewModel,
     private val favouriteHotelRepository: FavouriteHotelRepository,
     private val touristAttractionRepository: TouristAttractionRepositoryAmadeusApi
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(HotelState())
     val hotelState: StateFlow<HotelState> get() = _state
 
     private val _touristAttractionsState = MutableStateFlow(TouristAttractionsState())
     val touristAttractionsState: StateFlow<TouristAttractionsState> = _touristAttractionsState.asStateFlow()
+
+    private val touristAttractionsSharedViewModel: TouristSharedViewModel by inject()
 
     fun getHotelDetails(locationName: String, country: String) {
         viewModelScope.launch {
@@ -152,6 +157,17 @@ class HotelLocationViewModel(
                     adults = action.adults
                 )
             }
+        }
+    }
+
+    fun setupTouristAttractionsNavigation(latitude: Double, longitude: Double) {
+        touristAttractionsSharedViewModel.setLocation(latitude, longitude)
+    }
+    
+    fun setupTouristAttractionDetailsNavigation(attraction: TouristAttraction) {
+        attraction.id?.let { id ->
+            touristAttractionsSharedViewModel.setSelectedAttraction(attraction)
+            touristAttractionsSharedViewModel.setSelectedAttractionId(id)
         }
     }
 

@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.touristattractions.presentation.components
+package eu.ase.travelcompanionapp.touristattractions.presentation.list.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

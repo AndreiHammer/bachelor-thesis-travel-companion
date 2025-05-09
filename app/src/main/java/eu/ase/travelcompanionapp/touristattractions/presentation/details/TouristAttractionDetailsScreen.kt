@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.touristattractions.presentation
+package eu.ase.travelcompanionapp.touristattractions.presentation.details
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -7,22 +7,32 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.touristattractions.domain.model.TouristAttraction
-import eu.ase.travelcompanionapp.touristattractions.presentation.components.*
+import eu.ase.travelcompanionapp.touristattractions.presentation.TouristAttractionsViewModel
+import eu.ase.travelcompanionapp.touristattractions.presentation.TouristSharedViewModel
+import eu.ase.travelcompanionapp.touristattractions.presentation.details.components.AttractionBookingButton
+import eu.ase.travelcompanionapp.touristattractions.presentation.details.components.AttractionDescriptionCard
+import eu.ase.travelcompanionapp.touristattractions.presentation.details.components.AttractionDetailRating
+import eu.ase.travelcompanionapp.touristattractions.presentation.details.components.AttractionLocationCard
+import eu.ase.travelcompanionapp.touristattractions.presentation.details.components.AttractionPhotoGallery
+import eu.ase.travelcompanionapp.touristattractions.presentation.details.components.AttractionPriceCard
+import eu.ase.travelcompanionapp.touristattractions.presentation.details.components.AttractionTitleSection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TouristAttractionDetailsScreen(
     viewModel: TouristAttractionsViewModel,
-    attractionId: String
+    sharedViewModel: TouristSharedViewModel
 ) {
-    val attraction = remember(attractionId) { viewModel.getAttractionById(attractionId) }
+    val attractionId by sharedViewModel.selectedAttractionId.collectAsState()
+    val attraction = attractionId?.let { viewModel.getAttractionById(it) }
 
     Scaffold(
         topBar = {

@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.touristattractions.presentation.components
+package eu.ase.travelcompanionapp.touristattractions.presentation.list.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow

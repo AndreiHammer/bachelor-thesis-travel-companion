@@ -15,13 +15,13 @@ import kotlinx.coroutines.launch
 
 class TouristAttractionsViewModel(
     private val touristAttractionRepository: TouristAttractionRepositoryAmadeusApi,
-    private val navController: NavController
+    private val navController: NavController,
+    private val sharedViewModel: TouristSharedViewModel
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(TouristAttractionsState())
     val state: StateFlow<TouristAttractionsState> = _state.asStateFlow()
 
-    private val _selectedAttraction = MutableStateFlow<TouristAttraction?>(null)
 
     companion object {
         private val attractionsCache = mutableMapOf<String, TouristAttraction>()
@@ -69,17 +69,20 @@ class TouristAttractionsViewModel(
     fun getAttractionById(id: String): TouristAttraction? {
         val fromState = state.value.attractions.find { it.id == id }
         if (fromState != null) return fromState
+        
+        val fromSharedViewModel = sharedViewModel.selectedAttraction.value
+        if (fromSharedViewModel?.id == id) return fromSharedViewModel
 
         return attractionsCache[id]
     }
 
     fun navigateToAttractionDetails(attraction: TouristAttraction) {
-        _selectedAttraction.value = attraction
-
         attraction.id?.let { attractionId ->
             cacheAttraction(attraction)
+            sharedViewModel.setSelectedAttraction(attraction)
+            sharedViewModel.setSelectedAttractionId(attractionId)
             navController.navigate(
-                TouristAttractionsRoute.TouristAttractionDetails(attractionId)
+                TouristAttractionsRoute.TouristAttractionDetails
             )
         }
     }
