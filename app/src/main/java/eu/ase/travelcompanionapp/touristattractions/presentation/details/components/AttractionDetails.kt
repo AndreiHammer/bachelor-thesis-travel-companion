@@ -1,5 +1,6 @@
 package eu.ase.travelcompanionapp.touristattractions.presentation.details.components
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.*
@@ -133,40 +134,53 @@ fun AttractionDescriptionCard(
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun AttractionPriceCard(
     price: Price,
     modifier: Modifier = Modifier
 ) {
-    if (price.amount != null && price.currencyCode != null) {
-        Card(
-            modifier = modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.price),
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                    Text(
-                        text = "${price.amount} ${price.currencyCode}",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+    if (price.amount == null || price.currencyCode == null) return
+
+    fun formatPriceText(amount: String?, currencyCode: String?): String {
+        if (amount == null || currencyCode == null) return ""
+        
+        return try {
+            val amountDouble = amount.toDoubleOrNull()
+            if (amountDouble != null) {
+                String.format("%.2f %s", amountDouble, currencyCode)
+            } else {
+                "$amount $currencyCode"
             }
+        } catch (e: Exception) {
+            "$amount $currencyCode"
+        }
+    }
+    
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.price),
+                style = MaterialTheme.typography.titleSmall
+            )
+            
+            Text(
+                text = formatPriceText(price.amount, price.currencyCode),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }

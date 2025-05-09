@@ -18,7 +18,8 @@ val touristAttractionsModule = module {
         TouristAttractionsViewModel(
             touristAttractionRepository = touristAttractionRepository,
             navController = navController,
-            sharedViewModel = sharedViewModel
+            sharedViewModel = sharedViewModel,
+            priceConverter = get()
         )
     }
 }

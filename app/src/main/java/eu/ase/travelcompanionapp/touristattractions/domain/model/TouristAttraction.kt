@@ -12,6 +12,7 @@ data class TouristAttraction(
     var pictures: List<String> = emptyList(),
     var bookingLink: String? = null,
     var price: Price? = null,
+    var originalPrice: Price? = null,
 )
 
 data class Price(
