@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -85,66 +86,128 @@ fun AttractionCard(
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
-            .width(200.dp)
-            .height(150.dp)
-            .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        ),
-        shape = RoundedCornerShape(12.dp)
+    Box(
+        modifier = modifier.clickable(onClick = onClick)
     ) {
+        // Background image
+        if (attraction.pictures.isNotEmpty()) {
+            AsyncImage(
+                model = attraction.pictures.first(),
+                contentDescription = attraction.name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            
+            // Gradient overlay for better text visibility
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.7f)
+                            ),
+                            startY = 0f,
+                            endY = 500f
+                        )
+                    )
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Place,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+        }
+        
+        // Content
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
+                .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            // Top section: Optional badge
+            attraction.type?.let { type ->
+                Card(
+                    shape = RoundedCornerShape(4.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+                    ),
+                    modifier = Modifier.wrapContentSize()
+                ) {
+                    Text(
+                        text = type,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
+            }
+            
+            // Bottom section: Name and rating
             Column {
                 Text(
                     text = attraction.name ?: stringResource(R.string.unknown_attraction),
                     style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Bold
                     ),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    color = Color.White,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 
                 Spacer(modifier = Modifier.height(4.dp))
                 
-                Text(
-                    text = attraction.description ?: stringResource(R.string.tourist_attraction),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-            
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(16.dp)
-                )
-                
-                Spacer(modifier = Modifier.width(4.dp))
-                
-                Text(
-                    text = when {
-                        attraction.rating != null -> "Rating: ${attraction.rating}"
-                        attraction.type != null -> attraction.type!!
-                        else -> "Tourist Spot"
-                    },
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    attraction.rating?.let { rating ->
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = Color(0xFFFFC107),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        
+                        Spacer(modifier = Modifier.width(4.dp))
+                        
+                        Text(
+                            text = rating,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color.White
+                        )
+                        
+                        Spacer(modifier = Modifier.width(12.dp))
+                    }
+                    
+                    attraction.price?.let { price ->
+                        if (price.amount != null && price.currencyCode != null) {
+                            Card(
+                                shape = RoundedCornerShape(4.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f)
+                                )
+                            ) {
+                                Text(
+                                    text = "${price.amount} ${price.currencyCode}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }

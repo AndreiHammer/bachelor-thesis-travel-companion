@@ -4,11 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import eu.ase.travelcompanionapp.app.navigation.AppNavHost
@@ -31,21 +33,24 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
                 val currentRoute = currentDestination?.route
-
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    bottomBar = {
-                        if (showBottomBar(currentRoute)) {
-                            BottomNavigationBar(navController = navController)
-                        }
-                    }, 
-                    content = { innerPadding ->
-                        AppNavHost(
-                            modifier = Modifier.padding(innerPadding),
-                            navController = navController
+                
+                Box(modifier = Modifier.fillMaxSize()) {
+                    AppNavHost(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                bottom = if (showBottomBar(currentRoute)) 80.dp else 0.dp
+                            ),
+                        navController = navController
+                    )
+                
+                    if (showBottomBar(currentRoute)) {
+                        BottomNavigationBar(
+                            navController = navController,
+                            modifier = Modifier.align(Alignment.BottomCenter)
                         )
                     }
-                )
+                }
             }
         }
     }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,7 +21,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,6 +50,7 @@ import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationAc
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
 import eu.ase.travelcompanionapp.touristattractions.presentation.list.components.TouristAttractionsSection
 import eu.ase.travelcompanionapp.touristattractions.presentation.TouristAttractionsViewModel
+import eu.ase.travelcompanionapp.ui.CompanionTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,6 +68,7 @@ fun HotelDetails(
     val cameraPositionState = rememberCameraPositionState()
     var isImageDialogOpen by remember { mutableStateOf(false) }
     var currentImageIndex by remember { mutableIntStateOf(0) }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     LaunchedEffect(hotel.name, hotel.countryCode) {
         viewModel.getHotelDetails(hotel.name, hotel.countryCode)
@@ -83,24 +84,16 @@ fun HotelDetails(
     }
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(R.string.details)) },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        viewModel.handleAction(HotelLocationAction.OnBackClick, hotel)
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
+            CompanionTopAppBar(
+                title = hotel.name,
+                subtitle = stringResource(R.string.details),
+                onNavigationClick = {
+                    viewModel.handleAction(HotelLocationAction.OnBackClick, hotel)
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
+                scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(
                         onClick = {

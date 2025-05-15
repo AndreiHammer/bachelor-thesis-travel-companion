@@ -1,32 +1,27 @@
 package eu.ase.travelcompanionapp.hotel.presentation.hotelFavourites
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.hotel.presentation.hotelFavourites.components.EmptyFavouritesContent
 import eu.ase.travelcompanionapp.hotel.presentation.hotelFavourites.components.FavouriteHotelsList
+import eu.ase.travelcompanionapp.ui.CompanionTopAppBar
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,6 +32,7 @@ fun HotelFavouriteScreen(
 ) {
     val state = viewModel.hotelState.collectAsStateWithLifecycle()
     val hotelPrices = viewModel.hotelPrices.collectAsStateWithLifecycle()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     // THIS WOULD BE USED WHEN THE APP IS FINISHED, IN TESTING IT IS TAKEN OUT DUE TO API COSTS
     /*val hotelImages by viewModel.hotelImages.collectAsStateWithLifecycle()
@@ -52,29 +48,13 @@ fun HotelFavouriteScreen(
     }
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text = stringResource(R.string.favourite_hotels)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { viewModel.handleAction(HotelFavouriteAction.OnBackClick) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                }
+            CompanionTopAppBar(
+                title = stringResource(R.string.favourite_hotels),
+                onNavigationClick = { viewModel.handleAction(HotelFavouriteAction.OnBackClick) },
+                scrollBehavior = scrollBehavior
             )
         }
     ) { paddingValues ->

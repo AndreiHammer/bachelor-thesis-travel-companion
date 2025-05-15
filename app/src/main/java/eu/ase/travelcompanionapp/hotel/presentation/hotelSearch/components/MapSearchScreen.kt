@@ -10,15 +10,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -46,6 +44,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.filters.LocationFilterSearch
+import eu.ase.travelcompanionapp.ui.CompanionTopAppBar
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -61,6 +60,7 @@ fun MapSearchScreen(
     var checkOutDate by remember { mutableStateOf("") }
     var adults by remember { mutableIntStateOf(1) }
     var isFilterExpanded by remember { mutableStateOf(false) }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     onAction(LocationSearchAction.OnRatingSelected(emptySet()))
     onAction(LocationSearchAction.OnAmenitiesSelected(emptySet()))
@@ -78,27 +78,20 @@ fun MapSearchScreen(
     }
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(R.string.map_title)) },
-                navigationIcon = {
-                    IconButton(onClick = { onAction(LocationSearchAction.OnBackClick) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                },
+            CompanionTopAppBar(
+                title = stringResource(R.string.map_title),
+                onNavigationClick = { onAction(LocationSearchAction.OnBackClick) },
+                scrollBehavior = scrollBehavior,
                 actions = {
                     FilterButton(
                         isExpanded = isFilterExpanded,
                         onClick = { isFilterExpanded = !isFilterExpanded }
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                style = eu.ase.travelcompanionapp.ui.AppBarStyle.PINNED
             )
         }
     ) { paddingValues ->

@@ -213,4 +213,6 @@
     <string name="book_this_attraction">Book This Attraction</string>
     <string name="attraction_not_found">Attraction not found</string>
     <string name="photo_number">Photo Number</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
 </resources>

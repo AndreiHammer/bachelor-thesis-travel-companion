@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -20,7 +21,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun BottomNavigationBar(
     navController: NavHostController,
-    viewModel: BottomNavigationViewModel = koinViewModel()
+    viewModel: BottomNavigationViewModel = koinViewModel(),
+    modifier: Modifier = Modifier
 ) {
 
     val selectedIconColor = MaterialTheme.colorScheme.onPrimary
@@ -34,7 +36,8 @@ fun BottomNavigationBar(
 
     Surface(
         color = navigationBarColor,
-        shadowElevation = 8.dp
+        shadowElevation = 8.dp,
+        modifier = modifier
     ) {
         NavigationBar(
             containerColor = navigationBarColor

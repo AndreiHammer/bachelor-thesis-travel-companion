@@ -4,14 +4,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -23,6 +24,7 @@ import eu.ase.travelcompanionapp.touristattractions.presentation.list.components
 import eu.ase.travelcompanionapp.touristattractions.presentation.list.components.AttractionErrorState
 import eu.ase.travelcompanionapp.touristattractions.presentation.list.components.AttractionLoadingState
 import eu.ase.travelcompanionapp.touristattractions.presentation.list.components.EnhancedAttractionCard
+import eu.ase.travelcompanionapp.ui.CompanionTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,30 +35,21 @@ fun TouristAttractionsListScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val latitude by sharedViewModel.selectedLatitude.collectAsStateWithLifecycle()
     val longitude by sharedViewModel.selectedLongitude.collectAsStateWithLifecycle()
-    
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
     LaunchedEffect(latitude, longitude) {
         if (latitude != 0.0 && longitude != 0.0) {
             viewModel.loadAttractionsByLocation(latitude, longitude)
         }
     }
-    
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.tourist_attractions_nearby)) },
-                navigationIcon = {
-                    IconButton(onClick = { viewModel.navigateBack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+            CompanionTopAppBar(
+                title = stringResource(R.string.tourist_attractions_nearby),
+                onNavigationClick = { viewModel.navigateBack() },
+                scrollBehavior = scrollBehavior
             )
         }
     ) { paddingValues ->
@@ -112,16 +105,19 @@ private fun AttractionGrid(
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Adaptive(minSize = 180.dp),
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier
+        modifier = modifier.fillMaxSize()
     ) {
         items(attractions) { attraction ->
             EnhancedAttractionCard(
                 attraction = attraction,
-                onClick = { onAttractionClick(attraction) }
+                onClick = { onAttractionClick(attraction) },
+                modifier = Modifier
+                    .height(220.dp)
+                    .clip(RoundedCornerShape(12.dp))
             )
         }
     }

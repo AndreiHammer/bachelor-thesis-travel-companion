@@ -3,14 +3,13 @@ package eu.ase.travelcompanionapp.touristattractions.presentation.details
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
@@ -24,6 +23,7 @@ import eu.ase.travelcompanionapp.touristattractions.presentation.details.compone
 import eu.ase.travelcompanionapp.touristattractions.presentation.details.components.AttractionPhotoGallery
 import eu.ase.travelcompanionapp.touristattractions.presentation.details.components.AttractionPriceCard
 import eu.ase.travelcompanionapp.touristattractions.presentation.details.components.AttractionTitleSection
+import eu.ase.travelcompanionapp.ui.CompanionTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,24 +33,15 @@ fun TouristAttractionDetailsScreen(
 ) {
     val attractionId by sharedViewModel.selectedAttractionId.collectAsState()
     val attraction = attractionId?.let { viewModel.getAttractionById(it) }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
-                title = { Text(attraction?.name ?: stringResource(R.string.details)) },
-                navigationIcon = {
-                    IconButton(onClick = { viewModel.navigateBack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+            CompanionTopAppBar(
+                title = attraction?.name ?: stringResource(R.string.details),
+                onNavigationClick = { viewModel.navigateBack() },
+                scrollBehavior = scrollBehavior
             )
         }
     ) { paddingValues ->

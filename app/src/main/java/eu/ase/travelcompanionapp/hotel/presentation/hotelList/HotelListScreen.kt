@@ -33,8 +33,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import coil3.Bitmap
 import eu.ase.travelcompanionapp.hotel.domain.model.HotelPrice
+import eu.ase.travelcompanionapp.ui.CompanionTopAppBar
 
 
 @Composable
@@ -108,43 +110,26 @@ private fun HotelListScreen(
     hotelImages: Map<String, Bitmap?> = emptyMap(),
     modifier: Modifier = Modifier
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text = if (selectedCity != null)
-                                stringResource(R.string.hotels_list, selectedCity)
-                            else
-                                stringResource(R.string.hotels_list_by_location)
-                        )
-                        if (state.hotelItems.isNotEmpty()) {
-                            Text(
-                                text = stringResource(
-                                    R.string.hotels_found,
-                                    state.hotelItems.size
-                                ),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
-                            )
-                        }
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { onAction(HotelListAction.OnBackClick) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                }
+            val title = if (selectedCity != null)
+                stringResource(R.string.hotels_list, selectedCity)
+            else
+                stringResource(R.string.hotels_list_by_location)
+                
+            val subtitle = if (state.hotelItems.isNotEmpty()) {
+                stringResource(R.string.hotels_found, state.hotelItems.size)
+            } else null
+            
+            CompanionTopAppBar(
+                title = title,
+                subtitle = subtitle,
+                onNavigationClick = { onAction(HotelListAction.OnBackClick) },
+                scrollBehavior = scrollBehavior
             )
         }
     ) { paddingValues ->

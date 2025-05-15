@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -20,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,11 +27,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.ui.CompanionTopAppBar
 import eu.ase.travelcompanionapp.user.presentation.profile.components.AccountActionsCard
 import eu.ase.travelcompanionapp.user.presentation.profile.components.PersonalInfoCard
 import eu.ase.travelcompanionapp.user.presentation.profile.components.ProfileHeader
@@ -54,23 +54,15 @@ fun ProfileScreen(
     var phoneNumber by remember(userData) { mutableStateOf(userData.phoneNumber) }
     var birthDate by remember(userData) { mutableStateOf(userData.birthDate) }
     var gender by remember(userData) { mutableStateOf(userData.gender) }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.profile)) },
-                navigationIcon = {
-                    IconButton(onClick = { viewModel.handleAction(ProfileAction.OnBackClick) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
+            CompanionTopAppBar(
+                title = stringResource(R.string.profile),
+                onNavigationClick = { viewModel.handleAction(ProfileAction.OnBackClick) },
+                scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(
                         onClick = { viewModel.handleAction(ProfileAction.OnSettingsClick) }
@@ -82,7 +74,7 @@ fun ProfileScreen(
                     }
                 }
             )
-        }
+        },
     ) { padding ->
         Column(
             modifier = Modifier

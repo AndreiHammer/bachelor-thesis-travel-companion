@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -36,7 +35,6 @@ fun AutoCompleteTextField(
     var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
     var filteredSuggestions by remember { mutableStateOf(citiesWithCountry) }
     var showSuggestions by remember { mutableStateOf(false) }
-    val focusRequester = remember { FocusRequester() }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -91,13 +89,8 @@ fun AutoCompleteTextField(
                         )
                     }
                 }
-            },
-            focusRequester = focusRequester
+            }
         )
-
-        LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
-        }
 
         Spacer(modifier = Modifier.height(8.dp))
 

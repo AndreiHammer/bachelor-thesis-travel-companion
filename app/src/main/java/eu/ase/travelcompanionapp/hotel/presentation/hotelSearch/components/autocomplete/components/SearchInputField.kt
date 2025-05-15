@@ -11,8 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
@@ -26,7 +24,6 @@ import eu.ase.travelcompanionapp.R
 fun SearchInputField(
     textFieldValue: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
-    focusRequester: FocusRequester,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -42,8 +39,7 @@ fun SearchInputField(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White)
-                .padding(16.dp)
-                .focusRequester(focusRequester),
+                .padding(16.dp),
             textStyle = TextStyle(color = Color.Black, fontSize = 18.sp),
             cursorBrush = SolidColor(Color.Blue),
             decorationBox = { innerTextField ->
