@@ -43,6 +43,7 @@ import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.app.navigation.routes.TouristAttractionsRoute
 import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.core.presentation.components.BitmapImageDialog
+import eu.ase.travelcompanionapp.hotel.domain.model.BookingDetails
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
@@ -68,9 +69,35 @@ fun HotelDetails(
     var currentImageIndex by remember { mutableIntStateOf(0) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var showMapScreen by remember { mutableStateOf(false) }
+    var isModifyingBookingDetails by remember { mutableStateOf(false) }
 
     LaunchedEffect(hotel.name, hotel.countryCode) {
         viewModel.getHotelDetailsTest()
+    }
+
+    if (isModifyingBookingDetails) {
+        val currentBookingDetails = BookingDetails(
+            checkInDate = checkInDate,
+            checkOutDate = checkOutDate,
+            adults = adults
+        )
+        
+        BookingDetailsDialog(
+            initialBookingDetails = currentBookingDetails,
+            title = stringResource(R.string.modify_booking_details),
+            description = stringResource(R.string.modify_booking_details_description),
+            confirmButtonText = stringResource(R.string.view_offers),
+            onDismiss = { isModifyingBookingDetails = false },
+            onConfirm = { newCheckInDate, newCheckOutDate, newAdults ->
+                isModifyingBookingDetails = false
+                viewModel.handleAction(
+                    HotelLocationAction.OnViewOfferClick(
+                        newCheckInDate, newCheckOutDate, newAdults
+                    ),
+                    hotel
+                )
+            }
+        )
     }
 
     val coordinates = hotelState.value.hotel?.let { Pair(it.latitude, it.longitude) }
@@ -218,7 +245,10 @@ fun HotelDetails(
                         },
                         bookingDetails = if (checkInDate.isNotEmpty() && checkOutDate.isNotEmpty()) {
                             Triple(checkInDate, checkOutDate, adults)
-                        } else null
+                        } else null,
+                        onModifyBookingDetails = {
+                            isModifyingBookingDetails = true
+                        }
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                 }

@@ -10,6 +10,8 @@ import eu.ase.travelcompanionapp.hotel.domain.model.HotelOffer
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryAmadeusApi
 import eu.ase.travelcompanionapp.booking.domain.models.BookingInfo
 import eu.ase.travelcompanionapp.booking.domain.repository.BookingService
+import eu.ase.travelcompanionapp.hotel.domain.model.BookingDetails
+import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.user.domain.model.Currency
 import eu.ase.travelcompanionapp.user.domain.service.PriceConverter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +24,8 @@ class HotelOffersViewModel(
     private val hotelRepositoryAmadeusApi: HotelRepositoryAmadeusApi,
     private val priceConverter: PriceConverter,
     private val navController: NavHostController,
-    private val bookingService: BookingService
+    private val bookingService: BookingService,
+    private val sharedViewModel: SharedViewModel
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HotelOffersState())
@@ -32,10 +35,30 @@ class HotelOffersViewModel(
     val convertedPrices = _convertedPrices.asStateFlow()
 
     private val _currentBooking = MutableStateFlow<BookingInfo?>(null)
+    
+    private val _showModifyDialog = MutableStateFlow(false)
+    val showModifyDialog = _showModifyDialog.asStateFlow()
+
+    private fun setModifyDialogVisibility(isVisible: Boolean) {
+        _showModifyDialog.value = isVisible
+    }
+
+    private val _currentHotelId = MutableStateFlow("")
+    private val _currentCheckInDate = MutableStateFlow("")
+    private val _currentCheckOutDate = MutableStateFlow("")
+    private val _currentAdults = MutableStateFlow(1)
 
     fun getHotelOffers(hotelId: String, checkInDate: String, checkOutDate: String, adults: Int) {
         viewModelScope.launch {
             try {
+                _currentHotelId.value = hotelId
+                _currentCheckInDate.value = checkInDate
+                _currentCheckOutDate.value = checkOutDate
+                _currentAdults.value = adults
+
+                sharedViewModel.onSelectDates(checkInDate, checkOutDate)
+                sharedViewModel.onSelectAdults(adults)
+                
                 _state.value = _state.value.copy(isLoading = true)
 
                 val dateUtils = DateUtils()
@@ -125,9 +148,33 @@ class HotelOffersViewModel(
                     navController.navigate(PaymentRoute.Payment)
                 }
             }
+            is HotelOffersAction.OnModifyBookingDetails -> {
+                getHotelOffers(
+                    action.hotelId,
+                    action.checkInDate,
+                    action.checkOutDate,
+                    action.adults
+                )
+                setModifyDialogVisibility(false)
+            }
+            HotelOffersAction.OnShowModifyDialog -> {
+                setModifyDialogVisibility(true)
+            }
+            
+            is HotelOffersAction.OnDismissDialog -> {
+                setModifyDialogVisibility(false)
+            }
         }
     }
-
+    
+    fun getCurrentBookingDetails(): BookingDetails {
+        return BookingDetails(
+            checkInDate = _currentCheckInDate.value,
+            checkOutDate = _currentCheckOutDate.value,
+            adults = _currentAdults.value
+        )
+    }
+    
     data class HotelOffersState(
         val isLoading: Boolean = false,
         val offers: List<HotelOffer> = emptyList(),

@@ -218,4 +218,11 @@
     <string name="hotel_location">Hotel Location</string>
     <string name="tap_to_view_map">Tap to view map</string>
     <string name="view_on_map">View on Map</string>
+    <string name="enter_booking_details">Enter Booking Details</string>
+    <string name="please_enter_booking_details_to_view_offers">Please enter check-in/check-out dates and number of guests to view available offers.</string>
+    <string name="number_of_guests_colon">Number of guests:</string>
+    <string name="modify_booking_details">Modify Booking Details</string>
+    <string name="modify_booking_details_description">Change dates and number of guests to search for different offers</string>
+    <string name="search_offers">Search Offers</string>
+    <string name="modify_dates">Modify Dates</string>
 </resources>

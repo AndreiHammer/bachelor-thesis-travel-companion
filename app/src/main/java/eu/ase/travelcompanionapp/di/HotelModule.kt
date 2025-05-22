@@ -61,12 +61,13 @@ val hotelSharedModule = module {
             sharedViewModel = sharedViewModel
         )
     }
-    viewModel { (navController: NavHostController) ->
+    viewModel { (navController: NavHostController, sharedViewModel: SharedViewModel) ->
         HotelOffersViewModel(
             hotelRepositoryAmadeusApi = get(),
             navController = navController,
             priceConverter = get(),
-            bookingService = get()
+            bookingService = get(),
+            sharedViewModel = sharedViewModel
         )
     }
 }

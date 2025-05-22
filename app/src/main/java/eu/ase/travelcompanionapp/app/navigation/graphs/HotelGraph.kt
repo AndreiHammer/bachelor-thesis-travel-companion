@@ -201,7 +201,7 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
 
             selectedHotel?.let{ hotel->
                 val viewModel = koinViewModel<HotelOffersViewModel>(
-                    parameters = { parametersOf(navController) }
+                    parameters = { parametersOf(navController, sharedViewModel) }
                 )
 
                 HotelOffersScreen(

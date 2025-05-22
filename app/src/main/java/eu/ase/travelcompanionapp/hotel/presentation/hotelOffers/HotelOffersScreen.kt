@@ -6,7 +6,11 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -20,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
+import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components.BookingDetailsDialog
 import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.components.HotelOffersSection
 import eu.ase.travelcompanionapp.ui.CompanionTopAppBar
 import org.koin.androidx.compose.koinViewModel
@@ -35,10 +40,32 @@ fun HotelOffersScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val convertedPrices by viewModel.convertedPrices.collectAsStateWithLifecycle()
+    val showModifyDialog by viewModel.showModifyDialog.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     LaunchedEffect(hotelId) {
         viewModel.getHotelOffers(hotelId, checkInDate, checkOutDate, adults)
+    }
+    
+    if (showModifyDialog) {
+        val currentDetails = viewModel.getCurrentBookingDetails()
+        BookingDetailsDialog(
+            initialBookingDetails = currentDetails,
+            title = stringResource(R.string.modify_booking_details),
+            description = stringResource(R.string.modify_booking_details_description),
+            confirmButtonText = stringResource(R.string.view_offers),
+            onDismiss = { viewModel.handleAction(HotelOffersAction.OnDismissDialog) },
+            onConfirm = { newCheckInDate, newCheckOutDate, newAdults ->
+                viewModel.handleAction(
+                    HotelOffersAction.OnModifyBookingDetails(
+                        hotelId = hotelId,
+                        checkInDate = newCheckInDate,
+                        checkOutDate = newCheckOutDate,
+                        adults = newAdults
+                    )
+                )
+            }
+        )
     }
 
     Scaffold(
@@ -48,7 +75,17 @@ fun HotelOffersScreen(
             CompanionTopAppBar(
                 title = stringResource(R.string.hotel_offers),
                 onNavigationClick = { viewModel.handleAction(HotelOffersAction.OnBackClick) },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                actions = {
+                    IconButton(
+                        onClick = { viewModel.handleAction(HotelOffersAction.OnShowModifyDialog) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = stringResource(R.string.modify_dates)
+                        )
+                    }
+                }
             )
         }
     ) { innerPadding ->

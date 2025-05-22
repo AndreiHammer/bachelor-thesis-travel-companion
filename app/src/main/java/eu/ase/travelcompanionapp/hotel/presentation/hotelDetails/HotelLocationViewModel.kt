@@ -164,6 +164,8 @@ class HotelLocationViewModel(
             }
             is HotelLocationAction.OnViewOfferClick -> {
                 sharedViewModel.onSelectHotel(hotel)
+                sharedViewModel.onSelectDates(action.checkInDate, action.checkOutDate)
+                sharedViewModel.onSelectAdults(action.adults)
                 navController.navigate(
                     HotelRoute.HotelOffers(
                         hotelId = hotel.hotelId,
