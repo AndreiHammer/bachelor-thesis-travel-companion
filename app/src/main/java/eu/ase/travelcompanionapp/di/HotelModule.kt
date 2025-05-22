@@ -31,13 +31,6 @@ val hotelPlacesModule = module {
             touristAttractionRepository = get()
         )
     }
-    /*viewModel { (navController: NavHostController, sharedViewModel: SharedViewModel) ->
-        HotelLocationTestViewModel(
-            navController = navController,
-            sharedViewModel = sharedViewModel,
-            favouriteHotelRepository = get()
-        )
-    }*/
     single<HotelRepositoryPlacesApi> { PlacesHotelRepository(get()) }
     single { PlacesApiService(get()) }
 }

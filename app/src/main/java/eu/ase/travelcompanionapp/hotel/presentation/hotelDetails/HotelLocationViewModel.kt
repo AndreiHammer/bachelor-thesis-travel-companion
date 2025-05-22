@@ -75,6 +75,30 @@ class HotelLocationViewModel(
         }
     }
 
+    fun getHotelDetailsTest() {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true)
+
+            val hotelSelected = sharedViewModel.selectedHotel.value
+            val isFavourite = hotelSelected?.let {
+                favouriteHotelRepository.isFavourite(it.hotelId)
+            } ?: false
+
+            _state.value = _state.value.copy(
+                isLoading = false,
+                hotel = hotelSelected,
+                isFavourite = isFavourite
+            )
+
+            val latitude = hotelSelected?.latitude
+            val longitude = hotelSelected?.longitude
+
+            if (latitude != null && longitude != null) {
+                fetchNearbyAttractions(latitude, longitude)
+            }
+        }
+    }
+
     private fun fetchNearbyAttractions(latitude: Double, longitude: Double) {
         viewModelScope.launch {
             _touristAttractionsState.update { it.copy(isLoading = true, error = null) }

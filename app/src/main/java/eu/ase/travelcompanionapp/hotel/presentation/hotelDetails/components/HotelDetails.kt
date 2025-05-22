@@ -20,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,7 +43,6 @@ import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.app.navigation.routes.TouristAttractionsRoute
 import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.core.presentation.components.BitmapImageDialog
-import eu.ase.travelcompanionapp.core.presentation.components.BitmapPhotoCarousel
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationAction
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationViewModel
@@ -69,9 +67,10 @@ fun HotelDetails(
     var isImageDialogOpen by remember { mutableStateOf(false) }
     var currentImageIndex by remember { mutableIntStateOf(0) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    var showMapScreen by remember { mutableStateOf(false) }
 
     LaunchedEffect(hotel.name, hotel.countryCode) {
-        viewModel.getHotelDetails(hotel.name, hotel.countryCode)
+        viewModel.getHotelDetailsTest()
     }
 
     val coordinates = hotelState.value.hotel?.let { Pair(it.latitude, it.longitude) }
@@ -81,6 +80,14 @@ fun HotelDetails(
                 LatLng(it.first, it.second), 15f
             )
         }
+    }
+
+    if (showMapScreen) {
+        MapDetailScreen(
+            viewModel = viewModel,
+            onBackClick = { showMapScreen = false }
+        )
+        return
     }
 
     Scaffold(
@@ -150,7 +157,7 @@ fun HotelDetails(
                     )
                 }
 
-                item {
+                /*item {
                     Spacer(modifier = Modifier.height(8.dp))
                     BitmapPhotoCarousel(
                         photos = hotelState.value.photos,
@@ -159,7 +166,7 @@ fun HotelDetails(
                             isImageDialogOpen = true
                         }
                     )
-                }
+                }*/
 
                 item {
                     Spacer(modifier = Modifier.height(8.dp))
@@ -168,9 +175,8 @@ fun HotelDetails(
 
                 item {
                     Spacer(modifier = Modifier.height(8.dp))
-                    MapCard(
-                        cameraPositionState = cameraPositionState,
-                        hotelState = hotelState.value
+                    LocationPreviewCard(
+                        onViewMapClick = { showMapScreen = true }
                     )
                 }
 
@@ -229,3 +235,4 @@ fun HotelDetails(
         }
     }
 }
+

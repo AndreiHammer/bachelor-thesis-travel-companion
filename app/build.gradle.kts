@@ -39,9 +39,6 @@ android {
         buildConfigField("String", "AMADEUS_API_SECRET",
             properties.getProperty("AMADEUS_API_SECRET")
         )
-        buildConfigField("String", "GROQ_KEY",
-            properties.getProperty("GROQ_KEY")
-        )
         buildConfigField("String", "OPEN_AI_API_KEY",
             properties.getProperty("OPEN_AI_API_KEY")
         )
@@ -50,9 +47,6 @@ android {
         )
         buildConfigField("String", "STRIPE_PUBLISHABLE_KEY",
             properties.getProperty("STRIPE_PUBLISHABLE_KEY")
-        )
-        buildConfigField("String", "STRIPE_SECRET_KEY",
-            properties.getProperty("STRIPE_SECRET_KEY")
         )
     }
 

@@ -182,17 +182,6 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
                     viewModel = viewModel,
                     navController = navController
                 )
-                /*val viewModel = koinViewModel<HotelLocationTestViewModel>(
-                    parameters = { parametersOf(navController, sharedViewModel) }
-                )
-
-                HotelLocationTestScreenRoot(
-                    hotel = hotel,
-                    checkInDate = displayCheckIn,
-                    checkOutDate = displayCheckOut,
-                    adults = displayAdults,
-                    viewModel = viewModel
-                )*/
             }
         }
 
