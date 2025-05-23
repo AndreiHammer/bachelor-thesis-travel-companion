@@ -3,6 +3,7 @@ package eu.ase.travelcompanionapp.booking.presentation.payment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stripe.android.paymentsheet.PaymentSheetResult
+import eu.ase.travelcompanionapp.auth.domain.AuthRepository
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.core.domain.utils.BookingEvent
 import eu.ase.travelcompanionapp.core.domain.utils.EventBus
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 
 class PaymentViewModel(
     private val bookingService: BookingService,
-    private val bookingRecordRepository: BookingRecordRepository
+    private val bookingRecordRepository: BookingRecordRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     
     private val _paymentState = MutableStateFlow<PaymentState>(PaymentState.Ready)
@@ -94,8 +96,13 @@ class PaymentViewModel(
             try {
                 when (bookingRecordRepository.saveBookingRecord(booking, paymentId ?: "")) {
                     is Result.Success -> {
-                        _paymentState.value = PaymentState.Success
+                        val userEmail = authRepository.getCurrentUserEmail() ?: ""
 
+                        if (userEmail.isNotEmpty()) {
+                            bookingRecordRepository.sendBookingConfirmationEmail(booking, userEmail)
+                        }
+                        
+                        _paymentState.value = PaymentState.Success
                         EventBus.bookings.emitEvent(BookingEvent.CountChanged)
                     }
                     is Result.Error -> {

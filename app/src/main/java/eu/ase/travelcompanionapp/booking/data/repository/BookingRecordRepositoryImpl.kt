@@ -1,6 +1,7 @@
 package eu.ase.travelcompanionapp.booking.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.functions.FirebaseFunctions
 import eu.ase.travelcompanionapp.auth.domain.AuthRepository
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
@@ -13,7 +14,8 @@ import kotlinx.coroutines.tasks.await
 
 class BookingRecordRepositoryImpl(
     private val firestore: FirebaseFirestore,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val functions: FirebaseFunctions = FirebaseFunctions.getInstance()
 ) : BookingRecordRepository {
 
     private fun getUserBookingsCollection(userId: String) =
@@ -92,6 +94,35 @@ class BookingRecordRepositoryImpl(
         return try {
             val userId = authRepository.currentUserId
             getUserBookingsCollection(userId).document(bookingReference).delete().await()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(DataError.Remote.SERVER)
+        }
+    }
+    
+    override suspend fun sendBookingConfirmationEmail(
+        booking: BookingInfo, 
+        userEmail: String
+    ): Result<Unit, DataError> {
+        return try {
+            val data = hashMapOf(
+                "type" to "BOOKING_CONFIRMATION",
+                "email" to userEmail,
+                "bookingReference" to booking.bookingReference,
+                "hotelName" to (booking.hotelName ?: ""),
+                "checkInDate" to (booking.checkInDate ?: ""),
+                "checkOutDate" to (booking.checkOutDate ?: ""),
+                "roomType" to (booking.roomType ?: ""),
+                "guests" to booking.guests.toString(),
+                "amount" to (booking.amount / 100.0).toString(),
+                "currency" to booking.currency
+            )
+            
+            functions
+                .getHttpsCallable("sendEmail")
+                .call(data)
+                .await()
+            
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(DataError.Remote.SERVER)

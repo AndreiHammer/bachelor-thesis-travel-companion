@@ -13,4 +13,6 @@ interface BookingRecordRepository {
     fun getUserBookings(userId: String? = null): Flow<List<BookingInfo>>
     
     suspend fun deleteBookingRecord(bookingReference: String): Result<Unit, DataError>
+    
+    suspend fun sendBookingConfirmationEmail(booking: BookingInfo, userEmail: String): Result<Unit, DataError>
 } 
