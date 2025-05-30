@@ -66,6 +66,7 @@ fun HotelDetails(
     val touristAttractionsState = viewModel.touristAttractionsState.collectAsStateWithLifecycle()
     val cameraPositionState = rememberCameraPositionState()
     var isImageDialogOpen by remember { mutableStateOf(false) }
+    var isReviewsDialogOpen by remember { mutableStateOf(false) }
     var currentImageIndex by remember { mutableIntStateOf(0) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var showMapScreen by remember { mutableStateOf(false) }
@@ -81,7 +82,7 @@ fun HotelDetails(
             checkOutDate = checkOutDate,
             adults = adults
         )
-        
+
         BookingDetailsDialog(
             initialBookingDetails = currentBookingDetails,
             title = stringResource(R.string.modify_booking_details),
@@ -209,8 +210,16 @@ fun HotelDetails(
 
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
+                    ReviewsSection(
+                        reviews = hotelState.value.reviews,
+                        onSeeAllReviewsClick = { isReviewsDialogOpen = true }
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
                     val attractions = touristAttractionsState.value.attractions
-                    
+
                     TouristAttractionsSection(
                         attractions = attractions,
                         isLoading = touristAttractionsState.value.isLoading,
@@ -260,6 +269,14 @@ fun HotelDetails(
                     currentImageIndex = currentImageIndex,
                     onDismiss = { isImageDialogOpen = false },
                     onImageChange = { index -> currentImageIndex = index }
+                )
+            }
+
+            if (isReviewsDialogOpen) {
+                ReviewsDialog(
+                    reviews = hotelState.value.reviews,
+                    hotelName = hotel.name,
+                    onDismiss = { isReviewsDialogOpen = false }
                 )
             }
         }

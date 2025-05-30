@@ -225,4 +225,12 @@
     <string name="modify_booking_details_description">Change dates and number of guests to search for different offers</string>
     <string name="search_offers">Search Offers</string>
     <string name="modify_dates">Modify Dates</string>
+    
+    <!-- Reviews -->
+    <string name="reviews">Reviews</string>
+    <string name="see_all_reviews">See all (%d)</string>
+    <string name="no_reviews_available">No reviews available</string>
+    <string name="average_rating">%.1f (%d reviews)</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
 </resources>

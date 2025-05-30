@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.hotel.presentation.recommendations.components
+package eu.ase.travelcompanionapp.recommendation.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

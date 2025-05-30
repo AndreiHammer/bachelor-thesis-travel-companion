@@ -28,8 +28,8 @@ import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.HotelOffersViewM
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchScreen
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.MapSearchScreen
-import eu.ase.travelcompanionapp.hotel.presentation.recommendations.RecommendationScreen
-import eu.ase.travelcompanionapp.hotel.presentation.recommendations.RecommendationViewModel
+import eu.ase.travelcompanionapp.recommendation.presentation.RecommendationScreen
+import eu.ase.travelcompanionapp.recommendation.presentation.RecommendationViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -239,7 +239,7 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
             popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) }
         ) {
             val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
-            val recommendationViewModel = koinViewModel<RecommendationViewModel> { 
+            val recommendationViewModel = koinViewModel<RecommendationViewModel> {
                 parametersOf(navController, sharedViewModel) 
             }
             

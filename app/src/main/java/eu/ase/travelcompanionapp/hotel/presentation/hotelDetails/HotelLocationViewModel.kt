@@ -9,6 +9,7 @@ import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.core.domain.utils.EventBus
 import eu.ase.travelcompanionapp.core.domain.utils.FavouriteEvent
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
+import eu.ase.travelcompanionapp.hotel.domain.model.Review
 import eu.ase.travelcompanionapp.hotel.domain.repository.FavouriteHotelRepository
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryPlacesApi
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
@@ -57,11 +58,12 @@ class HotelLocationViewModel(
                         )
                     }
                     is Result.Success -> {
-                        val (hotel, photos) = result.data
+                        val (hotel, photos, reviews) = result.data
                         _state.value = _state.value.copy(
                             isLoading = false,
                             hotel = hotel,
                             photos = photos,
+                            reviews = reviews,
                             isFavourite = isFavourite
                         )
 
@@ -201,6 +203,7 @@ class HotelLocationViewModel(
         val isLoading: Boolean = false,
         val hotel: Hotel? = null,
         val photos: List<Bitmap> = emptyList(),
+        val reviews: List<Review> = emptyList(),
         val errorMessage: String? = null,
         val isFavourite: Boolean = false
     )
