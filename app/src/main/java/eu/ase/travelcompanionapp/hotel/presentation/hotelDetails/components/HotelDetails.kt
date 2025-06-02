@@ -212,6 +212,7 @@ fun HotelDetails(
                     Spacer(modifier = Modifier.height(16.dp))
                     ReviewsSection(
                         reviews = hotelState.value.reviews,
+                        rating = hotelState.value.rating,
                         onSeeAllReviewsClick = { isReviewsDialogOpen = true }
                     )
                 }

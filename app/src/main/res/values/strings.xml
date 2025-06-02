@@ -228,9 +228,9 @@
     
     <!-- Reviews -->
     <string name="reviews">Reviews</string>
-    <string name="see_all_reviews">See all (%d)</string>
+    <string name="see_all_reviews">See all</string>
     <string name="no_reviews_available">No reviews available</string>
-    <string name="average_rating">%.1f (%d reviews)</string>
+    <string name="average_rating">%.1f</string>
     <string name="show_more">Show more</string>
     <string name="show_less">Show less</string>
 </resources>

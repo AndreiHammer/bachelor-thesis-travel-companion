@@ -58,11 +58,17 @@ class HotelLocationViewModel(
                         )
                     }
                     is Result.Success -> {
-                        val (hotel, photos, reviews) = result.data
+                        val data = result.data
+                        val hotel = data.hotel
+                        val photos = data.photos
+                        val rating = data.rating
+                        val reviews = data.reviews
+
                         _state.value = _state.value.copy(
                             isLoading = false,
                             hotel = hotel,
                             photos = photos,
+                            rating = rating,
                             reviews = reviews,
                             isFavourite = isFavourite
                         )
@@ -204,6 +210,7 @@ class HotelLocationViewModel(
         val hotel: Hotel? = null,
         val photos: List<Bitmap> = emptyList(),
         val reviews: List<Review> = emptyList(),
+        val rating: Double = 0.0,
         val errorMessage: String? = null,
         val isFavourite: Boolean = false
     )

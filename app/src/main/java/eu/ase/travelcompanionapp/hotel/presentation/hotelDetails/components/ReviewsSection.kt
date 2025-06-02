@@ -40,12 +40,10 @@ import eu.ase.travelcompanionapp.hotel.domain.model.Review
 @Composable
 fun ReviewsSection(
     reviews: List<Review>,
+    rating: Double,
     onSeeAllReviewsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val averageRating = if (reviews.isNotEmpty()) {
-        reviews.map { it.rating }.average()
-    } else 0.0
     
     Card(
         modifier = modifier
@@ -78,8 +76,8 @@ fun ReviewsSection(
                         ) {
                             repeat(5) { index ->
                                 val filled = when {
-                                    index < averageRating.toInt() -> true
-                                    index == averageRating.toInt() && averageRating % 1 >= 0.5 -> true
+                                    index < rating.toInt() -> true
+                                    index == rating.toInt() && rating % 1 >= 0.5 -> true
                                     else -> false
                                 }
                                 Icon(
@@ -93,7 +91,7 @@ fun ReviewsSection(
                             Spacer(modifier = Modifier.width(8.dp))
                             
                             Text(
-                                text = stringResource(R.string.average_rating, averageRating, reviews.size),
+                                text = stringResource(R.string.average_rating, rating),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -106,7 +104,7 @@ fun ReviewsSection(
                         onClick = onSeeAllReviewsClick
                     ) {
                         Text(
-                            text = stringResource(R.string.see_all_reviews, reviews.size),
+                            text = stringResource(R.string.see_all_reviews),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }

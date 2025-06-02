@@ -13,13 +13,14 @@ import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result.Error
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result.Success
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
+import eu.ase.travelcompanionapp.hotel.domain.model.PlaceDetails
 import eu.ase.travelcompanionapp.hotel.domain.model.Review
 
 
 class PlacesApiService(context: Context) {
     private val placesClient: PlacesClient = Places.createClient(context)
 
-    fun getHotelDetails(hotelName: String, country: String, onResult: (Result<Triple<Hotel, List<Bitmap>, List<Review>>, DataError>) -> Unit) {
+    fun getHotelDetails(hotelName: String, country: String, onResult: (Result<PlaceDetails, DataError>) -> Unit) {
         val request = FindAutocompletePredictionsRequest.builder()
             .setQuery(hotelName)
             .setCountries(country)
@@ -38,8 +39,11 @@ class PlacesApiService(context: Context) {
             }
     }
 
-    private fun fetchHotelDetails(placeId: String, hotelName: String, country: String, onResult: (Result<Triple<Hotel, List<Bitmap>, List<Review>>, DataError>) -> Unit) {
-        val fields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.LOCATION, Place.Field.PHOTO_METADATAS, Place.Field.REVIEWS)
+    private fun fetchHotelDetails(placeId: String, hotelName: String, country: String,
+                                  onResult: (Result<PlaceDetails, DataError>) -> Unit) {
+        val fields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.LOCATION,
+            Place.Field.PHOTO_METADATAS, Place.Field.REVIEWS
+            ,Place.Field.RATING, Place.Field.INTERNATIONAL_PHONE_NUMBER)
         val fetchPlaceRequest = FetchPlaceRequest.newInstance(placeId, fields)
 
         placesClient.fetchPlace(fetchPlaceRequest).addOnSuccessListener { response ->
@@ -61,7 +65,7 @@ class PlacesApiService(context: Context) {
                 giataId = null,
                 phone = place.internationalPhoneNumber
             )
-
+            val rating = place.rating ?: 0.0
             val reviews = place.reviews?.map { review ->
                 Review(
                     authorName = review.authorAttribution.name,
@@ -75,9 +79,10 @@ class PlacesApiService(context: Context) {
 
             val photoMetadatas = place.photoMetadatas
             val photosUris = mutableListOf<Bitmap>()
-
+            val placeDetails = PlaceDetails(hotel, photosUris, rating, reviews)
             if (photoMetadatas.isNullOrEmpty()) {
-                onResult(Success(Triple(hotel, emptyList(), reviews)))
+                placeDetails.photos = emptyList()
+                onResult(Success(placeDetails))
             } else {
                 val photosToFetch = photoMetadatas.take(10)
 
@@ -91,13 +96,13 @@ class PlacesApiService(context: Context) {
                         photosUris.add(photoResponse.bitmap)
 
                         if (photosUris.size == photosToFetch.size) {
-                            onResult(Success(Triple(hotel, photosUris, reviews)))
+                            onResult(Success(placeDetails))
                         }
                     }.addOnFailureListener {
                         if (photosUris.isNotEmpty()) {
-                            onResult(Success(Triple(hotel, photosUris, reviews)))
+                            onResult(Success(placeDetails))
                         } else {
-                            onResult(Success(Triple(hotel, emptyList(), reviews)))
+                            onResult(Success(placeDetails))
                         }
                     }
                 }

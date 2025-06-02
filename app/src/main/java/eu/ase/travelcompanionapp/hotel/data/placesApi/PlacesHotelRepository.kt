@@ -1,10 +1,8 @@
 package eu.ase.travelcompanionapp.hotel.data.placesApi
 
-import coil3.Bitmap
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
-import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
-import eu.ase.travelcompanionapp.hotel.domain.model.Review
+import eu.ase.travelcompanionapp.hotel.domain.model.PlaceDetails
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelRepositoryPlacesApi
 
 class PlacesHotelRepository(private val placesApiService: PlacesApiService):
@@ -12,7 +10,7 @@ class PlacesHotelRepository(private val placesApiService: PlacesApiService):
     override suspend fun getHotelDetails(
         hotelName: String,
         country: String,
-        onResult: (Result<Triple<Hotel, List<Bitmap>, List<Review>>, DataError>) -> Unit
+        onResult: (Result<PlaceDetails, DataError>) -> Unit
     ) {
         placesApiService.getHotelDetails(hotelName, country) { result ->
             when (result) {
