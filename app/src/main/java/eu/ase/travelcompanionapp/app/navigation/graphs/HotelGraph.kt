@@ -238,10 +238,7 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
             popEnterTransition = { slideInHorizontally(initialOffsetX = { -it }) },
             popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) }
         ) {
-            val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
-            val recommendationViewModel = koinViewModel<RecommendationViewModel> {
-                parametersOf(navController, sharedViewModel) 
-            }
+            val recommendationViewModel = koinViewModel<RecommendationViewModel>()
             
             RecommendationScreen(
                 navController = navController,

@@ -46,11 +46,11 @@ fun RecommendationCard(
             )
             Column {
                 Text(
-                    text = stringResource(R.string.personalized_recommendations),
+                    text = stringResource(R.string.personalized_destinations),
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = stringResource(R.string.discover_hotels_tailored_to_preferences),
+                    text = stringResource(R.string.discover_destinations_tailored_to_preferences),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
