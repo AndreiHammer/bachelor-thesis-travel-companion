@@ -6,6 +6,7 @@ import eu.ase.travelcompanionapp.hotel.domain.model.BookingDetails
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.domain.repository.FavouriteHotelRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 class FavouriteHotelRepositoryImpl(
@@ -20,12 +21,10 @@ class FavouriteHotelRepositoryImpl(
         }
 
         val userId = accountRepository.currentUserId
-        try {
-            val remoteHotels = remoteRepository.getFavouriteHotels(userId)
-            emit(remoteHotels)
-        } catch (e: Exception) {
-            emit(emptyList())
-        }
+        val remoteHotels = remoteRepository.getFavouriteHotels(userId)
+        emit(remoteHotels)
+    }.catch {
+        emit(emptyList())
     }
 
     override suspend fun isFavourite(hotelId: String): Boolean {

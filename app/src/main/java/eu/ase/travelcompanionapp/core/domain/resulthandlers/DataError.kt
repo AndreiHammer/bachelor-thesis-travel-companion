@@ -10,4 +10,9 @@ sealed interface DataError: Error {
         UNKNOWN,
         NOT_FOUND
     }
+    
+    enum class Local: DataError {
+        QUESTIONNAIRE_NOT_COMPLETED,
+        INSUFFICIENT_DATA
+    }
 }

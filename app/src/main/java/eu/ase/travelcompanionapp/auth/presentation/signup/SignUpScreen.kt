@@ -59,7 +59,7 @@ fun SignUpScreen(
     val confirmPassword = viewModel.confirmPassword.collectAsStateWithLifecycle()
     val signUpState = viewModel.signUpState.collectAsStateWithLifecycle()
     var passwordVisible by remember { mutableStateOf(false) }
-    val confirmPasswordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -167,10 +167,10 @@ fun SignUpScreen(
             },
             visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                     Icon(
-                        painter = if (passwordVisible) painterResource(R.drawable.baseline_visibility_off_24) else painterResource(R.drawable.baseline_visibility_24),
-                        contentDescription = if (passwordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
+                        painter = if (confirmPasswordVisible) painterResource(R.drawable.baseline_visibility_off_24) else painterResource(R.drawable.baseline_visibility_24),
+                        contentDescription = if (confirmPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
                     )
                 }
             }

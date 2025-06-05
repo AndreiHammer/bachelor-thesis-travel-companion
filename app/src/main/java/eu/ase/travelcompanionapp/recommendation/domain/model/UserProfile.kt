@@ -6,14 +6,8 @@ import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 data class UserProfile(
     val userId: String,
     val preferences: QuestionnaireResponse,
-    val visitedDestinations: ArrayList<String> = arrayListOf(),
+    val visitedDestinations: List<String> = arrayListOf(),
     val savedHotels: ArrayList<Hotel> = arrayListOf(),
     val bookedOffers: ArrayList<BookingInfo> = arrayListOf(),
-    val currentLocation: String?,
-    val travelDates: TravelDates
-)
-
-data class TravelDates(
-    val departure: String,
-    val returnDate: String
+    val currentLocation: String?
 )

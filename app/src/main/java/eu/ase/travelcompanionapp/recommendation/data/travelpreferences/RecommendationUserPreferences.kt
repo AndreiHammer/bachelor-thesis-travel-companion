@@ -1,4 +1,4 @@
-package eu.ase.travelcompanionapp.recommendation.data.preferences
+package eu.ase.travelcompanionapp.recommendation.data.travelpreferences
 
 import android.content.Context
 import androidx.datastore.core.DataStore

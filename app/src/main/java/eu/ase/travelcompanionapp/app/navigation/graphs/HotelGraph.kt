@@ -28,8 +28,8 @@ import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.HotelOffersViewM
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchScreen
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.MapSearchScreen
-import eu.ase.travelcompanionapp.recommendation.presentation.RecommendationScreen
-import eu.ase.travelcompanionapp.recommendation.presentation.RecommendationViewModel
+import eu.ase.travelcompanionapp.recommendation.presentation.main.RecommendationScreen
+import eu.ase.travelcompanionapp.recommendation.presentation.main.RecommendationViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
