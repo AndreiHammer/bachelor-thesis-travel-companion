@@ -15,6 +15,7 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import eu.ase.travelcompanionapp.R
+import eu.ase.travelcompanionapp.recommendation.domain.model.RecommendedDestinations
 import eu.ase.travelcompanionapp.recommendation.presentation.main.RecommendationState
 
 @Composable
@@ -59,8 +61,9 @@ fun QuestionnaireCompletedCard(
     state: RecommendationState,
     onEditPreferences: () -> Unit,
     onSendProfile: () -> Unit,
-    onShowPreview: () -> Unit,
     onClearMessages: () -> Unit,
+    onGetRecommendations: () -> Unit,
+    onViewRecommendations: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -78,159 +81,314 @@ fun QuestionnaireCompletedCard(
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         )
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    text = "API Testing",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+        // Main recommendations flow
+        when {
+            // Show recommendations if available
+            state.recommendations != null -> {
+                RecommendationsReadyCard(
+                    recommendations = state.recommendations,
+                    onViewRecommendations = onViewRecommendations,
+                    onRefreshRecommendations = onGetRecommendations,
+                    isRefreshing = state.isLoadingRecommendations
                 )
-
-                Text(
-                    text = "Test sending your profile data to the recommendation API",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Button(
-                        onClick = onSendProfile,
-                        enabled = !state.isSendingProfile,
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        if (state.isSendingProfile) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(16.dp),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                strokeWidth = 2.dp
-                            )
-                        } else {
-                            Icon(
-                                Icons.AutoMirrored.Filled.Send,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = if (state.isSendingProfile) "Sending..." else "Send Profile",
-                            style = MaterialTheme.typography.labelMedium
-                        )
+            }
+            
+            // Show get recommendations call-to-action
+            else -> {
+                GetRecommendationsCard(
+                    onGetRecommendations = onSendProfile,
+                    isLoading = state.isSendingProfile || state.isLoadingRecommendations,
+                    loadingText = when {
+                        state.isSendingProfile -> stringResource(R.string.sending_profile)
+                        state.isLoadingRecommendations -> stringResource(R.string.getting_your_recommendations)
+                        else -> null
                     }
+                )
+            }
+        }
+        
+        // Error messages
+        if (state.errorMessage != null || state.recommendationsError != null) {
+            ErrorMessageCard(
+                errorMessage = state.errorMessage ?: state.recommendationsError,
+                onDismiss = onClearMessages,
+                onRetry = if (state.recommendationsError != null) onGetRecommendations else null
+            )
+        }
 
-                    OutlinedButton(
-                        onClick = onShowPreview,
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
+        
+        // Quick actions row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            
+            if (state.recommendations != null) {
+                OutlinedButton(
+                    onClick = onGetRecommendations,
+                    enabled = !state.isLoadingRecommendations,
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    if (state.isLoadingRecommendations) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            strokeWidth = 2.dp
+                        )
+                    } else {
                         Icon(
-                            painter = painterResource(R.drawable.baseline_visibility_24),
+                            painter = painterResource(R.drawable.baseline_refresh_24),
                             contentDescription = null,
                             modifier = Modifier.size(16.dp)
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(R.string.refresh_recommendations),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
+        }
+
+    }
+}
+
+@Composable
+fun RecommendationsReadyCard(
+    recommendations: RecommendedDestinations,
+    onViewRecommendations: () -> Unit,
+    onRefreshRecommendations: () -> Unit,
+    isRefreshing: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        shape = RoundedCornerShape(20.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.recommendations_ready),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Text(
+                        text = stringResource(R.string.recommendations_count_found, recommendations.destinations.size),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                    )
+                }
+                
+                Icon(
+                    painter = painterResource(R.drawable.baseline_location_city_24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+            
+            if (recommendations.reasoning.isNotEmpty()) {
+                Text(
+                    text = recommendations.reasoning.take(120) + if (recommendations.reasoning.length > 120) "..." else "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.9f)
+                )
+            }
+            
+            Button(
+                onClick = {
+                    println("Cards: Explore destinations button clicked")
+                    onViewRecommendations()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_location_city_24),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.explore_destinations),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun GetRecommendationsCard(
+    onGetRecommendations: () -> Unit,
+    isLoading: Boolean,
+    loadingText: String?,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        shape = RoundedCornerShape(20.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.baseline_rocket_launch_24),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier.size(64.dp)
+            )
+            
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.ready_for_recommendations),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    textAlign = TextAlign.Center
+                )
+                
+                Text(
+                    text = stringResource(R.string.get_personalized_recommendations_description),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f),
+                    textAlign = TextAlign.Center
+                )
+            }
+            
+            if (isLoading) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(32.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 3.dp
+                    )
+                    loadingText?.let { text ->
                         Text(
-                            text = "Preview",
+                            text = text,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+            } else {
+                Button(
+                    onClick = onGetRecommendations,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.Send,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = stringResource(R.string.get_my_recommendations),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ErrorMessageCard(
+    errorMessage: String?,
+    onDismiss: () -> Unit,
+    onRetry: (() -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    if (errorMessage != null) {
+        Card(
+            modifier = modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer
+            ),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.something_went_wrong),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = errorMessage,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.8f)
+                        )
+                    }
+                    
+                    TextButton(
+                        onClick = onDismiss
+                    ) {
+                        Text(
+                            text = stringResource(R.string.dismiss),
                             style = MaterialTheme.typography.labelMedium
                         )
                     }
                 }
-
-                if (state.apiResult != null || state.errorMessage != null || state.profilePreview != null) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                
+                if (onRetry != null) {
+                    OutlinedButton(
+                        onClick = onRetry,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer
+                        )
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Results:",
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-
-                            TextButton(
-                                onClick = onClearMessages,
-                                modifier = Modifier.padding(0.dp)
-                            ) {
-                                Text(
-                                    text = "Clear",
-                                    style = MaterialTheme.typography.labelSmall
-                                )
-                            }
-                        }
-
-                        if (state.apiResult != null) {
-                            Card(
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text(
-                                    text = state.apiResult,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier.padding(12.dp)
-                                )
-                            }
-                        }
-
-                        if (state.errorMessage != null) {
-                            Card(
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text(
-                                    text = state.errorMessage,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onErrorContainer,
-                                    modifier = Modifier.padding(12.dp)
-                                )
-                            }
-                        }
-
-                        if (state.profilePreview != null) {
-                            Card(
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f)
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text(
-                                    text = state.profilePreview,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier.padding(12.dp)
-                                )
-                            }
-                        }
+                        Text(stringResource(R.string.try_again))
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun FeatureCard(

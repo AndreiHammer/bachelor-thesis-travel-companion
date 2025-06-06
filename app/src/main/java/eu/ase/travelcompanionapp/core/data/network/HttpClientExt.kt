@@ -4,6 +4,7 @@ import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.statement.HttpResponse
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.ensureActive
@@ -14,6 +15,8 @@ suspend inline fun <reified T> safeCall(
 ): Result<T, DataError.Remote> {
     val response = try {
         execute()
+    } catch (e: HttpRequestTimeoutException) {
+        return Result.Error(DataError.Remote.REQUEST_TIMEOUT)
     } catch (e: SocketTimeoutException) {
         return Result.Error(DataError.Remote.REQUEST_TIMEOUT)
     } catch (e: UnresolvedAddressException) {
@@ -33,7 +36,8 @@ suspend inline fun <reified T> responseToResult(
     return when(response.status.value) {
         in 200..299, 400 -> {
             try {
-                Result.Success(response.body())
+                val result = response.body<T>()
+                Result.Success(result)
             } catch (e: Exception) {
                 Result.Error(DataError.Remote.SERIALIZATION)
             }

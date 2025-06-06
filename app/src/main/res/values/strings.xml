@@ -269,4 +269,34 @@
     <string name="main_reason_for_traveling">Main reason for traveling</string>
     <string name="budget_range">Budget Range</string>
     <string name="per_night">Per night</string>
+    
+    <!-- Destination Recommendations -->
+    <string name="recommended_destinations">Recommended Destinations</string>
+    <string name="why_these_destinations">Why These Destinations?</string>
+    <string name="no_destinations_found">No destinations found</string>
+    <string name="try_updating_your_preferences">Try updating your preferences and get new recommendations</string>
+    <string name="retry">Retry</string>
+    <string name="about_destination">About This Destination</string>
+    <string name="why_we_recommend_this">Why We Recommend This</string>
+    <string name="best_for">Best For</string>
+    <string name="popular_attractions">Popular Attractions</string>
+    <string name="search_hotels_in_city">Search Hotels in %1$s</string>
+    <string name="view_recommendations_count">View %1$d Recommendations</string>
+    <string name="getting_your_recommendations">Getting your recommendations...</string>
+    <string name="getting_recommendations">Getting Recommendations...</string>
+    <string name="get_recommendations">Get Recommendations</string>
+    <string name="refresh_recommendations">Refresh</string>
+    
+    <!-- Enhanced Recommendation UI -->
+    <string name="recommendations_ready">Recommendations Ready!</string>
+    <string name="recommendations_count_found">%1$d personalized destinations found</string>
+    <string name="explore_destinations">Explore Destinations</string>
+    <string name="ready_for_recommendations">Ready for Recommendations?</string>
+    <string name="get_personalized_recommendations_description">Based on your travel preferences, saved hotels, and booking history, we\'ll find the perfect destinations for you.</string>
+    <string name="get_my_recommendations">Get My Recommendations</string>
+    <string name="sending_profile">Sending profile...</string>
+    <string name="preview_profile">Preview Profile</string>
+    <string name="profile_preview">Profile Preview</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

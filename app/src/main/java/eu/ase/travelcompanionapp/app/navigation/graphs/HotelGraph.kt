@@ -12,6 +12,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.toRoute
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.app.navigation.sharedKoinViewModel
 import eu.ase.travelcompanionapp.core.domain.utils.CrossGraphDataHolder
@@ -28,8 +29,7 @@ import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.HotelOffersViewM
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchScreen
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.components.MapSearchScreen
-import eu.ase.travelcompanionapp.recommendation.presentation.main.RecommendationScreen
-import eu.ase.travelcompanionapp.recommendation.presentation.main.RecommendationViewModel
+
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -107,21 +107,27 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
             exitTransition = { slideOutHorizontally{initialOffset ->
                 initialOffset
             } }
-        ){
-            val sharedViewModel = it.sharedKoinViewModel<SharedViewModel>(navController)
+        ){ backStackEntry ->
+            val sharedViewModel = backStackEntry.sharedKoinViewModel<SharedViewModel>(navController)
             val viewModel = koinViewModel<HotelListViewModel>(parameters = { parametersOf(navController, sharedViewModel) })
 
+            val routeCity = backStackEntry.toRoute<HotelRoute.HotelListCity>().city
             val selectedCity by sharedViewModel.selectedCity.collectAsStateWithLifecycle()
             val selectedRatings by sharedViewModel.selectedRatings.collectAsStateWithLifecycle()
             val selectedAmenities by sharedViewModel.selectedAmenities.collectAsStateWithLifecycle()
 
-            LaunchedEffect(true) {
+            val cityToUse = selectedCity.ifEmpty { routeCity }
+            
+            LaunchedEffect(routeCity) {
+                if (selectedCity.isEmpty() || selectedCity != routeCity) {
+                    sharedViewModel.onSelectCity(routeCity)
+                }
                 sharedViewModel.onSelectHotel(null)
             }
 
             HotelListScreenRoot(
                 viewModel = viewModel,
-                selectedCity = selectedCity,
+                selectedCity = cityToUse,
                 amenities = selectedAmenities,
                 ratings = selectedRatings
             )
@@ -229,20 +235,6 @@ fun NavGraphBuilder.HotelGraph(navController: NavHostController) {
 
             HotelFavouriteScreen(
                 viewModel = viewModel
-            )
-        }
-
-        composable<HotelRoute.Recommendations>(
-            enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
-            exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) },
-            popEnterTransition = { slideInHorizontally(initialOffsetX = { -it }) },
-            popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) }
-        ) {
-            val recommendationViewModel = koinViewModel<RecommendationViewModel>()
-            
-            RecommendationScreen(
-                navController = navController,
-                viewModel = recommendationViewModel
             )
         }
     }

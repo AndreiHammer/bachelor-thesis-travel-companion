@@ -158,11 +158,11 @@ class RecommendationUserPreferences(
     
     override val questionnaireResponse: Flow<QuestionnaireResponse?> = context.recommendationPreferencesDataStore.data.map { preferences ->
         try {
-            val budgetRange = preferences[stringPreferencesKey(getBudgetRangeKey())] ?: return@map null
-            val travelPurpose = preferences[stringPreferencesKey(getTravelPurposeKey())] ?: return@map null
-            val groupSize = preferences[stringPreferencesKey(getGroupSizeKey())] ?: return@map null
-            val accommodationType = preferences[stringPreferencesKey(getAccommodationTypeKey())] ?: return@map null
-            val locationPreference = preferences[stringPreferencesKey(getLocationPreferenceKey())] ?: return@map null
+            val budgetRange = preferences[stringPreferencesKey(getBudgetRangeKey())] ?: "Mid-range"
+            val travelPurpose = preferences[stringPreferencesKey(getTravelPurposeKey())] ?: "Leisure"
+            val groupSize = preferences[stringPreferencesKey(getGroupSizeKey())] ?: "Solo traveler"
+            val accommodationType = preferences[stringPreferencesKey(getAccommodationTypeKey())] ?: "Any type"
+            val locationPreference = preferences[stringPreferencesKey(getLocationPreferenceKey())] ?: "City center"
             
             val amenitiesImportance = preferences[intPreferencesKey(getImportanceAmenitiesKey())] ?: 5
             val hotelRatingImportance = preferences[intPreferencesKey(getImportanceHotelRatingKey())] ?: 5
@@ -177,6 +177,9 @@ class RecommendationUserPreferences(
             
             val amenities: ArrayList<String> = gson.fromJson(amenitiesJson, amenitiesType) ?: arrayListOf()
             val continents: ArrayList<String> = gson.fromJson(continentsJson, continentsType) ?: arrayListOf()
+
+            val hasCompleted = preferences[booleanPreferencesKey(getQuestionnaireCompletedKey())] ?: false
+            if (!hasCompleted) return@map null
             
             QuestionnaireResponse(
                 budgetRange = budgetRange,
@@ -201,11 +204,11 @@ class RecommendationUserPreferences(
     override suspend fun saveQuestionnaireResponse(response: QuestionnaireResponse) {
         context.recommendationPreferencesDataStore.edit { preferences ->
             preferences[booleanPreferencesKey(getQuestionnaireCompletedKey())] = true
-            preferences[stringPreferencesKey(getBudgetRangeKey())] = response.budgetRange
-            preferences[stringPreferencesKey(getTravelPurposeKey())] = response.travelPurpose
-            preferences[stringPreferencesKey(getGroupSizeKey())] = response.groupSize
-            preferences[stringPreferencesKey(getAccommodationTypeKey())] = response.accommodationType
-            preferences[stringPreferencesKey(getLocationPreferenceKey())] = response.locationPreference
+            preferences[stringPreferencesKey(getBudgetRangeKey())] = response.budgetRange.takeIf { it.isNotBlank() } ?: "Mid-range"
+            preferences[stringPreferencesKey(getTravelPurposeKey())] = response.travelPurpose.takeIf { it.isNotBlank() } ?: "Leisure"
+            preferences[stringPreferencesKey(getGroupSizeKey())] = response.groupSize.takeIf { it.isNotBlank() } ?: "Solo traveler"
+            preferences[stringPreferencesKey(getAccommodationTypeKey())] = response.accommodationType.takeIf { it.isNotBlank() } ?: "Any type"
+            preferences[stringPreferencesKey(getLocationPreferenceKey())] = response.locationPreference.takeIf { it.isNotBlank() } ?: "City center"
             preferences[intPreferencesKey(getImportanceAmenitiesKey())] = response.importanceFactors.amenities
             preferences[intPreferencesKey(getImportanceHotelRatingKey())] = response.importanceFactors.hotelRating
             preferences[intPreferencesKey(getImportanceLocationKey())] = response.importanceFactors.location

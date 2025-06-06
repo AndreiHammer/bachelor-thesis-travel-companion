@@ -32,7 +32,4 @@ sealed interface HotelRoute {
 
     @Serializable
     data object Favourites : HotelRoute
-    
-    @Serializable
-    data object Recommendations : HotelRoute
 }

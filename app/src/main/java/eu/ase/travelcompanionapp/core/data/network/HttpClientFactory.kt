@@ -2,6 +2,7 @@ package eu.ase.travelcompanionapp.core.data.network
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.ANDROID
@@ -16,6 +17,11 @@ import kotlinx.serialization.json.Json
 object HttpClientFactory {
     fun create(engine: HttpClientEngine): HttpClient {
         return HttpClient(engine){
+            install(HttpTimeout) {
+                requestTimeoutMillis = 60_000 // 60 seconds for recommendations API
+                connectTimeoutMillis = 30_000  // 30 seconds to establish connection
+                socketTimeoutMillis = 60_000   // 60 seconds for socket operations
+            }
             install(Logging){
                 level = LogLevel.ALL
                 logger = Logger.ANDROID

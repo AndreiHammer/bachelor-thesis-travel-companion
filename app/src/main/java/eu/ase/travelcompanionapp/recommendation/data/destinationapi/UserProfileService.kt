@@ -98,7 +98,7 @@ class UserProfileService(
         return QuestionnaireResponse(
             budgetRange = "Mid-range",
             travelPurpose = "Leisure",
-            groupSize = "Solo",
+            groupSize = "Solo traveler",
             accommodationType = "Any type",
             locationPreference = "City center",
             importanceFactors = eu.ase.travelcompanionapp.recommendation.domain.model.ImportanceFactors(

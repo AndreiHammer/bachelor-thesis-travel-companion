@@ -33,7 +33,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun RecommendationScreen(
     navController: NavController,
-    viewModel: RecommendationViewModel = koinViewModel()
+    viewModel: RecommendationViewModel
 ) {
     val state by viewModel.state.collectAsState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -83,8 +83,11 @@ fun RecommendationScreen(
                             showQuestionnaireDialog = true 
                         },
                         onSendProfile = { viewModel.sendUserProfileToApi() },
-                        onShowPreview = { viewModel.getProfilePreview() },
                         onClearMessages = { viewModel.clearMessages() },
+                        onGetRecommendations = { viewModel.getRecommendations() },
+                        onViewRecommendations = {
+                            viewModel.navigateToDestinationList()
+                        },
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }

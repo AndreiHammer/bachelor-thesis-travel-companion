@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.LatLng
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
+import eu.ase.travelcompanionapp.app.navigation.routes.DestinationRoute
 import eu.ase.travelcompanionapp.app.navigation.routes.ProfileRoute
 import eu.ase.travelcompanionapp.core.domain.utils.DateUtils
 import eu.ase.travelcompanionapp.core.domain.utils.LocationUtils
@@ -130,7 +131,7 @@ class LocationSearchViewModel(
             }
             
             LocationSearchAction.OnRecommendationsClick -> {
-                navController.navigate(HotelRoute.Recommendations)
+                navController.navigate(DestinationRoute.Recommendations)
             }
         }
     }

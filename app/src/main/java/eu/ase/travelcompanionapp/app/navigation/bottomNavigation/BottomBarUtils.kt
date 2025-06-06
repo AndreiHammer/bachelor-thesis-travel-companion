@@ -17,7 +17,8 @@ fun showBottomBar(currentRoute: String?): Boolean {
         routePath("HotelRoute.Favourites"),
         routePath("PaymentRoute.Payment"),
         routePath("PaymentRoute.BookingHistory"),
-        routePath("HotelRoute.Recommendations"),
+        routePath("DestinationRoute.Recommendations"),
+        routePath("DestinationRoute.DestinationList"),
         routePath("TouristAttractionsRoute.TouristAttractionsList"),
         routePath("TouristAttractionsRoute.TouristAttractionDetails")
     )
@@ -33,7 +34,8 @@ fun showBottomBar(currentRoute: String?): Boolean {
             currentRoute?.startsWith(routePath("ProfileRoute.Settings")) == true ||
             currentRoute?.startsWith(routePath("PaymentRoute.Payment")) == true ||
             currentRoute?.startsWith(routePath("PaymentRoute.BookingHistory")) == true ||
-            currentRoute?.startsWith(routePath("HotelRoute.Recommendations")) == true ||
+            currentRoute?.startsWith(routePath("DestinationRoute.Recommendations")) == true ||
+            currentRoute?.startsWith(routePath("DestinationRoute.DestinationList")) == true ||
             currentRoute?.startsWith(routePath("TouristAttractionsRoute.TouristAttractionsList")) == true ||
             currentRoute?.startsWith(routePath("TouristAttractionsRoute.TouristAttractionDetails")) == true
 }

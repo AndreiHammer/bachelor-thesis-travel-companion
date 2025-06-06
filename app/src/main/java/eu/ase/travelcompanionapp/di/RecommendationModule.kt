@@ -1,13 +1,17 @@
 package eu.ase.travelcompanionapp.di
 
+import androidx.navigation.NavHostController
+import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.recommendation.data.destinationapi.UserProfileService
 import eu.ase.travelcompanionapp.recommendation.data.destinationapi.network.DestinationsRecommenderApiService
 import eu.ase.travelcompanionapp.recommendation.data.travelpreferences.RecommendationUserPreferences
 import eu.ase.travelcompanionapp.recommendation.domain.repository.DestinationApiRepository
 import eu.ase.travelcompanionapp.recommendation.domain.repository.UserPreferencesRepository
 import eu.ase.travelcompanionapp.recommendation.domain.repository.UserProfileRepository
+import eu.ase.travelcompanionapp.recommendation.presentation.destinations.DestinationViewModel
 import eu.ase.travelcompanionapp.recommendation.presentation.main.RecommendationViewModel
 import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.QuestionnaireViewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -27,5 +31,22 @@ val recommendationModule = module {
     }
 
     viewModelOf(::QuestionnaireViewModel)
-    viewModelOf(::RecommendationViewModel)
+
+    viewModel { (navController: NavHostController) ->
+        RecommendationViewModel(
+            navController = navController,
+            userPreferencesRepository = get(),
+            userProfileRepository = get(),
+            destinationApiRepository = get()
+        )
+    }
+
+    viewModel { (navController: NavHostController, sharedViewModel: SharedViewModel) ->
+        DestinationViewModel(
+            navController = navController,
+            sharedViewModel = sharedViewModel,
+            userProfileRepository = get(),
+            destinationApiRepository = get()
+        )
+    }
 } 
