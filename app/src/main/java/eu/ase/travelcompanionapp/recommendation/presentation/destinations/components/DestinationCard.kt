@@ -16,13 +16,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.Bitmap
 import eu.ase.travelcompanionapp.recommendation.domain.model.Destination
 
 @Composable
 fun DestinationCard(
     destination: Destination,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    destinationImage: Bitmap? = null
 ) {
     Card(
         onClick = onClick,
@@ -36,9 +38,17 @@ fun DestinationCard(
         )
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
-            // Header with city name and location
+
+            DestinationThumbnail(
+                image = destinationImage,
+                modifier = Modifier.fillMaxWidth(),
+                height = 180
+            )
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -78,7 +88,6 @@ fun DestinationCard(
                     }
                 }
 
-                // Season score badge
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = when {
@@ -112,7 +121,6 @@ fun DestinationCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Description
             Text(
                 text = destination.description,
                 style = MaterialTheme.typography.bodyMedium,
@@ -124,7 +132,6 @@ fun DestinationCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Budget level and match reasons count
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -142,16 +149,26 @@ fun DestinationCard(
                 )
 
                 if (destination.matchReasons.isNotEmpty()) {
-                    Text(
-                        text = "${destination.matchReasons.size} reasons to visit",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "✓",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "${destination.matchReasons.size} reasons to visit",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
 
-            // Best For tags (show max 3)
             if (destination.bestFor.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -190,7 +207,6 @@ fun DestinationCard(
                 }
             }
 
-            // Popular attractions count
             if (destination.popularAttractions.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -199,6 +215,7 @@ fun DestinationCard(
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+            }
             }
         }
     }

@@ -4,8 +4,10 @@ import androidx.navigation.NavHostController
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.recommendation.data.destinationapi.UserProfileService
 import eu.ase.travelcompanionapp.recommendation.data.destinationapi.network.DestinationsRecommenderApiService
+import eu.ase.travelcompanionapp.recommendation.data.placesApi.DestinationThumbnailService
 import eu.ase.travelcompanionapp.recommendation.data.travelpreferences.RecommendationUserPreferences
 import eu.ase.travelcompanionapp.recommendation.domain.repository.DestinationApiRepository
+import eu.ase.travelcompanionapp.recommendation.domain.repository.DestinationThumbnailRepository
 import eu.ase.travelcompanionapp.recommendation.domain.repository.UserPreferencesRepository
 import eu.ase.travelcompanionapp.recommendation.domain.repository.UserProfileRepository
 import eu.ase.travelcompanionapp.recommendation.presentation.destinations.DestinationViewModel
@@ -19,6 +21,8 @@ val recommendationModule = module {
     single<UserPreferencesRepository> { RecommendationUserPreferences(get()) }
 
     single<DestinationApiRepository> { DestinationsRecommenderApiService(get()) }
+
+    single<DestinationThumbnailRepository> { DestinationThumbnailService(get()) }
 
     single<UserProfileRepository> { 
         UserProfileService(
@@ -46,7 +50,8 @@ val recommendationModule = module {
             navController = navController,
             sharedViewModel = sharedViewModel,
             userProfileRepository = get(),
-            destinationApiRepository = get()
+            destinationApiRepository = get(),
+            destinationThumbnailRepository = get()
         )
     }
 } 

@@ -18,7 +18,6 @@ import eu.ase.travelcompanionapp.hotel.presentation.hotelList.HotelListViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.HotelOffersViewModel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelSearch.LocationSearchViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
 val hotelPlacesModule = module {
@@ -53,7 +52,7 @@ val hotelAmadeusModule = module {
 
 val hotelSharedModule = module {
     single<CityToIATACodeRepository> { CityToIATACodeRepositoryImpl(get()) }
-    viewModelOf(::SharedViewModel)
+    single { SharedViewModel() }
     viewModel { (navController: NavHostController, sharedViewModel: SharedViewModel) ->
         LocationSearchViewModel(
             cityToIATACodeRepository = get(),

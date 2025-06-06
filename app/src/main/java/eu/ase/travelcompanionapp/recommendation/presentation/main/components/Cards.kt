@@ -154,6 +154,7 @@ fun QuestionnaireCompletedCard(
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun RecommendationsReadyCard(
     recommendations: RecommendedDestinations,

@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +27,7 @@ fun DestinationsListScreen(
     initialRecommendations: RecommendedDestinations? = null
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var hasProcessedInitialRecommendations by remember { mutableStateOf(false) }
 
     LaunchedEffect(initialRecommendations) {
@@ -38,10 +40,12 @@ fun DestinationsListScreen(
     Scaffold(
         topBar = {
             CompanionTopAppBar(
+                scrollBehavior = scrollBehavior,
                 title = stringResource(R.string.recommended_destinations),
                 onNavigationClick = { navController.popBackStack() }
             )
-        }
+        },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -103,22 +107,34 @@ fun DestinationsListScreen(
                                     modifier = Modifier.fillMaxWidth(),
                                     colors = CardDefaults.cardColors(
                                         containerColor = MaterialTheme.colorScheme.primaryContainer
-                                    )
+                                    ),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                                 ) {
                                     Column(
-                                        modifier = Modifier.padding(16.dp)
+                                        modifier = Modifier.padding(20.dp)
                                     ) {
-                                        Text(
-                                            text = stringResource(R.string.why_these_destinations),
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                                        )
-                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = "✨",
+                                                style = MaterialTheme.typography.headlineSmall
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(
+                                                text = stringResource(R.string.why_these_destinations),
+                                                style = MaterialTheme.typography.titleLarge,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.height(12.dp))
                                         Text(
                                             text = state.recommendations!!.reasoning,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
                                         )
                                     }
                                 }
@@ -130,7 +146,8 @@ fun DestinationsListScreen(
                                 destination = destination,
                                 onClick = {
                                     viewModel.navigateToDestinationDetail(destination)
-                                }
+                                },
+                                destinationImage = viewModel.getDestinationImage(destination)
                             )
                         }
                         

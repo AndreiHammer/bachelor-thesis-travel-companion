@@ -83,9 +83,7 @@ fun NavGraphBuilder.DestinationGraph(navController: NavHostController) {
             DestinationDetailScreen(
                 navController = navController,
                 destination = destination,
-                onSearchHotels = { city ->
-                    destinationViewModel.searchHotelsInCity(city)
-                }
+                viewModel = destinationViewModel
             )
         }
     }
