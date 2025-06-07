@@ -18,9 +18,20 @@ import eu.ase.travelcompanionapp.hotel.domain.model.Review
 
 
 class PlacesApiService(context: Context) {
+    companion object {
+        // TOGGLE THIS FLAG TO ENABLE/DISABLE PLACES API CALLS
+        // Set to false to avoid API costs during testing
+        private const val ENABLE_PLACES_API = false
+    }
+
     private val placesClient: PlacesClient = Places.createClient(context)
 
     fun getHotelDetails(hotelName: String, country: String, onResult: (Result<PlaceDetails, DataError>) -> Unit) {
+        if (!ENABLE_PLACES_API) {
+            onResult(Error(DataError.Remote.UNKNOWN))
+            return
+        }
+
         val request = FindAutocompletePredictionsRequest.builder()
             .setQuery(hotelName)
             .setCountries(country)

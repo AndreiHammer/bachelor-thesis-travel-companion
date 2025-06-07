@@ -54,8 +54,17 @@ class HotelLocationViewModel(
                     is Result.Error -> {
                         _state.value = _state.value.copy(
                             isLoading = false,
-                            errorMessage = "Error fetching hotel details."
+                            hotel = hotelSelected,
+                            isFavourite = isFavourite,
+                            errorMessage = "Failed to load hotel details: $result"
                         )
+
+                        val latitude = hotelSelected?.latitude
+                        val longitude = hotelSelected?.longitude
+
+                        if (latitude != null && longitude != null) {
+                            fetchNearbyAttractions(latitude, longitude)
+                        }
                     }
                     is Result.Success -> {
                         val data = result.data
@@ -79,30 +88,6 @@ class HotelLocationViewModel(
                         fetchNearbyAttractions(latitude, longitude)
                     }
                 }
-            }
-        }
-    }
-
-    fun getHotelDetailsTest() {
-        viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
-
-            val hotelSelected = sharedViewModel.selectedHotel.value
-            val isFavourite = hotelSelected?.let {
-                favouriteHotelRepository.isFavourite(it.hotelId)
-            } ?: false
-
-            _state.value = _state.value.copy(
-                isLoading = false,
-                hotel = hotelSelected,
-                isFavourite = isFavourite
-            )
-
-            val latitude = hotelSelected?.latitude
-            val longitude = hotelSelected?.longitude
-
-            if (latitude != null && longitude != null) {
-                fetchNearbyAttractions(latitude, longitude)
             }
         }
     }

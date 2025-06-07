@@ -65,12 +65,6 @@ fun HotelThumbnail(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )
-
-                // For the real app, not testing environment
-                /*BlurredAnimatedText(
-                    text = stringResource(R.string.loading_image),
-                    modifier = Modifier.fillMaxWidth(0.5f)
-                )*/
             }
         }
     }

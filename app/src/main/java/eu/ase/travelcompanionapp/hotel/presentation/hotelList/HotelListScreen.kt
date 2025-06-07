@@ -46,12 +46,11 @@ fun HotelListScreenRoot(
     val state by viewModel.hotelState.collectAsStateWithLifecycle()
     val hotelPrices by viewModel.hotelPrices.collectAsStateWithLifecycle()
 
-    // THIS WOULD BE USED WHEN THE APP IS FINISHED, IN TESTING IT IS TAKEN OUT DUE TO API COSTS
-    /*val hotelImages by viewModel.hotelImages.collectAsStateWithLifecycle()
+    val hotelImages by viewModel.hotelImages.collectAsStateWithLifecycle()
 
     LaunchedEffect(state.hotelItems) {
         viewModel.loadHotelImages()
-    }*/
+    }
 
     LaunchedEffect(selectedCity, latitude, longitude, radius, amenities, ratings) {
         if (selectedCity != null) {
@@ -85,7 +84,7 @@ fun HotelListScreenRoot(
                 state = state,
                 hotelPrices = hotelPrices,
                 selectedCity = selectedCity,
-                //hotelImages = hotelImages,
+                hotelImages = hotelImages,
                 onAction = { action ->
                     viewModel.handleAction(action)
                 }

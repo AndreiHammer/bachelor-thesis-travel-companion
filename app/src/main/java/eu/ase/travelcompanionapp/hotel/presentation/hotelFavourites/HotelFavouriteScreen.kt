@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -34,14 +35,13 @@ fun HotelFavouriteScreen(
     val hotelPrices = viewModel.hotelPrices.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    // THIS WOULD BE USED WHEN THE APP IS FINISHED, IN TESTING IT IS TAKEN OUT DUE TO API COSTS
-    /*val hotelImages by viewModel.hotelImages.collectAsStateWithLifecycle()
+    val hotelImages by viewModel.hotelImages.collectAsStateWithLifecycle()
 
     LaunchedEffect(state.value.hotelsWithDetails) {
         if (state.value.hotelsWithDetails.isNotEmpty()) {
             viewModel.loadHotelImages()
         }
-    }*/
+    }
 
     LaunchedEffect(Unit) {
         viewModel.getHotelFavourites()
@@ -82,7 +82,7 @@ fun HotelFavouriteScreen(
                         onDeleteClick = { hotelId ->
                             viewModel.handleAction(HotelFavouriteAction.OnRemoveFavourite(hotelId))
                         },
-                        //hotelImages = hotelImages
+                        hotelImages = hotelImages
                     )
                 }
             }

@@ -23,6 +23,12 @@ import kotlin.coroutines.resume
 
 @OptIn(DelicateCoroutinesApi::class)
 class HotelThumbnailService(context: Context): HotelThumbnailRepository {
+    companion object {
+        // TOGGLE THIS FLAG TO ENABLE/DISABLE PLACES API PHOTO FETCHING
+        // Set to false to avoid API costs during testing
+        private const val ENABLE_PLACES_API = false
+    }
+
     private val placesClient: PlacesClient = Places.createClient(context)
     private val imageCache = LruCache<String, Bitmap>(20)
 
@@ -46,6 +52,11 @@ class HotelThumbnailService(context: Context): HotelThumbnailRepository {
     }
 
     override suspend fun getHotelThumbnail(hotel: Hotel): Bitmap? {
+        // Return null immediately if Places API is disabled
+        if (!ENABLE_PLACES_API) {
+            return null
+        }
+
         if (requestCounter.get() >= maxRequestsPerDay) {
             return null
         }

@@ -43,6 +43,7 @@ import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.app.navigation.routes.TouristAttractionsRoute
 import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.core.presentation.components.BitmapImageDialog
+import eu.ase.travelcompanionapp.core.presentation.components.BitmapPhotoCarousel
 import eu.ase.travelcompanionapp.hotel.domain.model.BookingDetails
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.HotelLocationAction
@@ -73,7 +74,7 @@ fun HotelDetails(
     var isModifyingBookingDetails by remember { mutableStateOf(false) }
 
     LaunchedEffect(hotel.name, hotel.countryCode) {
-        viewModel.getHotelDetailsTest()
+        viewModel.getHotelDetails(hotel.name, hotel.countryCode)
     }
 
     if (isModifyingBookingDetails) {
@@ -185,7 +186,7 @@ fun HotelDetails(
                     )
                 }
 
-                /*item {
+                item {
                     Spacer(modifier = Modifier.height(8.dp))
                     BitmapPhotoCarousel(
                         photos = hotelState.value.photos,
@@ -194,7 +195,7 @@ fun HotelDetails(
                             isImageDialogOpen = true
                         }
                     )
-                }*/
+                }
 
                 item {
                     Spacer(modifier = Modifier.height(8.dp))
