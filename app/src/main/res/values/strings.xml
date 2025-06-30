@@ -144,13 +144,11 @@
     <string name="hotel_currency_info">Prices will be shown in their original currency as provided by each hotel. No currency conversion will be applied.</string>
     <string name="preferred_currency_info">All prices will be automatically converted from their original currency to your selected currency for easier comparison.</string>
     <string name="currency">Currency</string>
-    
-    <!-- Location Search Screen -->
+
     <string name="looking_for_quick_options">Looking for quick options?</string>
     <string name="increase_guests">Increase guests</string>
     <string name="decrease_guests">Decrease guests</string>
-    
-    <!-- Theme preferences -->
+
     <string name="theme">Theme</string>
     <string name="light_theme">Light theme</string>
     <string name="dark_theme">Dark theme</string>
@@ -226,8 +224,7 @@
     <string name="modify_booking_details_description">Change dates and number of guests to search for different offers</string>
     <string name="search_offers">Search Offers</string>
     <string name="modify_dates">Modify Dates</string>
-    
-    <!-- Reviews -->
+
     <string name="reviews">Reviews</string>
     <string name="see_all_reviews">See all</string>
     <string name="no_reviews_available">No reviews available</string>
@@ -270,8 +267,7 @@
     <string name="main_reason_for_traveling">Main reason for traveling</string>
     <string name="budget_range">Budget Range</string>
     <string name="per_night">Per night</string>
-    
-    <!-- Destination Recommendations -->
+
     <string name="recommended_destinations">Recommended Destinations</string>
     <string name="why_these_destinations">Why These Destinations?</string>
     <string name="no_destinations_found">No destinations found</string>
@@ -287,8 +283,7 @@
     <string name="getting_recommendations">Getting Recommendations...</string>
     <string name="get_recommendations">Get Recommendations</string>
     <string name="refresh_recommendations">Refresh</string>
-    
-    <!-- Enhanced Recommendation UI -->
+
     <string name="recommendations_ready">Recommendations Ready!</string>
     <string name="recommendations_count_found">%1$d personalized destinations found</string>
     <string name="explore_destinations">Explore Destinations</string>
@@ -300,4 +295,5 @@
     <string name="profile_preview">Profile Preview</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="dismiss">Dismiss</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
 </resources>

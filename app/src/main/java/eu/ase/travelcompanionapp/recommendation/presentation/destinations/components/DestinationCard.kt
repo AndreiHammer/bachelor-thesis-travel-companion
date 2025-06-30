@@ -206,16 +206,6 @@ fun DestinationCard(
                     }
                 }
             }
-
-            if (destination.popularAttractions.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "📍 ${destination.popularAttractions.size} popular attractions",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
             }
         }
     }

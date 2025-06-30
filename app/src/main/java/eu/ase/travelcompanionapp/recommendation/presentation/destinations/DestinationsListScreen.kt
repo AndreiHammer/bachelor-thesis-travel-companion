@@ -118,11 +118,6 @@ fun DestinationsListScreen(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Text(
-                                                text = "✨",
-                                                style = MaterialTheme.typography.headlineSmall
-                                            )
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text(
                                                 text = stringResource(R.string.why_these_destinations),
                                                 style = MaterialTheme.typography.titleLarge,
                                                 fontWeight = FontWeight.Bold,

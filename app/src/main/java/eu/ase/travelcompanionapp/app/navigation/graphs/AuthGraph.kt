@@ -56,7 +56,8 @@ fun NavGraphBuilder.AuthGraph(navController: NavHostController, context: Context
                     navController.navigate(HotelRoute.HotelGraph){
                         popUpTo(AuthRoute.AuthGraph) { inclusive = true }
                     }
-                }
+                },
+                onSignUpClick = { navController.navigate(AuthRoute.SignUp) }
             )
         }
     }

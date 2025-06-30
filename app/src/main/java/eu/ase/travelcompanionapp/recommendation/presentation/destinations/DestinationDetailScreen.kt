@@ -229,11 +229,6 @@ fun DestinationDetailScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "🎯",
-                                    style = MaterialTheme.typography.headlineSmall
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
                                     text = stringResource(R.string.why_we_recommend_this),
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold,
@@ -341,10 +336,6 @@ fun DestinationDetailScreen(
                                     modifier = Modifier.padding(vertical = 4.dp),
                                     verticalAlignment = Alignment.Top
                                 ) {
-                                    Text(
-                                        text = "📍 ",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
                                     Text(
                                         text = attraction,
                                         style = MaterialTheme.typography.bodyMedium,
