@@ -18,14 +18,16 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
-import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.AccommodationTypeQuestion
 import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.BudgetRangeQuestion
-import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.GroupSizeQuestion
-import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.ImportanceRatingsSection
-import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.LocationPreferenceQuestion
-import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.PreferredAmenitiesQuestion
+import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.BucketListThemesQuestion
+import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.ClimatePreferenceQuestion
+import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.CompanionsQuestion
+import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.CulturalOpennessQuestion
+import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.PreferredActivitiesQuestion
 import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.PreferredContinentsQuestion
-import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.TravelPurposeQuestion
+import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.PreferredCountryQuestion
+import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.TravelStyleQuestion
+import eu.ase.travelcompanionapp.recommendation.presentation.questionnaire.components.TripDurationQuestion
 
 @Composable
 fun QuestionnaireDialog(
@@ -120,57 +122,65 @@ fun QuestionnaireDialog(
                     }
 
                     item {
+                        PreferredActivitiesQuestion(
+                            selectedActivities = state.preferences.preferredActivities,
+                            onActivitiesChanged = { viewModel.updatePreferredActivities(it) }
+                        )
+                    }
+
+                    item {
+                        ClimatePreferenceQuestion(
+                            selectedClimate = state.preferences.climatePreference,
+                            onClimateSelected = { viewModel.updateClimatePreference(it) }
+                        )
+                    }
+
+                    item {
+                        TravelStyleQuestion(
+                            selectedStyle = state.preferences.travelStyle,
+                            onStyleSelected = { viewModel.updateTravelStyle(it) }
+                        )
+                    }
+
+                    item {
+                        TripDurationQuestion(
+                            selectedDuration = state.preferences.tripDuration,
+                            onDurationSelected = { viewModel.updateTripDuration(it) }
+                        )
+                    }
+
+                    item {
+                        CompanionsQuestion(
+                            selectedCompanions = state.preferences.companions,
+                            onCompanionsSelected = { viewModel.updateCompanions(it) }
+                        )
+                    }
+
+                    item {
+                        CulturalOpennessQuestion(
+                            culturalOpenness = state.preferences.culturalOpenness,
+                            onOpennessChanged = { viewModel.updateCulturalOpenness(it) }
+                        )
+                    }
+
+                    item {
+                        PreferredCountryQuestion(
+                            preferredCountry = state.preferences.preferredCountry,
+                            onCountryChanged = { viewModel.updatePreferredCountry(it) }
+                        )
+                    }
+
+                    item {
+                        BucketListThemesQuestion(
+                            selectedThemes = state.preferences.bucketListThemes,
+                            onThemesChanged = { viewModel.updateBucketListThemes(it) }
+                        )
+                    }
+
+                    item {
                         BudgetRangeQuestion(
                             selectedBudget = state.preferences.budgetRange,
                             onBudgetSelected = { viewModel.updateBudgetRange(it) }
-                        )
-                    }
-
-                    item {
-                        TravelPurposeQuestion(
-                            selectedPurpose = state.preferences.travelPurpose,
-                            onPurposeSelected = { viewModel.updateTravelPurpose(it) }
-                        )
-                    }
-
-                    item {
-                        GroupSizeQuestion(
-                            selectedSize = state.preferences.groupSize,
-                            onSizeSelected = { viewModel.updateGroupSize(it) }
-                        )
-                    }
-
-                    item {
-                        AccommodationTypeQuestion(
-                            selectedType = state.preferences.accommodationType,
-                            onTypeSelected = { viewModel.updateAccommodationType(it) }
-                        )
-                    }
-
-                    item {
-                        LocationPreferenceQuestion(
-                            selectedLocation = state.preferences.locationPreference,
-                            onLocationSelected = { viewModel.updateLocationPreference(it) }
-                        )
-                    }
-
-                    item {
-                        ImportanceRatingsSection(
-                            priceImportance = state.preferences.importanceFactors.price,
-                            ratingImportance = state.preferences.importanceFactors.hotelRating,
-                            amenitiesImportance = state.preferences.importanceFactors.amenities,
-                            locationImportance = state.preferences.importanceFactors.location,
-                            onPriceImportanceChanged = { viewModel.updatePriceImportance(it) },
-                            onRatingImportanceChanged = { viewModel.updateRatingImportance(it) },
-                            onAmenitiesImportanceChanged = { viewModel.updateAmenitiesImportance(it) },
-                            onLocationImportanceChanged = { viewModel.updateLocationImportance(it) }
-                        )
-                    }
-
-                    item {
-                        PreferredAmenitiesQuestion(
-                            selectedAmenities = state.preferences.importantAmenities,
-                            onAmenitiesChanged = { viewModel.updatePreferredAmenities(it) }
                         )
                     }
 

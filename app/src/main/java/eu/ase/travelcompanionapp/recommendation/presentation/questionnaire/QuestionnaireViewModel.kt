@@ -2,7 +2,6 @@ package eu.ase.travelcompanionapp.recommendation.presentation.questionnaire
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eu.ase.travelcompanionapp.recommendation.domain.model.ImportanceFactors
 import eu.ase.travelcompanionapp.recommendation.domain.model.QuestionnaireResponse
 import eu.ase.travelcompanionapp.recommendation.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,10 +18,16 @@ class QuestionnaireViewModel(
     val state: StateFlow<QuestionnaireState> = _state.asStateFlow()
 
     fun initializeForMode(isEditMode: Boolean) {
+        // Reset completion state when initializing
+        _state.value = _state.value.copy(
+            isEditMode = isEditMode,
+            isCompleted = false,
+            errorMessage = null
+        )
+        
         if (isEditMode) {
             loadExistingPreferences()
         }
-        _state.value = _state.value.copy(isEditMode = isEditMode)
     }
 
     private fun loadExistingPreferences() {
@@ -38,125 +43,80 @@ class QuestionnaireViewModel(
         }
     }
 
-    fun updateBudgetRange(budgetRange: String) {
+    fun updatePreferredActivities(activities: List<String>) {
         _state.value = _state.value.copy(
-            preferences = _state.value.preferences.copy(budgetRange = budgetRange)
+            preferences = _state.value.preferences.copy(preferredActivities = ArrayList(activities))
         )
     }
 
-    fun updateTravelPurpose(travelPurpose: String) {
+    fun updateClimatePreference(climate: String) {
         _state.value = _state.value.copy(
-            preferences = _state.value.preferences.copy(travelPurpose = travelPurpose)
+            preferences = _state.value.preferences.copy(climatePreference = climate)
         )
     }
 
-    fun updateGroupSize(groupSize: String) {
+    fun updateTravelStyle(style: String) {
         _state.value = _state.value.copy(
-            preferences = _state.value.preferences.copy(groupSize = groupSize)
+            preferences = _state.value.preferences.copy(travelStyle = style)
         )
     }
 
-    fun updateAccommodationType(accommodationType: String) {
+    fun updateTripDuration(duration: String) {
         _state.value = _state.value.copy(
-            preferences = _state.value.preferences.copy(accommodationType = accommodationType)
+            preferences = _state.value.preferences.copy(tripDuration = duration)
         )
     }
 
-    fun updateLocationPreference(locationPreference: String) {
+    fun updateCompanions(companions: String) {
         _state.value = _state.value.copy(
-            preferences = _state.value.preferences.copy(locationPreference = locationPreference)
+            preferences = _state.value.preferences.copy(companions = companions)
         )
     }
 
-    fun updatePriceImportance(importance: Int) {
-        val currentFactors = _state.value.preferences.importanceFactors
+    fun updateCulturalOpenness(openness: Int) {
         _state.value = _state.value.copy(
-            preferences = _state.value.preferences.copy(
-                importanceFactors = currentFactors.copy(price = importance)
-            )
+            preferences = _state.value.preferences.copy(culturalOpenness = openness)
         )
     }
 
-    fun updateRatingImportance(importance: Int) {
-        val currentFactors = _state.value.preferences.importanceFactors
+    fun updatePreferredCountry(country: String) {
         _state.value = _state.value.copy(
-            preferences = _state.value.preferences.copy(
-                importanceFactors = currentFactors.copy(hotelRating = importance)
-            )
+            preferences = _state.value.preferences.copy(preferredCountry = country)
         )
     }
 
-    fun updateAmenitiesImportance(importance: Int) {
-        val currentFactors = _state.value.preferences.importanceFactors
+    fun updateBucketListThemes(themes: List<String>) {
         _state.value = _state.value.copy(
-            preferences = _state.value.preferences.copy(
-                importanceFactors = currentFactors.copy(amenities = importance)
-            )
+            preferences = _state.value.preferences.copy(bucketListThemes = ArrayList(themes))
         )
     }
 
-    fun updateLocationImportance(importance: Int) {
-        val currentFactors = _state.value.preferences.importanceFactors
+    fun updateBudgetRange(budget: String) {
         _state.value = _state.value.copy(
-            preferences = _state.value.preferences.copy(
-                importanceFactors = currentFactors.copy(location = importance)
-            )
-        )
-    }
-
-    fun updatePreferredAmenities(amenities: List<String>) {
-        _state.value = _state.value.copy(
-            preferences = _state.value.preferences.copy(
-                importantAmenities = ArrayList(amenities)
-            )
+            preferences = _state.value.preferences.copy(budgetRange = budget)
         )
     }
 
     fun updatePreferredContinents(continents: List<String>) {
         _state.value = _state.value.copy(
-            preferences = _state.value.preferences.copy(
-                preferredContinents = ArrayList(continents)
-            )
+            preferences = _state.value.preferences.copy(preferredContinents = ArrayList(continents))
         )
     }
 
     fun savePreferences() {
         viewModelScope.launch {
             try {
-                _state.value = _state.value.copy(isLoading = true, errorMessage = null)
-                
                 userPreferencesRepository.saveQuestionnaireResponse(_state.value.preferences)
-                
-                _state.value = _state.value.copy(
-                    isLoading = false,
-                    isCompleted = true
-                )
+                _state.value = _state.value.copy(isCompleted = true)
             } catch (e: Exception) {
-                _state.value = _state.value.copy(
-                    isLoading = false,
-                    errorMessage = "Failed to save preferences: ${e.message}"
-                )
+                _state.value = _state.value.copy(errorMessage = e.message)
             }
         }
     }
 }
 
 data class QuestionnaireState(
-    val preferences: QuestionnaireResponse = QuestionnaireResponse(
-        budgetRange = "",
-        travelPurpose = "",
-        groupSize = "",
-        accommodationType = "",
-        locationPreference = "",
-        importanceFactors = ImportanceFactors(
-            amenities = 5,
-            hotelRating = 5,
-            location = 5,
-            price = 5
-        ),
-        importantAmenities = arrayListOf(),
-        preferredContinents = arrayListOf()
-    ),
+    val preferences: QuestionnaireResponse = QuestionnaireResponse(),
     val isLoading: Boolean = false,
     val isCompleted: Boolean = false,
     val errorMessage: String? = null,

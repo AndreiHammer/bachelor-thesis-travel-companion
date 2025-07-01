@@ -49,22 +49,16 @@ data class BookedOfferDto(
 
 @Serializable
 data class QuestionnaireResponseDto(
+    @SerialName("preferred_activities") val preferredActivities: List<String>,
+    @SerialName("climate_preference") val climatePreference: String,
+    @SerialName("travel_style") val travelStyle: String,
+    @SerialName("trip_duration") val tripDuration: String,
+    @SerialName("companions") val companions: String,
+    @SerialName("cultural_openness") val culturalOpenness: Int,
+    @SerialName("preferred_country") val preferredCountry: String,
+    @SerialName("bucket_list_themes") val bucketListThemes: List<String>,
     @SerialName("budget_range") val budgetRange: String,
-    @SerialName("travel_purpose") val travelPurpose: String,
-    @SerialName("group_size") val groupSize: String,
-    @SerialName("accommodation_type") val accommodationType: String,
-    @SerialName("location_preference") val locationPreference: String,
-    @SerialName("importance_factors") val importanceFactors: ImportanceFactorsDto,
-    @SerialName("important_amenities") val importantAmenities: List<String>,
     @SerialName("preferred_continents") val preferredContinents: List<String>
-)
-
-@Serializable
-data class ImportanceFactorsDto(
-    @SerialName("amenities") val amenities: Int,
-    @SerialName("hotel_rating") val hotelRating: Int,
-    @SerialName("location") val location: Int,
-    @SerialName("price") val price: Int
 )
 
 @Serializable

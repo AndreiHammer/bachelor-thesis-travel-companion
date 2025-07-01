@@ -96,18 +96,15 @@ class UserProfileService(
 
     private fun getDefaultQuestionnaireResponse(): QuestionnaireResponse {
         return QuestionnaireResponse(
-            budgetRange = "Mid-range",
-            travelPurpose = "Leisure",
-            groupSize = "Solo traveler",
-            accommodationType = "Any type",
-            locationPreference = "City center",
-            importanceFactors = eu.ase.travelcompanionapp.recommendation.domain.model.ImportanceFactors(
-                amenities = 5,
-                hotelRating = 5,
-                location = 5,
-                price = 5
-            ),
-            importantAmenities = arrayListOf(),
+            preferredActivities = arrayListOf(),
+            climatePreference = "",
+            travelStyle = "",
+            tripDuration = "",
+            companions = "",
+            culturalOpenness = 5,
+            preferredCountry = "",
+            bucketListThemes = arrayListOf(),
+            budgetRange = "",
             preferredContinents = arrayListOf()
         )
     }

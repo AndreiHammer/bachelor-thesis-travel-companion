@@ -250,8 +250,8 @@
     <string name="travel_preferences">Travel Preferences</string>
     <string name="update_your_travel_style">Update your travel style</string>
     <string name="personalize_your_journey">Personalize your journey</string>
-    <string name="preferred_continents">Preferred Continents</string>
-    <string name="where_do_you_like_to_travel">Where do you like to travel</string>
+    <string name="preferred_continents">Which parts of the world are you interested in exploring?</string>
+    <string name="where_do_you_like_to_travel">Select all that appeal to you</string>
     <string name="important_amenities">Important Amenities</string>
     <string name="select_all_that_matter_to_you">Select all that matter to you</string>
     <string name="hotel_rating">Hotel Rating</string>
@@ -265,8 +265,8 @@
     <string name="how_many_travelers">How many travelers</string>
     <string name="travel_purpose">Travel Purpose</string>
     <string name="main_reason_for_traveling">Main reason for traveling</string>
-    <string name="budget_range">Budget Range</string>
-    <string name="per_night">Per night</string>
+    <string name="budget_range">What\'s your typical travel budget?</string>
+    <string name="per_night">Per trip or per day</string>
 
     <string name="recommended_destinations">Recommended Destinations</string>
     <string name="why_these_destinations">Why These Destinations?</string>
@@ -296,4 +296,22 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="dismiss">Dismiss</string>
     <string name="dont_have_account">Don\'t have an account?</string>
+
+    <!-- New destination-focused questionnaire strings -->
+    <string name="preferred_activities">What activities do you enjoy while traveling?</string>
+    <string name="select_all_that_apply">Select all that apply</string>
+    <string name="climate_preference">What type of weather do you prefer on a trip?</string>
+    <string name="choose_one">Choose one</string>
+    <string name="travel_style">What best describes your travel style?</string>
+    <string name="pick_the_one_that_fits_you_best">Pick the one that fits you best</string>
+    <string name="trip_duration">How long do you usually travel for?</string>
+    <string name="typical_trip_length">Typical trip length</string>
+    <string name="companions">Who do you usually travel with?</string>
+    <string name="choose_the_usual_scenario">Choose the usual scenario</string>
+    <string name="cultural_openness">How open are you to experiencing cultures that are very different from your own?</string>
+    <string name="cultural_openness_scale">1 = Not open at all, 10 = Very open</string>
+    <string name="preferred_country">Is there a specific country you\'re thinking about?</string>
+    <string name="preferred_country_optional">(Optional — if you have one in mind)</string>
+    <string name="bucket_list_themes">What type of destinations are on your bucket list?</string>
+    <string name="select_all_that_inspire_you">Select all that inspire you</string>
 </resources>

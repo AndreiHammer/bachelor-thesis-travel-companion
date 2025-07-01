@@ -4,7 +4,7 @@ import eu.ase.travelcompanionapp.app.navigation.routes.DestinationRoute
 import eu.ase.travelcompanionapp.booking.domain.models.BookingInfo
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.recommendation.domain.model.Destination
-import eu.ase.travelcompanionapp.recommendation.domain.model.ImportanceFactors
+
 import eu.ase.travelcompanionapp.recommendation.domain.model.QuestionnaireResponse
 import eu.ase.travelcompanionapp.recommendation.domain.model.RecommendedDestinations
 import eu.ase.travelcompanionapp.recommendation.domain.model.UserProfile
@@ -61,24 +61,16 @@ fun BookingInfo.toBookedOfferDto(): BookedOfferDto {
 
 fun QuestionnaireResponse.toQuestionnaireResponseDto(): QuestionnaireResponseDto {
     return QuestionnaireResponseDto(
-        budgetRange = this.budgetRange.takeIf { it.isNotBlank() } ?: "Mid-range",
-        travelPurpose = this.travelPurpose.takeIf { it.isNotBlank() } ?: "Leisure",
-        groupSize = this.groupSize.takeIf { it.isNotBlank() } ?: "Solo traveler",
-        accommodationType = this.accommodationType.takeIf { it.isNotBlank() } ?: "Any type",
-        locationPreference = this.locationPreference.takeIf { it.isNotBlank() } ?: "City center",
-        importanceFactors = this.importanceFactors.toImportanceFactorsDto(),
-        importantAmenities = this.importantAmenities,
+        preferredActivities = this.preferredActivities,
+        climatePreference = this.climatePreference.takeIf { it.isNotBlank() } ?: "",
+        travelStyle = this.travelStyle.takeIf { it.isNotBlank() } ?: "",
+        tripDuration = this.tripDuration.takeIf { it.isNotBlank() } ?: "",
+        companions = this.companions.takeIf { it.isNotBlank() } ?: "",
+        culturalOpenness = this.culturalOpenness,
+        preferredCountry = this.preferredCountry,
+        bucketListThemes = this.bucketListThemes,
+        budgetRange = this.budgetRange.takeIf { it.isNotBlank() } ?: "",
         preferredContinents = this.preferredContinents
-    )
-}
-
-
-fun ImportanceFactors.toImportanceFactorsDto(): ImportanceFactorsDto {
-    return ImportanceFactorsDto(
-        amenities = this.amenities,
-        hotelRating = this.hotelRating,
-        location = this.location,
-        price = this.price
     )
 }
 
