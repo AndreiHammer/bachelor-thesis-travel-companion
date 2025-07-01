@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
-import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.components.HotelList
 import eu.ase.travelcompanionapp.hotel.presentation.hotelList.components.HotelListScreenError
 import org.koin.androidx.compose.koinViewModel
@@ -140,12 +139,7 @@ private fun HotelListScreen(
                         modifier = Modifier.padding(24.dp)
                     ) {
                         CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(32.dp)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        BlurredAnimatedText(
-                            text = stringResource(R.string.loading_hotels)
                         )
                     }
                 }

@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,9 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eu.ase.travelcompanionapp.R
-import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.hotel.presentation.hotelDetails.components.BookingDetailsDialog
 import eu.ase.travelcompanionapp.hotel.presentation.hotelOffers.components.HotelOffersSection
 import eu.ase.travelcompanionapp.ui.CompanionTopAppBar
@@ -101,7 +103,9 @@ fun HotelOffersScreen(
                         .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    BlurredAnimatedText(text = stringResource(R.string.loading_offers))
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(32.dp)
+                    )
                 }
             } else {
                 HotelOffersSection(

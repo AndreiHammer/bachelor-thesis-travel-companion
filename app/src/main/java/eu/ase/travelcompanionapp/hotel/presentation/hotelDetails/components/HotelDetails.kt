@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -41,7 +42,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.app.navigation.routes.TouristAttractionsRoute
-import eu.ase.travelcompanionapp.core.presentation.BlurredAnimatedText
 import eu.ase.travelcompanionapp.core.presentation.components.BitmapImageDialog
 import eu.ase.travelcompanionapp.core.presentation.components.BitmapPhotoCarousel
 import eu.ase.travelcompanionapp.hotel.domain.model.BookingDetails
@@ -166,9 +166,9 @@ fun HotelDetails(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    BlurredAnimatedText(text = stringResource(R.string.loading_details))
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(32.dp)
+                    )
                 }
             }
         } else {

@@ -30,10 +30,9 @@ fun NavGraphBuilder.DestinationGraph(navController: NavHostController) {
             exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) },
             popEnterTransition = { slideInHorizontally(initialOffsetX = { -it }) },
             popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) }
-        ) {
-            val parentEntry = navController.getBackStackEntry(DestinationRoute.DestinationGraph)
-            val recommendationViewModel = koinViewModel<RecommendationViewModel>(
-                viewModelStoreOwner = parentEntry,
+        ) { backStackEntry ->
+            val recommendationViewModel = backStackEntry.sharedKoinViewModel<RecommendationViewModel>(
+                navController = navController,
                 parameters = { parametersOf(navController) }
             )
             
@@ -54,9 +53,8 @@ fun NavGraphBuilder.DestinationGraph(navController: NavHostController) {
                 parameters = { parametersOf(navController, sharedViewModel) }
             )
 
-            val parentEntry = navController.getBackStackEntry(DestinationRoute.DestinationGraph)
-            val recommendationViewModel = koinViewModel<RecommendationViewModel>(
-                viewModelStoreOwner = parentEntry,
+            val recommendationViewModel = backStackEntry.sharedKoinViewModel<RecommendationViewModel>(
+                navController = navController,
                 parameters = { parametersOf(navController) }
             )
             val recommendationState by recommendationViewModel.state.collectAsStateWithLifecycle()

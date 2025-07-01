@@ -18,6 +18,7 @@ import eu.ase.travelcompanionapp.app.navigation.graphs.RootGraph
 import eu.ase.travelcompanionapp.app.navigation.graphs.TouristAttractionsGraph
 import eu.ase.travelcompanionapp.app.navigation.routes.RootRoute
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.ParametersDefinition
 
 @Composable
 fun AppNavHost(
@@ -50,14 +51,16 @@ fun AppNavHost(
 
 @Composable
 inline fun <reified T: ViewModel> NavBackStackEntry.sharedKoinViewModel(
-    navController: NavController
+    navController: NavController,
+    noinline parameters: ParametersDefinition? = null
 ): T {
     val navGraphRoute = destination.parent?.route ?: return koinViewModel<T>()
     val parentEntry = remember(this) {
         navController.getBackStackEntry(navGraphRoute)
     }
     return koinViewModel(
-        viewModelStoreOwner = parentEntry
+        viewModelStoreOwner = parentEntry,
+        parameters = parameters
     )
 }
 
