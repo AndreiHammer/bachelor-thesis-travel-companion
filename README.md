@@ -10,7 +10,7 @@
 - **Image Fetching** - Retrieves high-quality images using the *Google Places API*.
 - **Payment System** - Implements a complete payment solution using Stripe SDK, allowing users to securely process accommodation bookings with multiple payment methods.
 - **Currency Conversion** - Features dynamic currency conversion functionality powered by the Exchange Rates API (RapidAPI), enabling users to view and compare prices in their preferred currency with real-time exchange rates.
-- **Accommodation Recommendations** - Integrates AI-generated recommendations based on user preferences using *OpenAI* embeddings
+- **Accommodation Recommendations** - Integrates AI-generated destination recommendations based on user past app activity and travel patterns by communicating with a REST API built in Python that handles the recommendation generation through *OpenAI Chat Completions*.
 - **Preferences Management** - Stores user preferences using *Preferences DataStore* for a seamless experience.
 
 
@@ -38,9 +38,6 @@ AMADEUS_API_SECRET=your_amadeus_api_secret
 # Google Maps and Places API Key
 GOOGLE_API_KEY=your_google_api_key
 
-# OpenAI API Key
-OPENAI_API_KEY=your_openai_api_key
-
 # Rapid API Key
 RAPID_API_KEY = your_rapid_api_key
 
@@ -67,7 +64,7 @@ STRIPE_SECRET_KEY = your_stripe_secret_key
 
 **Payment:** Stripe
 
-**AI Integration:** OpenAI embeddings with Python via *Chaquopy*
+**AI Integration:** Recommendation Service built in Python which exposes REST endpoints for mobile integration
 
 **Authentication**: OAuth via Firebase
 
