@@ -1,125 +1,71 @@
 package eu.ase.travelcompanionapp.hotel.data.placesApi
 
 import android.content.Context
-import androidx.collection.LruCache
 import coil3.Bitmap
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.PhotoMetadata
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FetchPhotoRequest
-import com.google.android.libraries.places.api.net.FetchPlaceRequest
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.model.PlaceTypes
+import eu.ase.travelcompanionapp.core.data.placesApi.BasePlacesService
 import eu.ase.travelcompanionapp.hotel.domain.model.Hotel
 import eu.ase.travelcompanionapp.hotel.domain.repository.HotelThumbnailRepository
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import java.util.Calendar
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.coroutines.resume
 
-@OptIn(DelicateCoroutinesApi::class)
-class HotelThumbnailService(context: Context): HotelThumbnailRepository {
-    companion object {
-        // TOGGLE THIS FLAG TO ENABLE/DISABLE PLACES API PHOTO FETCHING
-        // Set to false to avoid API costs during testing
-        private const val ENABLE_PLACES_API = false
-    }
-
-    private val placesClient: PlacesClient = Places.createClient(context)
-    private val imageCache = LruCache<String, Bitmap>(20)
-
-    private val requestCounter = AtomicInteger(0)
-    private val maxRequestsPerDay = 100
-
-    init {
-        val calendar = Calendar.getInstance()
-        val now = calendar.timeInMillis
-        calendar.add(Calendar.DAY_OF_YEAR, 1)
-        calendar.add(Calendar.HOUR_OF_DAY, 0)
-        calendar.add(Calendar.MINUTE, 0)
-        calendar.add(Calendar.SECOND, 0)
-
-        val delay = calendar.timeInMillis - now
-
-        GlobalScope.launch {
-            delay(delay)
-            requestCounter.set(0)
-        }
-    }
+class HotelThumbnailService(context: Context): BasePlacesService(
+    context = context,
+    cacheSize = 30
+), HotelThumbnailRepository {
 
     override suspend fun getHotelThumbnail(hotel: Hotel): Bitmap? {
-        // Return null immediately if Places API is disabled
-        if (!ENABLE_PLACES_API) {
+        if (!isApiEnabled()) {
             return null
         }
 
-        if (requestCounter.get() >= maxRequestsPerDay) {
-            return null
-        }
+        getCachedImage(hotel.hotelId)?.let { return it }
 
-        imageCache[hotel.hotelId]?.let { return it }
+        val searchQueries = buildSearchQueries(hotel)
+        val placeTypes = listOf(
+            PlaceTypes.LODGING,
+            PlaceTypes.ESTABLISHMENT
+        )
+        val countries = listOfNotNull(hotel.countryCode.takeIf { it.isNotBlank() })
 
-        requestCounter.incrementAndGet()
+        val placeId = searchPlace(
+            searchQueries = searchQueries,
+            placeTypes = placeTypes,
+            countries = countries
+        ) ?: return null
 
-        return suspendCancellableCoroutine { continuation ->
-            val request = FindAutocompletePredictionsRequest.builder()
-                .setQuery(hotel.name)
-                .setCountries(hotel.countryCode)
-                .build()
+        val photos = fetchPlacePhotos(
+            placeId = placeId,
+            maxPhotos = 1,
+            maxWidth = 600,
+            maxHeight = 400
+        )
 
-            placesClient.findAutocompletePredictions(request)
-                .addOnSuccessListener { response ->
-                    val prediction = response.autocompletePredictions.firstOrNull()
-                    if(prediction == null) {
-                        continuation.resume(null)
-                        return@addOnSuccessListener
-                    }
-
-                    val placeId = prediction.placeId
-                    val fields = listOf(Place.Field.PHOTO_METADATAS)
-                    val fetchRequest = FetchPlaceRequest.newInstance(placeId, fields)
-
-                    placesClient.fetchPlace(fetchRequest)
-                        .addOnSuccessListener { placeResponse ->
-                            val photoMedatas = placeResponse.place.photoMetadatas
-
-                            if(photoMedatas.isNullOrEmpty()) {
-                                continuation.resume(null)
-                                return@addOnSuccessListener
-                            }
-
-                            val photoMetadata = photoMedatas[0]
-                            fetchPhotoForMetadata(photoMetadata) { bitmap ->
-                                bitmap?.let { imageCache.put(hotel.hotelId, it) }
-                                continuation.resume(bitmap)
-                            }
-                        }
-                        .addOnFailureListener {
-                            continuation.resume(null)
-                        }
-                }
-                .addOnFailureListener {
-                    continuation.resume(null)
-                }
+        return photos.firstOrNull()?.also { bitmap ->
+            cacheImage(hotel.hotelId, bitmap)
         }
     }
 
-    private fun fetchPhotoForMetadata(photoMetadata: PhotoMetadata, callback: (Bitmap?) -> Unit) {
-        val photoRequest = FetchPhotoRequest.builder(photoMetadata)
-            .setMaxWidth(500)
-            .setMaxHeight(300)
-            .build()
+    private fun buildSearchQueries(hotel: Hotel): List<String> {
+        val queries = mutableListOf<String>()
 
-        placesClient.fetchPhoto(photoRequest)
-            .addOnSuccessListener { response ->
-                callback(response.bitmap)
-            }
-            .addOnFailureListener {
-                callback(null)
-            }
+        queries.add(hotel.name)
+
+        if (hotel.countryCode.isNotBlank()) {
+            queries.add("${hotel.name}, ${hotel.countryCode}")
+        }
+
+        queries.add("${hotel.name} hotel")
+
+        hotel.chainCode?.let { chainCode ->
+            queries.add("$chainCode ${hotel.name}")
+        }
+
+        val simplifiedName = hotel.name
+            .replace(Regex("\\b(hotel|inn|resort|lodge|suites?)\\b", RegexOption.IGNORE_CASE), "")
+            .trim()
+        if (simplifiedName.isNotBlank() && simplifiedName != hotel.name) {
+            queries.add(simplifiedName)
+        }
+        
+        return queries.distinct()
     }
 }

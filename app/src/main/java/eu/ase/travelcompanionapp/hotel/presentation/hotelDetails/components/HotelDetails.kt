@@ -78,16 +78,27 @@ fun HotelDetails(
     }
 
     if (isModifyingBookingDetails) {
-        val currentBookingDetails = BookingDetails(
-            checkInDate = checkInDate,
-            checkOutDate = checkOutDate,
-            adults = adults
-        )
+        val hasExistingBookingDetails = checkInDate.isNotEmpty() && checkOutDate.isNotEmpty() && adults > 0
+        val currentBookingDetails = if (hasExistingBookingDetails) {
+            BookingDetails(
+                checkInDate = checkInDate,
+                checkOutDate = checkOutDate,
+                adults = adults
+            )
+        } else null
 
         BookingDetailsDialog(
             initialBookingDetails = currentBookingDetails,
-            title = stringResource(R.string.modify_booking_details),
-            description = stringResource(R.string.modify_booking_details_description),
+            title = if (hasExistingBookingDetails) {
+                stringResource(R.string.modify_booking_details)
+            } else {
+                stringResource(R.string.enter_booking_details)
+            },
+            description = if (hasExistingBookingDetails) {
+                stringResource(R.string.modify_booking_details_description)
+            } else {
+                stringResource(R.string.please_enter_booking_details_to_view_offers)
+            },
             confirmButtonText = stringResource(R.string.view_offers),
             onDismiss = { isModifyingBookingDetails = false },
             onConfirm = { newCheckInDate, newCheckOutDate, newAdults ->
@@ -247,12 +258,16 @@ fun HotelDetails(
                     Spacer(modifier = Modifier.height(16.dp))
                     BookingActionCard(
                         onViewOffers = {
-                            viewModel.handleAction(
-                                HotelLocationAction.OnViewOfferClick(
-                                    checkInDate, checkOutDate, adults
-                                ),
-                                hotel
-                            )
+                            if (checkInDate.isNotEmpty() && checkOutDate.isNotEmpty() && adults > 0) {
+                                viewModel.handleAction(
+                                    HotelLocationAction.OnViewOfferClick(
+                                        checkInDate, checkOutDate, adults
+                                    ),
+                                    hotel
+                                )
+                            } else {
+                                isModifyingBookingDetails = true
+                            }
                         },
                         bookingDetails = if (checkInDate.isNotEmpty() && checkOutDate.isNotEmpty()) {
                             Triple(checkInDate, checkOutDate, adults)

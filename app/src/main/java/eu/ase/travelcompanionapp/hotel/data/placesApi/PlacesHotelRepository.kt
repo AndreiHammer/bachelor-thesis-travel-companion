@@ -12,11 +12,6 @@ class PlacesHotelRepository(private val placesApiService: PlacesApiService):
         country: String,
         onResult: (Result<PlaceDetails, DataError>) -> Unit
     ) {
-        placesApiService.getHotelDetails(hotelName, country) { result ->
-            when (result) {
-                is Result.Error -> onResult(Result.Error(DataError.Remote.UNKNOWN))
-                is Result.Success -> onResult(result)
-            }
-        }
+        placesApiService.getHotelDetails(hotelName, country, onResult)
     }
 }
