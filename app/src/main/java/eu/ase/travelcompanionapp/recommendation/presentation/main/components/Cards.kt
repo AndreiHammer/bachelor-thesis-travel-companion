@@ -81,19 +81,16 @@ fun QuestionnaireCompletedCard(
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         )
 
-        // Main recommendations flow
         when {
-            // Show recommendations if available
             state.recommendations != null -> {
                 RecommendationsReadyCard(
                     recommendations = state.recommendations,
                     onViewRecommendations = onViewRecommendations,
                     onRefreshRecommendations = onGetRecommendations,
-                    isRefreshing = state.isLoadingRecommendations
+                    isRefreshing = state.isSendingProfile || state.isLoadingRecommendations
                 )
             }
-            
-            // Show get recommendations call-to-action
+
             else -> {
                 GetRecommendationsCard(
                     onGetRecommendations = onSendProfile,
@@ -106,8 +103,7 @@ fun QuestionnaireCompletedCard(
                 )
             }
         }
-        
-        // Error messages
+
         if (state.errorMessage != null || state.recommendationsError != null) {
             ErrorMessageCard(
                 errorMessage = state.errorMessage ?: state.recommendationsError,
@@ -116,21 +112,20 @@ fun QuestionnaireCompletedCard(
             )
         }
 
-        
-        // Quick actions row
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             
             if (state.recommendations != null) {
+                val isRefreshing = state.isSendingProfile || state.isLoadingRecommendations
                 OutlinedButton(
                     onClick = onGetRecommendations,
-                    enabled = !state.isLoadingRecommendations,
+                    enabled = !isRefreshing,
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    if (state.isLoadingRecommendations) {
+                    if (isRefreshing) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(16.dp),
                             strokeWidth = 2.dp
@@ -144,7 +139,11 @@ fun QuestionnaireCompletedCard(
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = stringResource(R.string.refresh_recommendations),
+                        text = when {
+                            state.isSendingProfile -> stringResource(R.string.updating_profile)
+                            state.isLoadingRecommendations -> stringResource(R.string.refreshing)
+                            else -> stringResource(R.string.refresh_recommendations)
+                        },
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
@@ -212,7 +211,6 @@ fun RecommendationsReadyCard(
             
             Button(
                 onClick = {
-                    println("Cards: Explore destinations button clicked")
                     onViewRecommendations()
                 },
                 modifier = Modifier.fillMaxWidth(),

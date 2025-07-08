@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -232,6 +233,36 @@ fun QuestionnaireDialog(
                             )
                         }
 
+                        if (isEditMode) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            OutlinedButton(
+                                onClick = { viewModel.showClearConfirmationDialog() },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp),
+                                enabled = !state.isLoading,
+                                shape = RoundedCornerShape(16.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.error
+                                ),
+                                border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(
+                                    brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.error)
+                                )
+                            ) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(
+                                    text = stringResource(R.string.clear_all_responses),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
+
                         if (state.errorMessage != null) {
                             Spacer(modifier = Modifier.height(12.dp))
                             Card(
@@ -252,6 +283,52 @@ fun QuestionnaireDialog(
                     }
                 }
             }
+        }
+
+        if (state.showClearConfirmation) {
+            AlertDialog(
+                onDismissRequest = { viewModel.hideClearConfirmationDialog() },
+                icon = {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                },
+                title = {
+                    Text(
+                        text = stringResource(R.string.confirm_clear_preferences),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(R.string.clear_preferences_description),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = { viewModel.clearPreferences() },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Text(
+                            text = stringResource(R.string.yes_clear),
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { viewModel.hideClearConfirmationDialog() }
+                    ) {
+                        Text(stringResource(R.string.keep_preferences))
+                    }
+                }
+            )
         }
     }
 }

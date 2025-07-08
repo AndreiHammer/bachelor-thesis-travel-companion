@@ -42,7 +42,7 @@ class RecommendationViewModel(
 
                 if (hasCompleted) {
                     _state.value = _state.value.copy(
-                        showMessage = "Questionnaire completed! You can now send your profile data to get personalized recommendations."
+                        showMessage = "Perfect! Now we can find some amazing destinations for you."
                     )
                 }
             }
@@ -101,13 +101,52 @@ class RecommendationViewModel(
     }
     
     fun getRecommendations() {
+        refreshRecommendations()
+    }
+    
+    private fun refreshRecommendations() {
         viewModelScope.launch {
             _state.value = _state.value.copy(
-                isLoadingRecommendations = true,
-                recommendationsError = null
+                isSendingProfile = true,
+                isLoadingRecommendations = false,
+                recommendationsError = null,
+                errorMessage = null
             )
             
-            getRecommendationsInternal()
+            try {
+                when (val result = userProfileRepository.createAndSendUserProfile()) {
+                    is Result.Success -> {
+                        _state.value = _state.value.copy(
+                            isSendingProfile = false,
+                            isLoadingRecommendations = true
+                        )
+                        getRecommendationsInternal()
+                    }
+                    is Result.Error -> {
+                        val errorMessage = when (result.error) {
+                            DataError.Local.QUESTIONNAIRE_NOT_COMPLETED ->
+                                "Please complete the questionnaire first."
+                            DataError.Remote.NO_INTERNET ->
+                                "No internet connection. Please check your network."
+                            DataError.Remote.SERVER ->
+                                "Server error. Please try again later."
+                            else -> "Failed to send updated profile: ${result.error}"
+                        }
+                        
+                        _state.value = _state.value.copy(
+                            isSendingProfile = false,
+                            isLoadingRecommendations = false,
+                            errorMessage = errorMessage
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    isSendingProfile = false,
+                    isLoadingRecommendations = false,
+                    errorMessage = "Unexpected error: ${e.message}"
+                )
+            }
         }
     }
     

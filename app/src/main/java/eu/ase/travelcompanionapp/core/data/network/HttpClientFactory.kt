@@ -18,9 +18,9 @@ object HttpClientFactory {
     fun create(engine: HttpClientEngine): HttpClient {
         return HttpClient(engine){
             install(HttpTimeout) {
-                requestTimeoutMillis = 60_000 // 60 seconds for recommendations API
-                connectTimeoutMillis = 30_000  // 30 seconds to establish connection
-                socketTimeoutMillis = 60_000   // 60 seconds for socket operations
+                requestTimeoutMillis = 60_000
+                connectTimeoutMillis = 30_000
+                socketTimeoutMillis = 60_000
             }
             install(Logging){
                 level = LogLevel.ALL
