@@ -18,7 +18,6 @@ import eu.ase.travelcompanionapp.recommendation.presentation.destinations.Destin
 import eu.ase.travelcompanionapp.recommendation.presentation.destinations.DestinationsListScreen
 import eu.ase.travelcompanionapp.recommendation.presentation.main.RecommendationScreen
 import eu.ase.travelcompanionapp.recommendation.presentation.main.RecommendationViewModel
-import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 fun NavGraphBuilder.DestinationGraph(navController: NavHostController) {
@@ -49,7 +48,8 @@ fun NavGraphBuilder.DestinationGraph(navController: NavHostController) {
             popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) }
         ) { backStackEntry ->
             val sharedViewModel = backStackEntry.sharedKoinViewModel<SharedViewModel>(navController)
-            val destinationViewModel = koinViewModel<DestinationViewModel>(
+            val destinationViewModel = backStackEntry.sharedKoinViewModel<DestinationViewModel>(
+                navController = navController,
                 parameters = { parametersOf(navController, sharedViewModel) }
             )
 
@@ -73,7 +73,8 @@ fun NavGraphBuilder.DestinationGraph(navController: NavHostController) {
             popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) }
         ) { backStackEntry ->
             val sharedViewModel = backStackEntry.sharedKoinViewModel<SharedViewModel>(navController)
-            val destinationViewModel = koinViewModel<DestinationViewModel>(
+            val destinationViewModel = backStackEntry.sharedKoinViewModel<DestinationViewModel>(
+                navController = navController,
                 parameters = { parametersOf(navController, sharedViewModel) }
             )
             val destination = backStackEntry.toRoute<DestinationRoute.DestinationDetail>().toDestination()

@@ -67,7 +67,7 @@ class RecommendationViewModel(
                         _state.value = _state.value.copy(
                             isSendingProfile = false,
                             isLoadingRecommendations = true,
-                            apiResult = "✅ Success! Your profile data was sent to the API successfully.",
+                            apiResult = "Success! Your profile data was sent to the API successfully.",
                             errorMessage = null
                         )
                         getRecommendationsInternal()
