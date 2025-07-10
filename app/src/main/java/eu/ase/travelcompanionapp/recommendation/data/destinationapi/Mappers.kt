@@ -42,7 +42,7 @@ fun Hotel.toSavedHotelDto(): SavedHotelDto {
 
 fun BookingInfo.toBookedOfferDto(): BookedOfferDto {
     return BookedOfferDto(
-        amount = this.amount.toDouble() / 100.0, // Convert from cents to currency
+        amount = this.amount.toDouble() / 100.0,
         bookingReference = this.bookingReference,
         checkInDate = this.checkInDate ?: "",
         checkOutDate = this.checkOutDate ?: "",
@@ -54,7 +54,7 @@ fun BookingInfo.toBookedOfferDto(): BookedOfferDto {
         paymentId = this.paymentId ?: "",
         paymentStatus = this.paymentStatus,
         roomType = this.roomType ?: "",
-        timestamp = (this.timestamp / 1000).toInt() // Convert to smaller timestamp (seconds instead of milliseconds)
+        timestamp = (this.timestamp / 1000).toInt()
     )
 }
 

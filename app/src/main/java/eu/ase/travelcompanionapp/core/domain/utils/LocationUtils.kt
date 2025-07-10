@@ -2,67 +2,76 @@ package eu.ase.travelcompanionapp.core.domain.utils
 
 import android.content.Context
 import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
-import androidx.core.app.ActivityCompat
+import android.os.Build
+import android.os.CancellationSignal
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 class LocationUtils {
 
+    @RequiresApi(Build.VERSION_CODES.R)
     fun getUserLocation(context: Context, onLocationResult: (Location?) -> Unit) {
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        CoroutineScope(Dispatchers.Main).launch {
+            val location = getLocation(context)
+            onLocationResult(location)
+        }
+    }
 
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != android.content.pm.PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                context,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
-        ) {
-            onLocationResult(null)
-            return
+    @RequiresApi(Build.VERSION_CODES.R)
+    private suspend fun getLocation(context: Context): Location? {
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+            android.content.pm.PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) !=
+            android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            return null
         }
 
-        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        val lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
-        if (location != null) {
-            onLocationResult(location)
-        } else {
-            val locationListener = object : LocationListener {
-                override fun onLocationChanged(loc: Location) {
-                    onLocationResult(loc)
-                    locationManager.removeUpdates(this)
-                }
+        if (lastLocation != null) {
+            return lastLocation
+        }
 
-                @Deprecated("Deprecated in Java")
-                override fun onStatusChanged(provider: String?, status: Int, extras: android.os.Bundle?) {}
-                override fun onProviderEnabled(provider: String) {}
-                override fun onProviderDisabled(provider: String) {}
-            }
+        return suspendCancellableCoroutine { continuation ->
+            val cancellationSignal = CancellationSignal()
+
+            continuation.invokeOnCancellation { cancellationSignal.cancel() }
 
             try {
-                locationManager.requestSingleUpdate(
+                locationManager.getCurrentLocation(
                     LocationManager.GPS_PROVIDER,
-                    locationListener,
-                    null
-                )
-            } catch (e: Exception) {
-                try {
-                    locationManager.requestSingleUpdate(
-                        LocationManager.NETWORK_PROVIDER,
-                        locationListener,
-                        null
-                    )
-                } catch (e: Exception) {
-                    onLocationResult(null)
+                    cancellationSignal,
+                    context.mainExecutor
+                ) { location ->
+                    if (location != null) {
+                        continuation.resume(location)
+                    } else {
+                        locationManager.getCurrentLocation(
+                            LocationManager.NETWORK_PROVIDER,
+                            cancellationSignal,
+                            context.mainExecutor
+                        ) { networkLocation ->
+                            continuation.resume(networkLocation)
+                        }
+                    }
                 }
+            } catch (e: Exception) {
+                continuation.resume(null)
             }
         }
     }
+
     fun locationToLatLng(location: Location): LatLng {
         return LatLng(location.latitude, location.longitude)
     }
-} 
+}

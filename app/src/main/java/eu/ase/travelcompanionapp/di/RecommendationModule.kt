@@ -51,7 +51,8 @@ val recommendationModule = module {
             sharedViewModel = sharedViewModel,
             userProfileRepository = get(),
             destinationApiRepository = get(),
-            destinationThumbnailRepository = get()
+            destinationThumbnailRepository = get(),
+            cityToIATACodeRepository = get()
         )
     }
 } 

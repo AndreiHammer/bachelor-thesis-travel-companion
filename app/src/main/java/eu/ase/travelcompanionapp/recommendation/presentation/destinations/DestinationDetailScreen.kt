@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.google.android.gms.maps.model.LatLng
 import eu.ase.travelcompanionapp.R
 import eu.ase.travelcompanionapp.recommendation.domain.model.Destination
 import eu.ase.travelcompanionapp.recommendation.presentation.destinations.components.DestinationThumbnail
@@ -35,6 +36,7 @@ fun DestinationDetailScreen(
 ) {
     val showDialog by viewModel.showHotelSearchDialog.collectAsStateWithLifecycle()
     val selectedCity by viewModel.selectedCityForHotelSearch.collectAsStateWithLifecycle()
+    val selectedLocation by viewModel.selectedLocationForHotelSearch.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val currentCheckInDate by viewModel.hotelFilters.selectedCheckInDate.collectAsStateWithLifecycle()
     val currentCheckOutDate by viewModel.hotelFilters.selectedCheckOutDate.collectAsStateWithLifecycle()
@@ -64,7 +66,7 @@ fun DestinationDetailScreen(
                 tonalElevation = 8.dp
             ) {
                 Button(
-                    onClick = { viewModel.showHotelSearchDialog(destination.city) },
+                    onClick = { viewModel.showHotelSearchDialog(destination.city, LatLng(destination.latitude, destination.longitude)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
@@ -366,6 +368,7 @@ fun DestinationDetailScreen(
         onSearchClick = { checkInDate, checkOutDate, adults, ratings, amenities ->
             viewModel.searchHotelsWithFilters(
                 selectedCity,
+                selectedLocation,
                 checkInDate,
                 checkOutDate,
                 adults,

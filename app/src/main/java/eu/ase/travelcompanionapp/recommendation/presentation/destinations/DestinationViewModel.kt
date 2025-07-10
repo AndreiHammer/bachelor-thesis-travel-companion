@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil3.Bitmap
+import com.google.android.gms.maps.model.LatLng
 import eu.ase.travelcompanionapp.app.navigation.routes.DestinationRoute
 import eu.ase.travelcompanionapp.app.navigation.routes.HotelRoute
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.Result
 import eu.ase.travelcompanionapp.core.domain.resulthandlers.DataError
+import eu.ase.travelcompanionapp.hotel.domain.repository.CityToIATACodeRepository
 import eu.ase.travelcompanionapp.hotel.presentation.SharedViewModel
 import eu.ase.travelcompanionapp.recommendation.domain.model.Destination
 import eu.ase.travelcompanionapp.recommendation.domain.model.RecommendedDestinations
@@ -25,7 +27,8 @@ class DestinationViewModel(
     private val sharedViewModel: SharedViewModel,
     private val userProfileRepository: UserProfileRepository,
     private val destinationApiRepository: DestinationApiRepository,
-    private val destinationThumbnailRepository: DestinationThumbnailRepository
+    private val destinationThumbnailRepository: DestinationThumbnailRepository,
+    private val cityToIATACodeRepository: CityToIATACodeRepository
 ) : ViewModel() {
     val hotelFilters = sharedViewModel
 
@@ -37,6 +40,9 @@ class DestinationViewModel(
 
     private val _selectedCityForHotelSearch = MutableStateFlow("")
     val selectedCityForHotelSearch: StateFlow<String> = _selectedCityForHotelSearch.asStateFlow()
+
+    private val _selectedLocationForHotelSearch = MutableStateFlow<LatLng?>(null)
+    val selectedLocationForHotelSearch: StateFlow<LatLng?> = _selectedLocationForHotelSearch.asStateFlow()
 
     private val _destinationImages = MutableStateFlow<Map<String, Bitmap>>(emptyMap())
 
@@ -123,8 +129,9 @@ class DestinationViewModel(
         )
     }
 
-    fun showHotelSearchDialog(cityName: String) {
+    fun showHotelSearchDialog(cityName: String, location: LatLng?) {
         _selectedCityForHotelSearch.value = cityName
+        _selectedLocationForHotelSearch.value = location
         _showHotelSearchDialog.value = true
     }
 
@@ -135,13 +142,21 @@ class DestinationViewModel(
 
     fun searchHotelsWithFilters(
         cityName: String,
+        location: LatLng?,
         checkInDate: String,
         checkOutDate: String,
         adults: Int,
         ratings: Set<Int>,
         amenities: Set<String>
     ) {
-        sharedViewModel.onSelectCity(cityName)
+        if(cityToIATACodeRepository.getIATACode(cityName) != null) {
+            sharedViewModel.onSelectCity(cityName)
+        }
+        else {
+            if (location != null) {
+                sharedViewModel.onSelectLocation(location = location, range = 20)
+            }
+        }
         sharedViewModel.onSelectDates(checkInDate, checkOutDate)
         sharedViewModel.onSelectAdults(adults)
         sharedViewModel.onSelectRating(ratings)
@@ -149,7 +164,13 @@ class DestinationViewModel(
 
         hideHotelSearchDialog()
         viewModelScope.launch {
-            navController.navigate(HotelRoute.HotelListCity(city = cityName))
+            if(cityToIATACodeRepository.getIATACode(cityName) != null) {
+                navController.navigate(HotelRoute.HotelListCity(city = cityName))
+            }
+            else {
+                if (location != null)
+                navController.navigate(HotelRoute.HotelListLocation(latitude = location.latitude, longitude = location.longitude, range = 20f))
+            }
         }
     }
 
